@@ -24,7 +24,7 @@ const Trainers = () => {
           focus: [item.focus_1, item.focus_2, item.focus_3].filter(Boolean),
         }));
 
-        setTrainers(formatted);
+        setTrainers(formatted.slice(0, 4));
       } catch (error) {
         console.error("Error fetching trainers from SheetDB:", error);
       }
