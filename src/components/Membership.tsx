@@ -5,11 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageCircle, Check, Users, User } from "lucide-react";
 
-const SHEETDB_URL = "https://sheetdb.io/api/v1/v413b198kjszj"; // ← ضع هنا رابط الـ SheetDB
+const SHEETDB_URL = "https://sheetdb.io/api/v1/v413b198kjszj";
 
 interface Plan {
   gender: string; // "Kadın" أو "Erkek"
-  name: string;
+  plan_name: string; // ← بدّلناها من name إلى plan_name
   price: string;
   color: string; // primary / accent
   features: string; // نص مفصول بفواصل
@@ -60,7 +60,7 @@ const Membership = () => {
 
               <CardHeader className="text-center pb-4">
                 <CardTitle className={`text-2xl font-bold text-${plan.color}`}>
-                  {plan.name}
+                  {plan.plan_name}
                 </CardTitle>
                 <div className="text-3xl font-bold text-foreground">
                   {plan.price}
@@ -80,7 +80,7 @@ const Membership = () => {
 
                 <Button
                   className={`w-full bg-${plan.color} hover:bg-${plan.color}/90 text-${plan.color}-foreground transition-all duration-300 mt-auto`}
-                  onClick={() => handleWhatsAppRegister(plan.name, gender)}
+                  onClick={() => handleWhatsAppRegister(plan.plan_name, gender)}
                 >
                   <MessageCircle className="mr-2 h-4 w-4" />
                   WhatsApp ile Kayıt Ol
