@@ -35,7 +35,7 @@ const Hours = () => {
   };
 
   return (
-    <section id="hours" className="py-20 px-6 bg-gradient-to-b from-background to-secondary/30">
+    <section id="hours" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

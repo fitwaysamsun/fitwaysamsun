@@ -32,7 +32,7 @@ const Trainers = () => {
   }, []);
 
   return (
-    <section id="trainers" className="py-20 px-6 bg-gradient-to-b from-background to-secondary/30">
+    <section id="trainers" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
