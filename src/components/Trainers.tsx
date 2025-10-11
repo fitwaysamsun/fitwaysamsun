@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 const Trainers = () => {
   const [trainers, setTrainers] = useState([]);
 
-  // 🔗 استبدل هذا برابط SheetDB الخاص بك
+  // 🔗 SheetDB URL
   const SHEETDB_URL = "https://sheetdb.io/api/v1/v413b198kjszj";
 
   useEffect(() => {
@@ -14,8 +14,6 @@ const Trainers = () => {
         const res = await fetch(SHEETDB_URL);
         const data = await res.json();
 
-        // 🧾 يجب أن يحتوي Google Sheet على الأعمدة التالية:
-        // name | specialty | image | experience | focus_1 | focus_2 | focus_3
         const formatted = data.map((item) => ({
           name: item.name,
           specialty: item.specialty,
@@ -24,7 +22,7 @@ const Trainers = () => {
           focus: [item.focus_1, item.focus_2, item.focus_3].filter(Boolean),
         }));
 
-        setTrainers(formatted.slice(0, 4));
+        setTrainers(formatted);
       } catch (error) {
         console.error("Error fetching trainers from SheetDB:", error);
       }
@@ -46,9 +44,12 @@ const Trainers = () => {
           </p>
         </div>
 
-        {/* Trainers Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {trainers.map((trainer, index) => (
+        {/* === Yenimahalle Şubemiz === */}
+        <h3 className="text-2xl font-bold text-primary mb-6 text-center">
+          🟢 Yenimahalle Şubemiz
+        </h3>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          {trainers.slice(0, 4).map((trainer, index) => (
             <Card
               key={index}
               className="group bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden"
@@ -83,6 +84,57 @@ const Trainers = () => {
                         key={focusIndex}
                         variant="outline"
                         className="text-xs border-muted-foreground/30 text-muted-foreground hover:border-primary hover:text-primary transition-colors duration-300"
+                      >
+                        {focus}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* === Mimarsinan Şubemiz === */}
+        <h3 className="text-2xl font-bold text-primary mb-6 text-center">
+          🔵 Mimarsinan Şubemiz
+        </h3>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {trainers.slice(4, 8).map((trainer, index) => (
+            <Card
+              key={index}
+              className="group bg-card/50 backdrop-blur-sm border-border hover:border-accent/50 transition-all duration-500 hover:scale-105 overflow-hidden"
+            >
+              <div className="relative overflow-hidden">
+                <img
+                  src={trainer.image}
+                  alt={trainer.name}
+                  className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                <Badge className="absolute top-4 right-4 bg-accent/90 text-accent-foreground">
+                  {trainer.experience}
+                </Badge>
+              </div>
+
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors duration-300">
+                  {trainer.name}
+                </h3>
+
+                <p className="text-primary font-semibold mb-4">
+                  {trainer.specialty}
+                </p>
+
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-medium">Uzmanlık Alanları:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {trainer.focus.map((focus, focusIndex) => (
+                      <Badge
+                        key={focusIndex}
+                        variant="outline"
+                        className="text-xs border-muted-foreground/30 text-muted-foreground hover:border-accent hover:text-accent transition-colors duration-300"
                       >
                         {focus}
                       </Badge>
