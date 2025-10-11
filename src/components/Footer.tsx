@@ -90,9 +90,9 @@ const Footer = () => {
               <div className="pt-4">
                 <h4 className="font-medium mb-2">Çalışma Saatleri</h4>
                 <div className="text-sm text-primary-foreground/80 space-y-1">
-                  <p>Pazartesi-Cuma: 07:00-23:00</p>
-                  <p>Cumartesi: 09:00-21:00</p>
-                  <p>Pazar: Kapalı</p>
+                  <p>Pazartesi-Cuma: 09:00-23:00</p>
+                  <p>Cumartesi: 10:00-22:00</p>
+                  <p>Pazar: 12.00-18.00</p>
                 </div>
               </div>
             </div>

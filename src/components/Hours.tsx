@@ -3,13 +3,13 @@ import { Clock, Calendar } from "lucide-react";
 
 const Hours = () => {
   const schedule = [
-    { day: "Pazartesi", hours: "07:00 – 23:00", isOpen: true },
-    { day: "Salı", hours: "07:00 – 23:00", isOpen: true },
-    { day: "Çarşamba", hours: "07:00 – 23:00", isOpen: true },
-    { day: "Perşembe", hours: "07:00 – 23:00", isOpen: true },
-    { day: "Cuma", hours: "07:00 – 23:00", isOpen: true },
-    { day: "Cumartesi", hours: "09:00 – 21:00", isOpen: true },
-    { day: "Pazar", hours: "Kapalı", isOpen: false }
+    { day: "Pazartesi", hours: "09:00 – 23:00", isOpen: true },
+    { day: "Salı", hours: "09:00 – 23:00", isOpen: true },
+    { day: "Çarşamba", hours: "09:00 – 23:00", isOpen: true },
+    { day: "Perşembe", hours: "09:00 – 23:00", isOpen: true },
+    { day: "Cuma", hours: "09:00 – 23:00", isOpen: true },
+    { day: "Cumartesi", hours: "10:00 – 22:00", isOpen: true },
+    { day: "Pazar", hours: "12.00 - 18.00", isOpen: false }
   ];
 
   const getCurrentDay = () => {
