@@ -45,9 +45,12 @@ const Trainers = () => {
         </div>
 
         {/* === Yenimahalle Şubemiz === */}
-        <h3 className="text-2xl font-bold text-primary mb-6 text-center">
-          🟢 Yenimahalle Şubemiz
-        </h3>
+        <div className="flex justify-center mb-6">
+          <span style={{ backgroundColor: "#28a745", color: "white", padding: "6px 16px", borderRadius: "12px", fontWeight: "500", display: "inline-block" }}>
+            Yenimahalle Şubemiz
+          </span>
+        </div>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {trainers.slice(0, 4).map((trainer, index) => (
             <Card
@@ -96,9 +99,12 @@ const Trainers = () => {
         </div>
 
         {/* === Mimarsinan Şubemiz === */}
-        <h3 className="text-2xl font-bold text-primary mb-6 text-center">
-          🔵 Mimarsinan Şubemiz
-        </h3>
+        <div className="flex justify-center mb-6 mt-16">
+          <span style={{ backgroundColor: "#007bff", color: "white", padding: "6px 16px", borderRadius: "12px", fontWeight: "500", display: "inline-block" }}>
+            Mimarsinan Şubemiz
+          </span>
+        </div>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {trainers.slice(4, 8).map((trainer, index) => (
             <Card
