@@ -9,7 +9,7 @@ const Hours = () => {
     { day: "Perşembe", hours: "09:00 – 23:00", isOpen: true },
     { day: "Cuma", hours: "09:00 – 23:00", isOpen: true },
     { day: "Cumartesi", hours: "10:00 – 22:00", isOpen: true },
-    { day: "Pazar", hours: "12.00 - 18.00", isOpen: false }
+    { day: "Pazar", hours: "12.00 - 18.00", isOpen: true }
   ];
 
   const getCurrentDay = () => {
