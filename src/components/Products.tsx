@@ -1,24 +1,21 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/scrollbar";
 
 const SHEETDB_URL = "https://sheetdb.io/api/v1/v413b198kjszj";
 
 interface Product {
   product_name: string;
-  product_price: string;
-  product_image: string;
-  type?: string;
+  price: string;
+  image: string;
+  description: string;
 }
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -26,66 +23,75 @@ const Products = () => {
         const res = await fetch(SHEETDB_URL);
         const data = await res.json();
 
+        // فقط المنتجات التي تحتوي على product_name
         const filtered = data
-          .filter((item: Product) => item.type?.toLowerCase() === "product")
-          .slice(0, 15); // ✅ فقط أول 15 منتج
+          .filter((item: any) => item.product_name)
+          .map((item: any) => ({
+            product_name: item.product_name,
+            price: item.price,
+            image: item.image,
+            description: item.description,
+          }));
 
         setProducts(filtered);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching products from SheetDB:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProducts();
   }, []);
 
-  const handleBuy = (productName: string) => {
+  const handleWhatsApp = (productName: string) => {
     const message = `Merhaba, ${productName} ürünü hakkında bilgi almak istiyorum.`;
-    window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
+    window.open(
+      `https://wa.me/905366544655?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
   };
 
   return (
     <section id="products" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold mb-10 text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          Ürünlerimiz
-        </h2>
+        {/* العنوان */}
+        <div className="text-center mb-10">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            Ürünlerimiz
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            Spor salonumuza özel ürünler – hemen inceleyin!
+          </p>
+        </div>
 
-        {products.length > 0 ? (
-          <Swiper
-            modules={[Navigation, Pagination, Scrollbar, A11y]}
-            spaceBetween={20}
-            navigation
-            slidesPerView={5}
-            breakpoints={{
-              320: { slidesPerView: 1 },
-              640: { slidesPerView: 2 },
-              1024: { slidesPerView: 5 },
-            }}
-          >
+        {loading ? (
+          <p className="text-center text-muted-foreground">Yükleniyor...</p>
+        ) : (
+          <Swiper spaceBetween={20} slidesPerView={5} className="mySwiper">
             {products.map((product, index) => (
               <SwiperSlide key={index}>
-                <Card className="bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden">
+                <Card className="bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300 hover:scale-105">
                   <img
-                    src={product.product_image}
+                    src={product.image}
                     alt={product.product_name}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-48 object-cover rounded-t-lg"
                   />
-                  <CardContent className="p-4 text-center">
-                    <h3 className="text-lg font-bold text-foreground mb-2">
-                      {product.product_name}
-                    </h3>
-                    <Badge className="mb-3">{product.product_price}</Badge>
-                    <Button className="w-full" onClick={() => handleBuy(product.product_name)}>
-                      Satın Al
+                  <CardContent className="p-4">
+                    <h3 className="text-lg font-bold">{product.product_name}</h3>
+                    <p className="text-sm text-muted-foreground mb-2">{product.description}</p>
+                    <p className="text-primary font-bold mb-3">{product.price}</p>
+                    <Button
+                      className="w-full"
+                      onClick={() => handleWhatsApp(product.product_name)}
+                    >
+                      WhatsApp ile Sipariş Ver
                     </Button>
                   </CardContent>
                 </Card>
               </SwiperSlide>
             ))}
           </Swiper>
-        ) : (
-          <p className="text-center text-muted-foreground">Yükleniyor...</p>
         )}
       </div>
     </section>
