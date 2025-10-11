@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageCircle, Check, Users, User } from "lucide-react";
 
-const SHEETDB_URL = "https://sheetdb.io/api/v1/v413b198kjszj";
+const SHEETDB_URL = "https://sheetdb.io/api/v1/sxnqlqdlcro45";
 
 interface Plan {
   gender: string; // "Kadın" أو "Erkek"

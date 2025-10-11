@@ -6,7 +6,7 @@ const Trainers = () => {
   const [trainers, setTrainers] = useState([]);
 
   // 🔗 SheetDB URL
-  const SHEETDB_URL = "https://sheetdb.io/api/v1/v413b198kjszj";
+  const SHEETDB_URL = "https://sheetdb.io/api/v1/sxnqlqdlcro45";
 
   useEffect(() => {
     const fetchTrainers = async () => {
