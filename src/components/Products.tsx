@@ -52,7 +52,7 @@ const Products = () => {
   };
 
   return (
-    <section id="products" className="py-20 px-6 bg-secondary/20">
+    <section id="products" className="py-20 px-6 bg-card/50 backdrop-blur-sm border-border">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
