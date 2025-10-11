@@ -30,13 +30,6 @@ const Hero = () => {
     window.open("https://wa.me/905366544655", "_blank");
   };
 
-  const handleFreeTrial = () => {
-    window.open(
-      "https://wa.me/905366544655?text=Ücretsiz deneme günü hakkında bilgi almak istiyorum",
-      "_blank"
-    );
-  };
-
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
@@ -76,8 +69,8 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+        {/* CTA Button - Centered */}
+        <div className="flex justify-center items-center">
           <Button
             size="lg"
             className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 text-primary-foreground shadow-fitness hover:shadow-glow-primary transition-all duration-300 transform hover:scale-105"
@@ -86,15 +79,6 @@ const Hero = () => {
             <Phone className="mr-2 h-5 w-5" />
             Şimdi Üye Ol
             <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-
-          <Button
-            variant="outline"
-            size="lg"
-            className="text-lg px-8 py-6 border-accent text-accent hover:bg-accent hover:text-accent-foreground transition-all duration-300 transform hover:scale-105"
-            onClick={handleFreeTrial}
-          >
-            Ücretsiz Deneme Günü
           </Button>
         </div>
       </div>
