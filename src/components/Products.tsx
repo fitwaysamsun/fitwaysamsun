@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { MessageCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, A11y } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const SHEETDB_URL = "https://sheetdb.io/api/v1/v413b198kjszj";
 
@@ -25,9 +28,10 @@ const Products = () => {
         const res = await fetch(SHEETDB_URL);
         const data: SheetRow[] = await res.json();
 
+        // اختر فقط الصفوف التي تحتوي على product_title واظهر أول 15
         const filtered = data
           .filter((r) => r.product_title && r.product_title.trim() !== "")
-          .slice(0, 12);
+          .slice(0, 15);
 
         setProducts(filtered);
       } catch (err) {
@@ -43,68 +47,74 @@ const Products = () => {
   const handleWhatsApp = (title?: string) => {
     const productName = title ?? "ürün";
     const message = `Merhaba, ${productName} hakkında bilgi almak istiyorum.`;
+    // رقم WhatsApp الذي زودتنا به
     window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   return (
-    <section id="products" className="py-20 px-6 bg-gradient-to-b from-background to-secondary/30">
+    <section id="products" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        {/* Title */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Ürünlerimiz
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Spor salonu ürünlerimizi kolayca inceleyin ve WhatsApp üzerinden sipariş verin.
-          </p>
+          <p className="text-lg text-muted-foreground">Spor salonu ürünleri — hemen inceleyin.</p>
         </div>
 
-        {/* Content */}
         {loading ? (
           <p className="text-center text-muted-foreground">Yükleniyor...</p>
         ) : products.length === 0 ? (
           <p className="text-center text-muted-foreground">Ürün bulunamadı.</p>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <Swiper
+            modules={[Navigation, Pagination, A11y]}
+            spaceBetween={20}
+            navigation
+            pagination={{ clickable: true }}
+            slidesPerView={5}
+            slidesPerGroup={5}
+            breakpoints={{
+              320: { slidesPerView: 1, slidesPerGroup: 1 },
+              640: { slidesPerView: 2, slidesPerGroup: 2 },
+              768: { slidesPerView: 3, slidesPerGroup: 3 },
+              1024: { slidesPerView: 5, slidesPerGroup: 5 },
+            }}
+            className="py-4"
+          >
             {products.map((p, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
-                viewport={{ once: true }}
-              >
-                <Card className="group bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden">
-                  <div className="relative overflow-hidden">
+              <SwiperSlide key={i} className="h-auto">
+                <Card className="bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 overflow-hidden">
+                  <div className="w-full h-48 overflow-hidden">
                     <img
-                      src={p.product_image}
-                      alt={p.product_title}
-                      className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                      src={p.product_image || ""}
+                      alt={p.product_title || `product-${i}`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    {p.product_price && (
-                      <Badge className="absolute top-4 right-4 bg-primary/90 text-primary-foreground">{p.product_price}</Badge>
-                    )}
                   </div>
 
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
+                  <CardContent className="p-4 text-center">
+                    <h3 className="text-lg font-bold text-foreground mb-1">
                       {p.product_title}
                     </h3>
-                    {p.product_desc && <p className="text-sm text-muted-foreground mb-4">{p.product_desc}</p>}
 
-                    <Button
-                      className="w-full mt-2 flex items-center justify-center gap-2"
-                      onClick={() => handleWhatsApp(p.product_title)}
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      Sipariş Ver
+                    {p.product_desc && (
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {p.product_desc}
+                      </p>
+                    )}
+
+                    {p.product_price && (
+                      <Badge className="mb-3">{p.product_price}</Badge>
+                    )}
+
+                    <Button className="w-full mt-2" onClick={() => handleWhatsApp(p.product_title)}>
+                      WhatsApp ile Sipariş Ver
                     </Button>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </SwiperSlide>
             ))}
-          </div>
+          </Swiper>
         )}
       </div>
     </section>
