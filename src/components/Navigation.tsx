@@ -19,6 +19,7 @@ const Navigation = () => {
     { href: "#hero", label: "Ana Sayfa" },
     { href: "#about", label: "Hakkımızda" },
     { href: "#membership", label: "Üyelik" },
+    { href: "##products", label: "Ürünlerimiz" },
     { href: "#trainers", label: "Antrenörler" },
     { href: "#gallery", label: "Galeri" },
     { href: "#contact", label: "İletişim" }
