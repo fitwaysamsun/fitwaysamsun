@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const SHEETDB_URL = "https://sheetdb.io/api/v1/y0gr42ncazg7t";
+const SHEETDB_URL = "https://sheetdb.io/api/v1/1rc8rhio1ai28";
 
 
 interface SheetRow {

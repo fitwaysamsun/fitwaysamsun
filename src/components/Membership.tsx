@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageCircle, Check, Users, User } from "lucide-react";
 
-const SHEETDB_URL = "https://sheetdb.io/api/v1/y0gr42ncazg7t";
+const SHEETDB_URL = "https://sheetdb.io/api/v1/1rc8rhio1ai28";
 
 
 interface Plan {

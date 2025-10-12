@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Instagram, ExternalLink, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useState, useEffect } from "react";
 
-  const SHEETDB_URL = "https://sheetdb.io/api/v1/y0gr42ncazg7t";
+  const SHEETDB_URL = "https://sheetdb.io/api/v1/1rc8rhio1ai28";
 
 const Gallery = () => {
   const [galleryImages, setGalleryImages] = useState<
