@@ -55,27 +55,29 @@ const Supplements = () => {
           /* ✅ الأسهم */
           .swiper-button-next,
           .swiper-button-prev {
-            color: white;
+            color: black;
             opacity: 0.8;
+            font-size: 16px;
+            transform: scale(0.6);
             transition: opacity 0.3s ease, transform 0.3s ease;
-            top: 45%;
+            top: 40%; /* ⬆️ تم الرفع للأعلى (من 45% إلى 40%) */
           }
           .swiper-button-next:hover,
           .swiper-button-prev:hover {
             opacity: 1;
-            transform: scale(1.2);
+            transform: scale(0.8);
           }
           .swiper-button-next {
-            right: -40px;
+            right: -30px;
           }
           .swiper-button-prev {
-            left: -40px;
+            left: -30px;
           }
 
-          /* ✅ الدوائر (pagination bullets) */
+          /* ✅ الدوائر */
           .swiper-pagination {
             position: relative !important;
-            margin-top: 50px !important;
+            margin-top: 20px !important; /* ⬇️ تم تقليل المسافة (من 40px إلى 20px) */
             bottom: 0 !important;
             text-align: center !important;
           }
@@ -125,10 +127,13 @@ const Supplements = () => {
               640: { slidesPerView: 2, slidesPerGroup: 2 },
               1024: { slidesPerView: 4, slidesPerGroup: 4 },
             }}
-            className="pb-24 relative"
+            className="pb-12 relative" // ⬇️ قللنا المسافة من pb-24 إلى pb-12
           >
             {supplements.map((s, i) => {
-              const bgColor = i % 2 === 0 ? "#28a745" : "#007bff";
+              const isEven = i % 2 === 0;
+              const bgColor = isEven ? "#007bff" : "#ff7f2a";
+              const buttonColor = isEven ? "#ff7f2a" : "#00bfff";
+              const borderColor = isEven ? "#ff7f2a" : "#007bff";
 
               return (
                 <SwiperSlide key={i} className="h-auto">
@@ -136,6 +141,7 @@ const Supplements = () => {
                     className="group rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 scale-95 hover:scale-100"
                     style={{
                       backgroundColor: bgColor,
+                      border: `3px solid ${borderColor}`,
                     }}
                   >
                     <div className="relative w-full aspect-[4/5] overflow-hidden bg-muted">
@@ -146,13 +152,13 @@ const Supplements = () => {
                       />
                     </div>
 
-                    <div className="p-5 text-left text-white">
+                    <div className="p-5 text-left bg-background text-foreground">
                       <h3 className="text-lg font-semibold mb-1">
                         {s.supplement_title}
                       </h3>
 
                       {s.supplement_desc && (
-                        <p className="text-sm opacity-90 mb-3 line-clamp-2">
+                        <p className="text-sm opacity-80 mb-3 line-clamp-2">
                           {s.supplement_desc}
                         </p>
                       )}
@@ -164,10 +170,11 @@ const Supplements = () => {
                       )}
 
                       <Button
-                        className="w-full bg-white text-black hover:bg-white/90 transition font-semibold"
+                        className="w-full font-semibold text-white hover:opacity-90 transition"
+                        style={{ backgroundColor: buttonColor }}
                         onClick={() => handleWhatsApp(s.supplement_title)}
                       >
-                        WhatsApp'tan Sipariş Ver
+                        WhatsApp ile Kayıt Ol
                       </Button>
                     </div>
                   </div>
