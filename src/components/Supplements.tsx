@@ -10,38 +10,38 @@ import "swiper/css/pagination";
 const SHEETDB_URL = "https://sheetdb.io/api/v1/sxnqlqdlcro45";
 
 interface SheetRow {
-  product_title?: string;
-  product_price?: string;
-  product_image?: string;
-  product_desc?: string;
+  supplement_title?: string;
+  supplement_price?: string;
+  supplement_image?: string;
+  supplement_desc?: string;
 }
 
-const Products = () => {
-  const [products, setProducts] = useState<SheetRow[]>([]);
+const Supplements = () => {
+  const [supplements, setSupplements] = useState<SheetRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchSupplements = async () => {
       try {
         const res = await fetch(SHEETDB_URL);
         const data: SheetRow[] = await res.json();
         const filtered = data
-          .filter((r) => r.product_title && r.product_title.trim() !== "")
+          .filter((r) => r.supplement_title && r.supplement_title.trim() !== "")
           .slice(0, 20);
-        setProducts(filtered);
+        setSupplements(filtered);
       } catch (err) {
-        console.error("Error fetching products:", err);
+        console.error("Error fetching supplements:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchSupplements();
   }, []);
 
   const handleWhatsApp = (title?: string) => {
-    const productName = title ?? "ürün";
-    const message = `Merhaba, ${productName} hakkında bilgi almak istiyorum.`;
+    const supplementName = title ?? "supplement";
+    const message = `Merhaba, ${supplementName} hakkında bilgi almak istiyorum. Bu supplement stokta mı?`;
     window.open(
       `https://wa.me/905366544655?text=${encodeURIComponent(message)}`,
       "_blank"
@@ -49,7 +49,7 @@ const Products = () => {
   };
 
   return (
-    <section id="products" className="py-20 px-6 bg-background text-foreground">
+    <section id="supplements" className="py-20 px-6 bg-background text-foreground">
       <style>
         {`
           /* ✅ الأسهم */
@@ -66,7 +66,7 @@ const Products = () => {
             transform: scale(1.2);
           }
           .swiper-button-next {
-            right: -40px; /* ⬅️ إبعاد الأسهم عن الصور */
+            right: -40px;
           }
           .swiper-button-prev {
             left: -40px;
@@ -83,14 +83,14 @@ const Products = () => {
           .swiper-pagination-bullet {
             background: transparent;
             border: 2px solid white;
-            width: 8px; /* ⬅️ حجم أصغر */
+            width: 8px;
             height: 8px;
             opacity: 0.5;
             transition: all 0.3s ease;
           }
 
           .swiper-pagination-bullet-active {
-            background: white; /* داخلها أبيض */
+            background: white;
             opacity: 1;
             transform: scale(1.3);
           }
@@ -101,23 +101,23 @@ const Products = () => {
         {/* ✅ العنوان */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Ürünlerimiz
+            Supplementlerimiz
           </h2>
           <p className="text-sm text-muted-foreground">
-            Spor salonu için seçkin ürünler — hemen inceleyin.
+            Sporcular için en kaliteli supplementler — hemen keşfedin.
           </p>
         </div>
 
         {loading ? (
           <p className="text-center text-muted-foreground">Yükleniyor...</p>
-        ) : products.length === 0 ? (
-          <p className="text-center text-muted-foreground">Ürün bulunamadı.</p>
+        ) : supplements.length === 0 ? (
+          <p className="text-center text-muted-foreground">Supplement bulunamadı.</p>
         ) : (
           <Swiper
             modules={[Navigation, Pagination]}
             navigation
             pagination={{ clickable: true }}
-            spaceBetween={40} /* ⬅️ تباعد بين الكروت */
+            spaceBetween={40}
             slidesPerView={4}
             slidesPerGroup={4}
             breakpoints={{
@@ -127,7 +127,7 @@ const Products = () => {
             }}
             className="pb-24 relative"
           >
-            {products.map((p, i) => {
+            {supplements.map((s, i) => {
               const bgColor = i % 2 === 0 ? "#28a745" : "#007bff";
 
               return (
@@ -140,34 +140,34 @@ const Products = () => {
                   >
                     <div className="relative w-full aspect-[4/5] overflow-hidden bg-muted">
                       <img
-                        src={p.product_image || ""}
-                        alt={p.product_title || `product-${i}`}
+                        src={s.supplement_image || ""}
+                        alt={s.supplement_title || `supplement-${i}`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
 
                     <div className="p-5 text-left text-white">
                       <h3 className="text-lg font-semibold mb-1">
-                        {p.product_title}
+                        {s.supplement_title}
                       </h3>
 
-                      {p.product_desc && (
+                      {s.supplement_desc && (
                         <p className="text-sm opacity-90 mb-3 line-clamp-2">
-                          {p.product_desc}
+                          {s.supplement_desc}
                         </p>
                       )}
 
-                      {p.product_price && (
+                      {s.supplement_price && (
                         <p className="text-lg font-bold mb-3">
-                          {p.product_price.replace("TL", "").replace("$", "")}
+                          {s.supplement_price.replace("TL", "").replace("$", "")}
                         </p>
                       )}
 
                       <Button
                         className="w-full bg-white text-black hover:bg-white/90 transition font-semibold"
-                        onClick={() => handleWhatsApp(p.product_title)}
+                        onClick={() => handleWhatsApp(s.supplement_title)}
                       >
-                        WhatsApp ile Sipariş Ver
+                        WhatsApp'tan Sipariş Ver
                       </Button>
                     </div>
                   </div>
@@ -181,4 +181,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Supplements;
