@@ -2,34 +2,50 @@ import { Button } from "@/components/ui/button";
 import { Instagram, ExternalLink, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useState, useEffect } from "react";
 
-  const SHEETDB_URL = "https://sheetdb.io/api/v1/1rc8rhio1ai28";
+const SHEET_CSV_URL =
+  "https://docs.google.com/spreadsheets/d/1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs/export?format=csv"; // ← ضع هنا رابط Google Sheet بصيغة CSV
 
 const Gallery = () => {
-  const [galleryImages, setGalleryImages] = useState<
-    { src: string; alt: string }[]
-  >([]);
+  const [galleryImages, setGalleryImages] = useState<{ src: string; alt: string }[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
-  // جلب البيانات من Google Sheet
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const response = await fetch(SHEETDB_URL);
-        const data = await response.json();
-        setGalleryImages(
-          data.map((item: any) => ({
-            src: item.image_url,
-            alt: item.image_alt,
-          }))
-        );
+        const response = await fetch(SHEET_CSV_URL);
+        const text = await response.text();
+
+        // 🧾 نحول CSV إلى صفوف
+        const rows = text.split("\n").map((row) => row.split(","));
+        const headers = rows[0].map((h) => h.trim());
+        const images = [];
+
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          if (row.length < 2) continue;
+
+          const imageData: any = {};
+          headers.forEach((header, index) => {
+            imageData[header] = row[index]?.trim();
+          });
+
+          if (imageData.image_url) {
+            images.push({
+              src: imageData.image_url,
+              alt: imageData.image_alt || "",
+            });
+          }
+        }
+
+        setGalleryImages(images);
       } catch (error) {
-        console.error("Gallery data fetch error:", error);
+        console.error("Error fetching gallery data:", error);
       }
     };
+
     fetchImages();
   }, []);
 
-  // التنقل بين الصور
   const handlePrevImage = () => {
     if (selectedImageIndex !== null) {
       setSelectedImageIndex((prev) =>

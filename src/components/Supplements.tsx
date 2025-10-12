@@ -7,9 +7,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-const SHEETDB_URL = "https://sheetdb.io/api/v1/1rc8rhio1ai28";
-
-
 interface SheetRow {
   supplement_title?: string;
   supplement_price?: string;
@@ -22,16 +19,36 @@ const Supplements = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const SHEET_ID = "1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs";
+    const GID = "0";
+    const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+
     const fetchSupplements = async () => {
       try {
-        const res = await fetch(SHEETDB_URL);
-        const data: SheetRow[] = await res.json();
-        const filtered = data
-          .filter((r) => r.supplement_title && r.supplement_title.trim() !== "")
+        const res = await fetch(GVIZ_URL);
+        const text = await res.text();
+
+        // Google Sheets gviz JSON parser
+        const jsonText = text.replace(/^[^\(]*\(\s*/, "").replace(/\);\s*$/, "");
+        const parsed = JSON.parse(jsonText);
+
+        const cols = parsed.table.cols.map((c: any) => (c && c.label ? c.label : ""));
+        const rows = parsed.table.rows.map((r: any) => {
+          const obj: any = {};
+          r.c.forEach((cell: any, idx: number) => {
+            const key = cols[idx] || `col_${idx}`;
+            obj[key] = cell && typeof cell.v !== "undefined" ? String(cell.v) : "";
+          });
+          return obj;
+        });
+
+        const filtered = rows
+          .filter((r: any) => r.supplement_title && r.supplement_title.trim() !== "")
           .slice(0, 20);
+
         setSupplements(filtered);
       } catch (err) {
-        console.error("Error fetching supplements:", err);
+        console.error("Error fetching supplements from Google Sheets:", err);
       } finally {
         setLoading(false);
       }
@@ -61,7 +78,7 @@ const Supplements = () => {
             font-size: 16px;
             transform: scale(0.6);
             transition: opacity 0.3s ease, transform 0.3s ease;
-            top: 40%; /* ⬆️ تم الرفع للأعلى (من 45% إلى 40%) */
+            top: 40%;
           }
           .swiper-button-next:hover,
           .swiper-button-prev:hover {
@@ -78,7 +95,7 @@ const Supplements = () => {
           /* ✅ الدوائر */
           .swiper-pagination {
             position: relative !important;
-            margin-top: 20px !important; /* ⬇️ تم تقليل المسافة (من 40px إلى 20px) */
+            margin-top: 20px !important;
             bottom: 0 !important;
             text-align: center !important;
           }
@@ -128,7 +145,7 @@ const Supplements = () => {
               640: { slidesPerView: 2, slidesPerGroup: 2 },
               1024: { slidesPerView: 4, slidesPerGroup: 4 },
             }}
-            className="pb-12 relative" // ⬇️ قللنا المسافة من pb-24 إلى pb-12
+            className="pb-12 relative"
           >
             {supplements.map((s, i) => {
               const isEven = i % 2 === 0;

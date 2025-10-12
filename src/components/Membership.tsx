@@ -5,51 +5,83 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageCircle, Check, Users, User } from "lucide-react";
 
-const SHEETDB_URL = "https://sheetdb.io/api/v1/1rc8rhio1ai28";
-
-
 interface Plan {
-  gender: string; // "Kadın" أو "Erkek"
-  plan_name: string; // ← بدّلناها من name إلى plan_name
+  gender: string;
+  plan_name: string;
   price: string;
-  color: string; // primary / accent
-  features: string; // نص مفصول بفواصل
-  popular: string; // "true" أو "false"
+  color: string;
+  features: string;
+  popular: string;
 }
 
 const Membership = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // جلب البيانات من Google Sheet
   useEffect(() => {
+    const SHEET_ID = "1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs"; // 🔹 ضع هنا ID الشيت الخاص بك
+    const GID = "123456789"; // 🔹 غيّر هذا إلى gid الصحيح (عادة 0 إذا كانت أول صفحة)
+    const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+
     const fetchPlans = async () => {
       try {
-        const response = await fetch(SHEETDB_URL);
-        const data = await response.json();
-        setPlans(data);
-      } catch (error) {
-        console.error("Membership data fetch error:", error);
+        const res = await fetch(GVIZ_URL);
+        const text = await res.text();
+
+        // إزالة غلاف gviz وتحويله إلى JSON
+        const jsonText = text.replace(/^[^\(]*\(\s*/, "").replace(/\);\s*$/, "");
+        const parsed = JSON.parse(jsonText);
+
+        const cols = parsed.table.cols.map((c: any) => (c && c.label ? c.label : ""));
+        const rows = parsed.table.rows.map((r: any) => {
+          const obj: any = {};
+          r.c.forEach((cell: any, idx: number) => {
+            const key = cols[idx] || `col_${idx}`;
+            obj[key] = cell && typeof cell.v !== "undefined" ? String(cell.v) : "";
+          });
+          return obj;
+        });
+
+        const filtered = rows.filter((r: any) => r.plan_name && r.plan_name.trim() !== "");
+        setPlans(filtered);
+      } catch (err) {
+        console.error("Membership data fetch error:", err);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchPlans();
   }, []);
 
   const handleWhatsAppRegister = (planName: string, gender: string) => {
     const message = `${gender} ${planName} üyelik paketi hakkında bilgi almak istiyorum.`;
-    window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
+    window.open(
+      `https://wa.me/905366544655?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
   };
 
   const renderPlanCards = (gender: string) => {
     const filteredPlans = plans.filter((p) => p.gender === gender);
+    if (loading) {
+      return <p className="text-center text-muted-foreground">Yükleniyor...</p>;
+    }
+    if (filteredPlans.length === 0) {
+      return <p className="text-center text-muted-foreground">Plan bulunamadı.</p>;
+    }
+
     return (
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
           const isPopular = plan.popular.toLowerCase() === "true";
+          const color = plan.color || "primary";
+
           return (
             <Card
               key={index}
-              className={`relative bg-card/50 backdrop-blur-sm border-border hover:border-${plan.color}/50 transition-all duration-300 hover:scale-105 ${
+              className={`relative bg-card/50 backdrop-blur-sm border-border hover:border-${color}/50 transition-all duration-300 hover:scale-105 ${
                 isPopular ? "ring-2 ring-primary/50" : ""
               } flex flex-col`}
             >
@@ -60,12 +92,14 @@ const Membership = () => {
               )}
 
               <CardHeader className="text-center pb-4">
-                <CardTitle className={`text-2xl font-bold text-${plan.color}`}>
+                <CardTitle className={`text-2xl font-bold text-${color}`}>
                   {plan.plan_name}
                 </CardTitle>
                 <div className="text-3xl font-bold text-foreground">
                   {plan.price}
-                  <span className="text-sm font-normal text-muted-foreground">/dönem</span>
+                  <span className="text-sm font-normal text-muted-foreground">
+                    /dönem
+                  </span>
                 </div>
               </CardHeader>
 
@@ -80,7 +114,7 @@ const Membership = () => {
                 </ul>
 
                 <Button
-                  className={`w-full bg-${plan.color} hover:bg-${plan.color}/90 text-${plan.color}-foreground transition-all duration-300 mt-auto`}
+                  className={`w-full bg-${color} hover:bg-${color}/90 text-${color}-foreground transition-all duration-300 mt-auto`}
                   onClick={() => handleWhatsAppRegister(plan.plan_name, gender)}
                 >
                   <MessageCircle className="mr-2 h-4 w-4" />
@@ -97,7 +131,6 @@ const Membership = () => {
   return (
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        {/* العنوان والوصف العام */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Üyelik Paketleri
@@ -123,7 +156,6 @@ const Membership = () => {
           <TabsContent value="Erkek">{renderPlanCards("Erkek")}</TabsContent>
         </Tabs>
 
-        {/* القسم السفلي */}
         <div className="text-center mt-12">
           <p className="text-muted-foreground mb-4">
             Daha fazla bilgi almak veya özel paket teklifleri için bize ulaşın

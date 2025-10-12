@@ -5,21 +5,34 @@ import { ArrowRight, Phone } from "lucide-react";
 const Hero = () => {
   const [heroImage, setHeroImage] = useState("/Images/Hero.png"); // صورة افتراضية
 
-  // استبدل هذا برابط SheetDB الخاص بك
-  const SHEETDB_URL = "https://sheetdb.io/api/v1/1rc8rhio1ai28";
+  // 🔗 رابط Google Sheets المباشر بصيغة CSV
+  const SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs/export?format=csv";
 
   useEffect(() => {
     const fetchHeroImage = async () => {
       try {
-        const res = await fetch(SHEETDB_URL);
-        const data = await res.json();
+        const res = await fetch(SHEET_CSV_URL);
+        const csvText = await res.text();
 
-        // نفترض أن الشيت يحتوي عمودًا باسم "hero_image"
+        // تحويل CSV إلى JSON بسيط
+        const [headerLine, ...rows] = csvText.trim().split("\n");
+        const headers = headerLine.split(",");
+
+        const data = rows.map((row) => {
+          const values = row.split(",");
+          return headers.reduce((obj, header, i) => {
+            obj[header.trim()] = values[i]?.trim();
+            return obj;
+          }, {});
+        });
+
+        // جلب الصورة من أول صف
         if (data && data[0]?.hero_image) {
           setHeroImage(data[0].hero_image);
         }
       } catch (error) {
-        console.error("Error fetching hero image from SheetDB:", error);
+        console.error("Error fetching hero image from Google Sheets:", error);
       }
     };
 
@@ -32,7 +45,7 @@ const Hero = () => {
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Overlay */}
+      {/* الخلفية */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-500"
         style={{
@@ -41,9 +54,8 @@ const Hero = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/90" />
 
-      {/* Content */}
+      {/* المحتوى */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-        {/* Logo */}
         <div className="mb-8 flex justify-center">
           <img
             src="/Images/Logo.png"
@@ -52,24 +64,20 @@ const Hero = () => {
           />
         </div>
 
-        {/* Main Title */}
         <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent animate-pulse">
           FİTWAY FİTNESS
         </h1>
 
-        {/* Subtitle */}
         <p className="text-xl md:text-2xl mb-8 text-muted-foreground font-light tracking-wide">
           Enerjini keşfet, en iyi versiyonunu yarat.
         </p>
 
-        {/* Scroll Indicator */}
         <div className="flex justify-center mb-8 animate-bounce">
           <div className="w-6 h-10 border-2 border-primary rounded-full flex justify-center">
             <div className="w-1 h-3 bg-primary rounded-full mt-2 animate-pulse"></div>
           </div>
         </div>
 
-        {/* CTA Button - Centered */}
         <div className="flex justify-center items-center">
           <Button
             size="lg"

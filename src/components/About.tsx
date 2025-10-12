@@ -6,23 +6,31 @@ const About = () => {
   const [aboutImage1, setAboutImage1] = useState("/Images/About_1.png");
   const [aboutImage2, setAboutImage2] = useState("/Images/About_2.png");
 
-  // 🔗 استبدل هذا برابط SheetDB الخاص بك
-  const SHEETDB_URL = "https://sheetdb.io/api/v1/1rc8rhio1ai28";
+  // 🟢 هذا هو رابط Google Sheet بصيغة CSV
+  const SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs/export?format=csv";
 
   useEffect(() => {
     const fetchAboutImages = async () => {
       try {
-        const res = await fetch(SHEETDB_URL);
-        const data = await res.json();
+        const res = await fetch(SHEET_CSV_URL);
+        const text = await res.text();
 
-        // 🧾 نتوقع أن يحتوي Google Sheet على الأعمدة التالية:
-        // about_image_1 | about_image_2
-        if (data && data[0]) {
-          if (data[0].about_image_1) setAboutImage1(data[0].about_image_1);
-          if (data[0].about_image_2) setAboutImage2(data[0].about_image_2);
-        }
+        // 🔍 نحول CSV إلى صفوف وأعمدة
+        const rows = text.split("\n").map((row) => row.split(","));
+        const headers = rows[0];
+        const firstRow = rows[1];
+
+        const data = {};
+        headers.forEach((header, i) => {
+          data[header.trim()] = firstRow[i]?.trim();
+        });
+
+        // 🧾 تحديث الصور من الجدول
+        if (data.about_image_1) setAboutImage1(data.about_image_1);
+        if (data.about_image_2) setAboutImage2(data.about_image_2);
       } catch (error) {
-        console.error("Error fetching about images from SheetDB:", error);
+        console.error("Error fetching data from Google Sheets:", error);
       }
     };
 
@@ -39,7 +47,6 @@ const About = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
           <div className="space-y-8">
             <p className="text-lg leading-relaxed text-muted-foreground">
               <strong className="text-primary">FİTWAY FİTNESS</strong> olarak amacımız; her bireyin sporla sağlıklı, güçlü ve mutlu bir hayata ulaşmasını sağlamaktır.
@@ -48,7 +55,6 @@ const About = () => {
               Son teknoloji ekipmanlar, deneyimli antrenörler ve motive edici bir ortam ile hedeflerine daha hızlı ulaşabilirsin.
             </p>
 
-            {/* Features Grid */}
             <div className="grid md:grid-cols-3 gap-8 mt-12">
               <Card className="bg-card/80 backdrop-blur-sm border-border/50 rounded-2xl hover:scale-105 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 group">
                 <CardContent className="p-8 text-center">
@@ -82,7 +88,7 @@ const About = () => {
             </div>
           </div>
 
-          {/* Images */}
+          {/* الصور */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
               <img

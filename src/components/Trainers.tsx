@@ -2,29 +2,48 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-const Trainers = () => {
-  const [trainers, setTrainers] = useState([]);
+interface Trainer {
+  name: string;
+  specialty: string;
+  image: string;
+  experience: string;
+  focus: string[];
+}
 
-  // 🔗 SheetDB URL
-  const SHEETDB_URL = "https://sheetdb.io/api/v1/1rc8rhio1ai28";
+const Trainers = () => {
+  const [trainers, setTrainers] = useState<Trainer[]>([]);
+
+  const SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs/export?format=csv";
 
   useEffect(() => {
     const fetchTrainers = async () => {
       try {
-        const res = await fetch(SHEETDB_URL);
-        const data = await res.json();
+        const res = await fetch(SHEET_CSV_URL);
+        const csvText = await res.text();
 
-        const formatted = data.map((item) => ({
-          name: item.name,
-          specialty: item.specialty,
-          image: item.image,
-          experience: item.experience,
-          focus: [item.focus_1, item.focus_2, item.focus_3].filter(Boolean),
-        }));
+        const [headerLine, ...rows] = csvText.trim().split("\n");
+        const headers = headerLine.split(",");
 
-        setTrainers(formatted);
+        const data = rows.map((row) => {
+          const values = row.split(",");
+          const obj = headers.reduce((acc: any, header, i) => {
+            acc[header.trim()] = values[i]?.trim();
+            return acc;
+          }, {});
+
+          return {
+            name: obj.name,
+            specialty: obj.specialty,
+            image: obj.image,
+            experience: obj.experience,
+            focus: [obj.focus_1, obj.focus_2, obj.focus_3].filter(Boolean),
+          };
+        });
+
+        setTrainers(data);
       } catch (error) {
-        console.error("Error fetching trainers from SheetDB:", error);
+        console.error("Error fetching trainers from Google Sheets:", error);
       }
     };
 
@@ -34,7 +53,6 @@ const Trainers = () => {
   return (
     <section id="trainers" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Antrenörlerimiz
@@ -44,9 +62,8 @@ const Trainers = () => {
           </p>
         </div>
 
-        {/* === Yenimahalle Şubemiz === */}
         <div className="flex justify-center mb-6">
-          <span style={{ backgroundColor: "#28a745", color: "white", padding: "6px 16px", borderRadius: "12px", fontWeight: "500", display: "inline-block" }}>
+          <span className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium">
             Yenimahalle Şubemiz
           </span>
         </div>
@@ -64,7 +81,6 @@ const Trainers = () => {
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
                 <Badge className="absolute top-4 right-4 bg-primary/90 text-primary-foreground">
                   {trainer.experience}
                 </Badge>
@@ -74,21 +90,19 @@ const Trainers = () => {
                 <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
                   {trainer.name}
                 </h3>
-
-                <p className="text-accent font-semibold mb-4">
-                  {trainer.specialty}
-                </p>
-
+                <p className="text-accent font-semibold mb-4">{trainer.specialty}</p>
                 <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground font-medium">Uzmanlık Alanları:</p>
+                  <p className="text-sm text-muted-foreground font-medium">
+                    Uzmanlık Alanları:
+                  </p>
                   <div className="flex flex-wrap gap-1">
-                    {trainer.focus.map((focus, focusIndex) => (
+                    {trainer.focus.map((f, i) => (
                       <Badge
-                        key={focusIndex}
+                        key={i}
                         variant="outline"
                         className="text-xs border-muted-foreground/30 text-muted-foreground hover:border-primary hover:text-primary transition-colors duration-300"
                       >
-                        {focus}
+                        {f}
                       </Badge>
                     ))}
                   </div>
@@ -98,9 +112,8 @@ const Trainers = () => {
           ))}
         </div>
 
-        {/* === Mimarsinan Şubemiz === */}
         <div className="flex justify-center mb-6 mt-16">
-          <span style={{ backgroundColor: "#007bff", color: "white", padding: "6px 16px", borderRadius: "12px", fontWeight: "500", display: "inline-block" }}>
+          <span className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium">
             Mimarsinan Şubemiz
           </span>
         </div>
@@ -118,7 +131,6 @@ const Trainers = () => {
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
                 <Badge className="absolute top-4 right-4 bg-accent/90 text-accent-foreground">
                   {trainer.experience}
                 </Badge>
@@ -128,21 +140,19 @@ const Trainers = () => {
                 <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors duration-300">
                   {trainer.name}
                 </h3>
-
-                <p className="text-primary font-semibold mb-4">
-                  {trainer.specialty}
-                </p>
-
+                <p className="text-primary font-semibold mb-4">{trainer.specialty}</p>
                 <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground font-medium">Uzmanlık Alanları:</p>
+                  <p className="text-sm text-muted-foreground font-medium">
+                    Uzmanlık Alanları:
+                  </p>
                   <div className="flex flex-wrap gap-1">
-                    {trainer.focus.map((focus, focusIndex) => (
+                    {trainer.focus.map((f, i) => (
                       <Badge
-                        key={focusIndex}
+                        key={i}
                         variant="outline"
                         className="text-xs border-muted-foreground/30 text-muted-foreground hover:border-accent hover:text-accent transition-colors duration-300"
                       >
-                        {focus}
+                        {f}
                       </Badge>
                     ))}
                   </div>
@@ -152,7 +162,6 @@ const Trainers = () => {
           ))}
         </div>
 
-        {/* Footer Text */}
         <div className="text-center mt-12">
           <p className="text-muted-foreground text-lg">
             Kişisel antrenman seansları için antrenörlerimizle iletişime geçin
