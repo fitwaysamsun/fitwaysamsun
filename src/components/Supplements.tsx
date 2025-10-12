@@ -120,7 +120,7 @@ const Supplements = () => {
       <div className="max-w-7xl mx-auto">
         {/* ✅ العنوان */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent pb-2">
             Supplementlerimiz
           </h2>
           <p className="text-sm text-muted-foreground">

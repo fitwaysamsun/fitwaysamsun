@@ -132,7 +132,7 @@ const Membership = () => {
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 pb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Üyelik Paketleri
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
