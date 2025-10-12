@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 
-// ✅ ضروري - استيراد CSS الخاص بـ Swiper
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -28,11 +25,9 @@ const Products = () => {
       try {
         const res = await fetch(SHEETDB_URL);
         const data: SheetRow[] = await res.json();
-
         const filtered = data
           .filter((r) => r.product_title && r.product_title.trim() !== "")
-          .slice(0, 15);
-
+          .slice(0, 20);
         setProducts(filtered);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -47,38 +42,64 @@ const Products = () => {
   const handleWhatsApp = (title?: string) => {
     const productName = title ?? "ürün";
     const message = `Merhaba, ${productName} hakkında bilgi almak istiyorum.`;
-    window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
+    window.open(
+      `https://wa.me/905366544655?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
   };
 
   return (
-    <section id="products" className="py-20 px-6 bg-gradient-to-b from-background to-secondary/30">
+    <section id="products" className="py-20 px-6 bg-background text-foreground">
       <style>
         {`
-          /* ✅ ستايل الأسهم minimal */
+          /* ✅ الأسهم */
           .swiper-button-next,
           .swiper-button-prev {
-            color: white !important;
-            opacity: 0.6;
-            transition: opacity 0.3s ease-in-out;
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            top: 45%;
           }
-
           .swiper-button-next:hover,
           .swiper-button-prev:hover {
             opacity: 1;
+            transform: scale(1.2);
+          }
+          .swiper-button-next {
+            right: -40px; /* ⬅️ إبعاد الأسهم عن الصور */
+          }
+          .swiper-button-prev {
+            left: -40px;
           }
 
-          /* ✅ إزالة أي بقايا غريبة */
-          .swiper-button-next::after,
-          .swiper-button-prev::after {
-            font-size: 20px !important;
-            font-weight: bold;
+          /* ✅ الدوائر (pagination bullets) */
+          .swiper-pagination {
+            position: relative !important;
+            margin-top: 50px !important;
+            bottom: 0 !important;
+            text-align: center !important;
+          }
+
+          .swiper-pagination-bullet {
+            background: transparent;
+            border: 2px solid white;
+            width: 8px; /* ⬅️ حجم أصغر */
+            height: 8px;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+          }
+
+          .swiper-pagination-bullet-active {
+            background: white; /* داخلها أبيض */
+            opacity: 1;
+            transform: scale(1.3);
           }
         `}
       </style>
 
       <div className="max-w-7xl mx-auto">
-        {/* ✅ العنوان في المنتصف */}
-        <div className="text-center mb-10">
+        {/* ✅ العنوان */}
+        <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Ürünlerimiz
           </h2>
@@ -96,52 +117,63 @@ const Products = () => {
             modules={[Navigation, Pagination]}
             navigation
             pagination={{ clickable: true }}
-            spaceBetween={20}
-            slidesPerView={5}
-            slidesPerGroup={5}
+            spaceBetween={40} /* ⬅️ تباعد بين الكروت */
+            slidesPerView={4}
+            slidesPerGroup={4}
             breakpoints={{
               320: { slidesPerView: 1, slidesPerGroup: 1 },
               640: { slidesPerView: 2, slidesPerGroup: 2 },
-              768: { slidesPerView: 3, slidesPerGroup: 3 },
-              1024: { slidesPerView: 5, slidesPerGroup: 5 },
+              1024: { slidesPerView: 4, slidesPerGroup: 4 },
             }}
-            className="py-4"
+            className="pb-24 relative"
           >
-            {products.map((p, i) => (
-              <SwiperSlide key={i} className="h-auto">
-                <Card className="bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 overflow-hidden">
-                  {/* صورة المنتج */}
-                  <div className="relative w-full h-48 overflow-hidden">
-                    <img
-                      src={p.product_image || ""}
-                      alt={p.product_title || `product-${i}`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    {/* ✅ السعر على الصورة */}
-                    {p.product_price && (
-                      <Badge className="absolute top-2 left-2">{p.product_price}</Badge>
-                    )}
+            {products.map((p, i) => {
+              const bgColor = i % 2 === 0 ? "#28a745" : "#007bff";
+
+              return (
+                <SwiperSlide key={i} className="h-auto">
+                  <div
+                    className="group rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 scale-95 hover:scale-100"
+                    style={{
+                      backgroundColor: bgColor,
+                    }}
+                  >
+                    <div className="relative w-full aspect-[4/5] overflow-hidden bg-muted">
+                      <img
+                        src={p.product_image || ""}
+                        alt={p.product_title || `product-${i}`}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+
+                    <div className="p-5 text-left text-white">
+                      <h3 className="text-lg font-semibold mb-1">
+                        {p.product_title}
+                      </h3>
+
+                      {p.product_desc && (
+                        <p className="text-sm opacity-90 mb-3 line-clamp-2">
+                          {p.product_desc}
+                        </p>
+                      )}
+
+                      {p.product_price && (
+                        <p className="text-lg font-bold mb-3">
+                          {p.product_price.replace("TL", "").replace("$", "")}
+                        </p>
+                      )}
+
+                      <Button
+                        className="w-full bg-white text-black hover:bg-white/90 transition font-semibold"
+                        onClick={() => handleWhatsApp(p.product_title)}
+                      >
+                        WhatsApp ile Sipariş Ver
+                      </Button>
+                    </div>
                   </div>
-
-                  {/* التفاصيل */}
-                  <CardContent className="p-4 text-center">
-                    <h3 className="text-lg font-bold text-foreground mb-1">
-                      {p.product_title}
-                    </h3>
-
-                    {p.product_desc && (
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {p.product_desc}
-                      </p>
-                    )}
-
-                    <Button className="w-full mt-2" onClick={() => handleWhatsApp(p.product_title)}>
-                      WhatsApp ile Sipariş Ver
-                    </Button>
-                  </CardContent>
-                </Card>
-              </SwiperSlide>
-            ))}
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         )}
       </div>
