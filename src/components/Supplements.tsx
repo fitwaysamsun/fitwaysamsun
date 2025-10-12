@@ -192,7 +192,7 @@ const Supplements = () => {
                         style={{ backgroundColor: buttonColor }}
                         onClick={() => handleWhatsApp(s.supplement_title)}
                       >
-                        WhatsApp ile Kayıt Ol
+                        WhatsApp ile Satın Al
                       </Button>
                     </div>
                   </div>
