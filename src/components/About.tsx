@@ -7,7 +7,7 @@ const About = () => {
   const [aboutImage2, setAboutImage2] = useState("/Images/About_2.png");
 
   // 🔗 استبدل هذا برابط SheetDB الخاص بك
-  const SHEETDB_URL = "https://sheetdb.io/api/v1/sxnqlqdlcro45";
+  const SHEETDB_URL = "https://sheetdb.io/api/v1/y0gr42ncazg7t";
 
   useEffect(() => {
     const fetchAboutImages = async () => {

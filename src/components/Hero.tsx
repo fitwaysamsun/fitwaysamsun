@@ -6,7 +6,7 @@ const Hero = () => {
   const [heroImage, setHeroImage] = useState("/Images/Hero.png"); // صورة افتراضية
 
   // استبدل هذا برابط SheetDB الخاص بك
-  const SHEETDB_URL = "https://sheetdb.io/api/v1/sxnqlqdlcro45";
+  const SHEETDB_URL = "https://sheetdb.io/api/v1/y0gr42ncazg7t";
 
   useEffect(() => {
     const fetchHeroImage = async () => {
