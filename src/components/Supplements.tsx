@@ -183,7 +183,7 @@ const Supplements = () => {
 
                       {s.supplement_price && (
                         <p className="text-lg font-bold mb-3">
-                          {s.supplement_price.replace("TL", "").replace("$", "")}
+                          {s.supplement_price.replace("TL", "").trim()} TL
                         </p>
                       )}
 

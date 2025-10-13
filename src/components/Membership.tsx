@@ -96,7 +96,7 @@ const Membership = () => {
                   {plan.plan_name}
                 </CardTitle>
                 <div className="text-3xl font-bold text-foreground">
-                  {plan.price}
+                  {plan.price} TL
                   <span className="text-sm font-normal text-muted-foreground">
                     /dönem
                   </span>
