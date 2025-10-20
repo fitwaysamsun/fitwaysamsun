@@ -85,7 +85,7 @@ const Membership = () => {
 
               <CardHeader className="text-center pb-4">
                 <CardTitle className={`text-2xl font-bold text-${color}`}>{plan.plan_name}</CardTitle>
-                <div className="text-3xl font-bold text-foreground mt-2 md:mt-0">
+                <div className="text-3xl font-bold text-foreground">
                   {plan.price} TL
                   <span className="text-sm font-normal text-muted-foreground"> /dönem</span>
                 </div>
