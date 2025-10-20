@@ -171,13 +171,12 @@ const Trainers = () => {
           </span>
         </div>
 
-        {/* الكرت بالمنتصف بنفس الحجم الأصلي */}
+        {/* الكرت بالمنتصف بحجم محدود مثل البقية */}
         <div className="flex justify-center mb-16">
           {trainers.slice(8, 9).map((trainer, index) => (
             <Card
               key={index}
-              className="group bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden"
-              style={{ width: "260px" }} // نفس الحجم الأصلي للكرت في الشبكة
+              className="group bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden w-64 max-w-full"
             >
               <div className="relative overflow-hidden">
                 <img
