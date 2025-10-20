@@ -143,7 +143,7 @@ const Membership = () => {
             <TabsTrigger
               value="Kadın"
               className="
-                w-full md:w-auto flex items-center gap-2 justify-center px-4 py-3 rounded-xl font-medium
+                w-full md:w-auto flex **flex-col** items-center **md:flex-row** gap-2 justify-center px-4 py-3 rounded-xl font-medium
                 border border-border bg-muted/20 text-foreground shadow-sm
                 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:z-10
                 transition-all duration-200
