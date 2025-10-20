@@ -120,7 +120,7 @@ const Trainers = () => {
           </span>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {trainers.slice(4, 8).map((trainer, index) => (
             <Card
               key={index}
@@ -171,7 +171,7 @@ const Trainers = () => {
           </span>
         </div>
 
-        <div className="flex justify-center mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {trainers.slice(8, 9).map((trainer, index) => (
             <Card
               key={index}
@@ -198,7 +198,7 @@ const Trainers = () => {
                   <p className="text-sm text-muted-foreground font-medium">
                     Uzmanlık Alanları:
                   </p>
-                  <div className="flex flex-wrap gap-1 justify-center">
+                  <div className="flex flex-wrap gap-1">
                     {trainer.focus.map((f, i) => (
                       <Badge
                         key={i}
