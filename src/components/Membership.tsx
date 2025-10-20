@@ -156,7 +156,7 @@ const Membership = () => {
             className="
               flex flex-col gap-3
               w-full max-w-5xl mx-auto mb-6 pb-2 border-b border-border/40
-              md:flex-row md:flex-wrap md:justify-center md:gap-4
+              md:flex-row md:flex-wrap md:justify-center md:gap-4 md:border-none md:pb-0
               bg-transparent
             "
           >
