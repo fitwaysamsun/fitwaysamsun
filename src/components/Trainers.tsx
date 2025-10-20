@@ -53,7 +53,7 @@ const Trainers = () => {
   return (
     <section id="trainers" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-24 md:mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Antrenörlerimiz
           </h2>
@@ -62,20 +62,19 @@ const Trainers = () => {
           </p>
         </div>
 
-        {/* Yenimahalle Şubemiz */}
+        {/* ============ Yenimahalle Şubemiz ============ */}
         <div className="flex justify-center mb-6">
-          <span className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium">
+          <span className="bg-green-600 text-white px-5 py-2.5 rounded-xl text-base md:text-lg font-medium">
             Yenimahalle Şubemiz
           </span>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10 mb-16">
           {trainers.slice(0, 4).map((trainer, index) => (
             <Card
               key={index}
-              className="group bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden"
+              className="group bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-lg hover:border-primary/50 transition-all duration-300 hover:scale-[1.02] flex flex-col"
             >
-ross
               <div className="relative overflow-hidden">
                 <img
                   src={trainer.image}
@@ -83,21 +82,23 @@ ross
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <Badge className="absolute top-4 right-4 bg-primary/90 text-primary-foreground">
+                <Badge className="absolute top-4 right-4 bg-primary/90 text-primary-foreground shadow-md">
                   {trainer.experience}
                 </Badge>
               </div>
 
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
+              <CardContent className="p-6 flex flex-col flex-grow">
+                <h3 className="text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
                   {trainer.name}
                 </h3>
-                <p className="text-accent font-semibold mb-4">{trainer.specialty}</p>
-                <div className="space-y-2">
+                <p className="text-accent font-semibold mb-4 text-lg">
+                  {trainer.specialty}
+                </p>
+                <div className="space-y-2 flex-grow">
                   <p className="text-sm text-muted-foreground font-medium">
                     Uzmanlık Alanları:
                   </p>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-2">
                     {trainer.focus.map((f, i) => (
                       <Badge
                         key={i}
@@ -114,18 +115,18 @@ ross
           ))}
         </div>
 
-        {/* Mimarsinan Şubemiz */}
+        {/* ============ Mimarsinan Şubemiz ============ */}
         <div className="flex justify-center mb-6 mt-16">
-          <span className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium">
+          <span className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-base md:text-lg font-medium">
             Mimarsinan Şubemiz
           </span>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10 mb-16">
           {trainers.slice(4, 8).map((trainer, index) => (
             <Card
               key={index}
-              className="group bg-card/50 backdrop-blur-sm border-border hover:border-accent/50 transition-all duration-500 hover:scale-105 overflow-hidden"
+              className="group bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-lg hover:border-accent/50 transition-all duration-300 hover:scale-[1.02] flex flex-col"
             >
               <div className="relative overflow-hidden">
                 <img
@@ -134,21 +135,23 @@ ross
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <Badge className="absolute top-4 right-4 bg-accent/90 text-accent-foreground">
+                <Badge className="absolute top-4 right-4 bg-accent/90 text-accent-foreground shadow-md">
                   {trainer.experience}
                 </Badge>
               </div>
 
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors duration-300">
+              <CardContent className="p-6 flex flex-col flex-grow">
+                <h3 className="text-2xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors duration-300">
                   {trainer.name}
                 </h3>
-                <p className="text-primary font-semibold mb-4">{trainer.specialty}</p>
-                <div className="space-y-2">
+                <p className="text-primary font-semibold mb-4 text-lg">
+                  {trainer.specialty}
+                </p>
+                <div className="space-y-2 flex-grow">
                   <p className="text-sm text-muted-foreground font-medium">
                     Uzmanlık Alanları:
                   </p>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-2">
                     {trainer.focus.map((f, i) => (
                       <Badge
                         key={i}
@@ -165,42 +168,44 @@ ross
           ))}
         </div>
 
-        {/* Pilates Hocamız */}
+        {/* ============ Pilates Hocamız ============ */}
         <div className="flex justify-center mb-6 mt-16">
-          <span className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium">
+          <span className="bg-green-600 text-white px-5 py-2.5 rounded-xl text-base md:text-lg font-medium">
             Pilates Hocamız
           </span>
         </div>
 
         <div className="flex justify-center mb-16">
-          <div className="w-full sm:max-w-xs">
+          <div className="w-full sm:max-w-sm md:max-w-md lg:max-w-xs">
             {trainers.slice(8, 9).map((trainer, index) => (
               <Card
                 key={index}
-                className="group bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden"
+                className="group bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-lg hover:border-primary/50 transition-all duration-300 hover:scale-[1.02] flex flex-col"
               >
                 <div className="relative overflow-hidden">
                   <img
                     src={trainer.image}
                     alt={trainer.name}
-                    className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <Badge className="absolute top-4 right-4 bg-primary/90 text-primary-foreground">
+                  <Badge className="absolute top-4 right-4 bg-primary/90 text-primary-foreground shadow-md">
                     {trainer.experience}
                   </Badge>
                 </div>
 
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
+                <CardContent className="p-6 flex flex-col flex-grow">
+                  <h3 className="text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
                     {trainer.name}
                   </h3>
-                  <p className="text-accent font-semibold mb-4">{trainer.specialty}</p>
-                  <div className="space-y-2">
+                  <p className="text-accent font-semibold mb-4 text-lg">
+                    {trainer.specialty}
+                  </p>
+                  <div className="space-y-2 flex-grow">
                     <p className="text-sm text-muted-foreground font-medium">
                       Uzmanlık Alanları:
                     </p>
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-2">
                       {trainer.focus.map((f, i) => (
                         <Badge
                           key={i}
@@ -218,8 +223,8 @@ ross
           </div>
         </div>
 
-        <div className="text-center mt-12">
-          <p className="text-muted-foreground text-lg">
+        <div className="text-center mt-24">
+          <p className="text-muted-foreground mb-5 text-base md:text-lg">
             Hedeflerinize ulaşmak için doğru adımları atın
           </p>
         </div>
