@@ -138,14 +138,13 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* ✅ Tabs section (responsive version) */}
+        {/* ✅ Tabs section (now vertical on mobile) */}
         <Tabs defaultValue="Kadın" className="w-full">
           <TabsList
             className="
-              flex flex-nowrap overflow-x-auto whitespace-nowrap
-              w-full max-w-5xl mx-auto mb-8 gap-2
-              scrollbar-thin scrollbar-thumb-primary/40 scrollbar-track-transparent
-              md:grid md:grid-cols-3 md:overflow-visible
+              flex flex-col gap-3
+              w-full max-w-5xl mx-auto mb-8
+              md:flex-row md:flex-wrap md:justify-center md:gap-4
             "
           >
             <TabsTrigger
