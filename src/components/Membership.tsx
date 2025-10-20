@@ -138,17 +138,36 @@ const Membership = () => {
           </p>
         </div>
 
+        {/* ✅ Tabs section (responsive version) */}
         <Tabs defaultValue="Kadın" className="w-full">
-          <TabsList className="grid md:grid-cols-3 grid-cols-1 sm:flex sm:overflow-x-auto sm:whitespace-nowrap w-full max-w-5xl mx-auto mb-8 gap-2">
-            <TabsTrigger value="Kadın" className="flex items-center gap-2">
+          <TabsList
+            className="
+              flex flex-nowrap overflow-x-auto whitespace-nowrap
+              w-full max-w-5xl mx-auto mb-8 gap-2
+              scrollbar-thin scrollbar-thumb-primary/40 scrollbar-track-transparent
+              md:grid md:grid-cols-3 md:overflow-visible
+            "
+          >
+            <TabsTrigger
+              value="Kadın"
+              className="flex items-center gap-2 justify-center min-w-[200px]"
+            >
               <Users className="h-4 w-4" />
               Kadın Üyelikleri
             </TabsTrigger>
-            <TabsTrigger value="Erkek_Mimarsinan" className="flex items-center gap-2">
+
+            <TabsTrigger
+              value="Erkek_Mimarsinan"
+              className="flex items-center gap-2 justify-center min-w-[240px]"
+            >
               <User className="h-4 w-4" />
               Erkek Mimarsinan Şubesi Üyelikleri
             </TabsTrigger>
-            <TabsTrigger value="Erkek_Yenimahalle" className="flex items-center gap-2">
+
+            <TabsTrigger
+              value="Erkek_Yenimahalle"
+              className="flex items-center gap-2 justify-center min-w-[240px]"
+            >
               <User className="h-4 w-4" />
               Erkek Yenimahalle Şubesi Üyelikleri
             </TabsTrigger>
