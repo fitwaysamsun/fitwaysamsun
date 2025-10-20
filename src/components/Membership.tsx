@@ -188,7 +188,7 @@ const Membership = () => {
             </TabsTrigger>
           </TabsList>
 
-          <div className="mt-6">
+          <div className="mt-10">
             <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
             <TabsContent value="Erkek_Mimarsinan">
               {renderPlanCards("Erkek Mimarsinan")}
