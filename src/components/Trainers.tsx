@@ -62,6 +62,7 @@ const Trainers = () => {
           </p>
         </div>
 
+        {/* Yenimahalle Şubemiz */}
         <div className="flex justify-center mb-6">
           <span className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium">
             Yenimahalle Şubemiz
@@ -112,6 +113,7 @@ const Trainers = () => {
           ))}
         </div>
 
+        {/* Mimarsinan Şubemiz */}
         <div className="flex justify-center mb-6 mt-16">
           <span className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium">
             Mimarsinan Şubemiz
@@ -162,9 +164,60 @@ const Trainers = () => {
           ))}
         </div>
 
+        {/* Pilates Hocamız */}
+        <div className="flex justify-center mb-6 mt-16">
+          <span className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium">
+            Pilates Hocamız
+          </span>
+        </div>
+
+        <div className="flex justify-center mb-16">
+          {trainers.slice(8, 9).map((trainer, index) => (
+            <Card
+              key={index}
+              className="group bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden"
+            >
+              <div className="relative overflow-hidden">
+                <img
+                  src={trainer.image}
+                  alt={trainer.name}
+                  className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <Badge className="absolute top-4 right-4 bg-primary/90 text-primary-foreground">
+                  {trainer.experience}
+                </Badge>
+              </div>
+
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
+                  {trainer.name}
+                </h3>
+                <p className="text-accent font-semibold mb-4">{trainer.specialty}</p>
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-medium">
+                    Uzmanlık Alanları:
+                  </p>
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    {trainer.focus.map((f, i) => (
+                      <Badge
+                        key={i}
+                        variant="outline"
+                        className="text-xs border-muted-foreground/30 text-muted-foreground hover:border-primary hover:text-primary transition-colors duration-300"
+                      >
+                        {f}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
         <div className="text-center mt-12">
           <p className="text-muted-foreground text-lg">
-            Kişisel antrenman seansları için antrenörlerimizle iletişime geçin
+            Hedeflerinize ulaşmak için doğru adımları atın
           </p>
         </div>
       </div>
