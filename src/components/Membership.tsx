@@ -112,7 +112,7 @@ const Membership = () => {
             </Card>
           );
         })}
-        </div>
+      </div>
     );
   };
 
@@ -144,39 +144,39 @@ const Membership = () => {
               value="Kadın"
               className="
                 w-full md:w-auto flex **flex-col** items-center **md:flex-row** gap-2 justify-center px-4 py-3 rounded-xl font-medium
-                border border-border bg-muted/20 text-foreground shadow-sm
+                border border-border bg-muted/20 text-foreground shadow-sm **text-sm md:text-base**
                 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:z-10
                 transition-all duration-200
               "
             >
               <Users className="h-4 w-4" />
-              Kadın Üyelikleri
+              <span className="**px-1**">Kadın Üyelikleri</span>
             </TabsTrigger>
 
             <TabsTrigger
               value="Erkek_Mimarsinan"
               className="
                 w-full md:w-auto flex **flex-col** items-center **md:flex-row** gap-2 justify-center px-4 py-3 rounded-xl font-medium
-                border border-border bg-muted/20 text-foreground shadow-sm
+                border border-border bg-muted/20 text-foreground shadow-sm **text-sm md:text-base**
                 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:z-10
                 transition-all duration-200
               "
             >
               <User className="h-4 w-4" />
-              Erkek Mimarsinan Şubesi Üyelikleri
+              <span className="**px-1**">Erkek Mimarsinan Şubesi Üyelikleri</span>
             </TabsTrigger>
 
             <TabsTrigger
               value="Erkek_Yenimahalle"
               className="
                 w-full md:w-auto flex **flex-col** items-center **md:flex-row** gap-2 justify-center px-4 py-3 rounded-xl font-medium
-                border border-border bg-muted/20 text-foreground shadow-sm
+                border border-border bg-muted/20 text-foreground shadow-sm **text-sm md:text-base**
                 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:z-10
                 transition-all duration-200
               "
             >
               <User className="h-4 w-4" />
-              Erkek Yenimahalle Şubesi Üyelikleri
+              <span className="**px-1**">Erkek Yenimahalle Şubesi Üyelikleri</span>
             </TabsTrigger>
           </TabsList>
 
