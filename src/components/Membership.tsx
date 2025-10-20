@@ -138,18 +138,24 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* ✅ Tabs section (now vertical on mobile) */}
+        {/* ✅ Tabs section (improved vertical mobile design) */}
         <Tabs defaultValue="Kadın" className="w-full">
           <TabsList
             className="
               flex flex-col gap-3
-              w-full max-w-5xl mx-auto mb-8
+              w-full max-w-5xl mx-auto mb-10
               md:flex-row md:flex-wrap md:justify-center md:gap-4
+              bg-transparent
             "
           >
             <TabsTrigger
               value="Kadın"
-              className="flex items-center gap-2 justify-center min-w-[200px]"
+              className="
+                w-full flex items-center gap-2 justify-center px-4 py-3 rounded-xl font-medium
+                border border-border bg-muted/20 text-foreground
+                data-[state=active]:bg-primary data-[state=active]:text-primary-foreground
+                transition-all duration-300 hover:bg-muted/40
+              "
             >
               <Users className="h-4 w-4" />
               Kadın Üyelikleri
@@ -157,7 +163,12 @@ const Membership = () => {
 
             <TabsTrigger
               value="Erkek_Mimarsinan"
-              className="flex items-center gap-2 justify-center min-w-[240px]"
+              className="
+                w-full flex items-center gap-2 justify-center px-4 py-3 rounded-xl font-medium
+                border border-border bg-muted/20 text-foreground
+                data-[state=active]:bg-primary data-[state=active]:text-primary-foreground
+                transition-all duration-300 hover:bg-muted/40
+              "
             >
               <User className="h-4 w-4" />
               Erkek Mimarsinan Şubesi Üyelikleri
@@ -165,20 +176,27 @@ const Membership = () => {
 
             <TabsTrigger
               value="Erkek_Yenimahalle"
-              className="flex items-center gap-2 justify-center min-w-[240px]"
+              className="
+                w-full flex items-center gap-2 justify-center px-4 py-3 rounded-xl font-medium
+                border border-border bg-muted/20 text-foreground
+                data-[state=active]:bg-primary data-[state=active]:text-primary-foreground
+                transition-all duration-300 hover:bg-muted/40
+              "
             >
               <User className="h-4 w-4" />
               Erkek Yenimahalle Şubesi Üyelikleri
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
-          <TabsContent value="Erkek_Mimarsinan">
-            {renderPlanCards("Erkek Mimarsinan")}
-          </TabsContent>
-          <TabsContent value="Erkek_Yenimahalle">
-            {renderPlanCards("Erkek Yenimahalle")}
-          </TabsContent>
+          <div className="mt-6">
+            <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
+            <TabsContent value="Erkek_Mimarsinan">
+              {renderPlanCards("Erkek Mimarsinan")}
+            </TabsContent>
+            <TabsContent value="Erkek_Yenimahalle">
+              {renderPlanCards("Erkek Yenimahalle")}
+            </TabsContent>
+          </div>
         </Tabs>
 
         <div className="text-center mt-12">
