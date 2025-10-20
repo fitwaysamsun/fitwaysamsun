@@ -19,16 +19,14 @@ const Membership = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const SHEET_ID = "1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs"; // 🔹 ضع هنا ID الشيت الخاص بك
-    const GID = "123456789"; // 🔹 غيّر هذا إلى gid الصحيح (عادة 0 إذا كانت أول صفحة)
+    const SHEET_ID = "1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs";
+    const GID = "123456789";
     const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
 
     const fetchPlans = async () => {
       try {
         const res = await fetch(GVIZ_URL);
         const text = await res.text();
-
-        // إزالة غلاف gviz وتحويله إلى JSON
         const jsonText = text.replace(/^[^\(]*\(\s*/, "").replace(/\);\s*$/, "");
         const parsed = JSON.parse(jsonText);
 
@@ -141,19 +139,28 @@ const Membership = () => {
         </div>
 
         <Tabs defaultValue="Kadın" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+          <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-8 gap-2">
             <TabsTrigger value="Kadın" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Kadın Üyelikleri
             </TabsTrigger>
-            <TabsTrigger value="Erkek" className="flex items-center gap-2">
+            <TabsTrigger value="Erkek_Mimarsinan" className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              Erkek Üyelikleri
+              Erkek Mimarsinan Şubesi Üyelikleri
+            </TabsTrigger>
+            <TabsTrigger value="Erkek_Yenimahalle" className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              Erkek Yenimahalle Şubesi Üyelikleri
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
-          <TabsContent value="Erkek">{renderPlanCards("Erkek")}</TabsContent>
+          <TabsContent value="Erkek_Mimarsinan">
+            {renderPlanCards("Erkek Mimarsinan")}
+          </TabsContent>
+          <TabsContent value="Erkek_Yenimahalle">
+            {renderPlanCards("Erkek Yenimahalle")}
+          </TabsContent>
         </Tabs>
 
         <div className="text-center mt-12">
