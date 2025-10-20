@@ -171,11 +171,11 @@ const Trainers = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 justify-items-center gap-8 mb-16 w-full max-w-7xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-items-center gap-8 mb-16 w-full max-w-7xl">
           {trainers.slice(8, 9).map((trainer, index) => (
             <Card
               key={index}
-              className="group bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden w-full max-w-sm"
+              className="group bg-card/50 backdrop-blur-sm border-border hover:border-primary/50 transition-all duration-500 hover:scale-105 overflow-hidden"
             >
               <div className="relative overflow-hidden">
                 <img
