@@ -69,7 +69,7 @@ const Trainers = () => {
           </span>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16 justify-items-center">
           {trainers.slice(0, 4).map((trainer, index) => (
             <Card
               key={index}
