@@ -85,7 +85,7 @@ const Membership = () => {
 
               <CardHeader className="text-center pb-4">
                 <CardTitle className={`text-2xl font-bold text-${color}`}>{plan.plan_name}</CardTitle>
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-foreground mt-2 md:mt-0">
                   {plan.price} TL
                   <span className="text-sm font-normal text-muted-foreground"> /dönem</span>
                 </div>
@@ -133,7 +133,7 @@ const Membership = () => {
           <TabsList
             className="
               flex flex-col md:flex-row md:items-center md:justify-center
-              gap-3 w-full max-w-5xl mx-auto
+              gap-4 w-full max-w-5xl mx-auto
               mb-4 md:mb-6
               pb-3 md:pb-0
               border-b border-border/10 md:border-b-0
