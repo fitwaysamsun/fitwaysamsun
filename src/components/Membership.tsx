@@ -30,17 +30,22 @@ const Membership = () => {
         const jsonText = text.replace(/^[^\(]*\(\s*/, "").replace(/\);\s*$/, "");
         const parsed = JSON.parse(jsonText);
 
-        const cols = parsed.table.cols.map((c: any) => (c && c.label ? c.label : ""));
+        const cols = parsed.table.cols.map((c: any) =>
+          c && c.label ? c.label : ""
+        );
         const rows = parsed.table.rows.map((r: any) => {
           const obj: any = {};
           r.c.forEach((cell: any, idx: number) => {
             const key = cols[idx] || `col_${idx}`;
-            obj[key] = cell && typeof cell.v !== "undefined" ? String(cell.v) : "";
+            obj[key] =
+              cell && typeof cell.v !== "undefined" ? String(cell.v) : "";
           });
           return obj;
         });
 
-        const filtered = rows.filter((r: any) => r.plan_name && r.plan_name.trim() !== "");
+        const filtered = rows.filter(
+          (r: any) => r.plan_name && r.plan_name.trim() !== ""
+        );
         setPlans(filtered);
       } catch (err) {
         console.error("Membership data fetch error:", err);
@@ -63,10 +68,14 @@ const Membership = () => {
   const renderPlanCards = (gender: string) => {
     const filteredPlans = plans.filter((p) => p.gender === gender);
     if (loading) {
-      return <p className="text-center text-muted-foreground">Yükleniyor...</p>;
+      return (
+        <p className="text-center text-muted-foreground">Yükleniyor...</p>
+      );
     }
     if (filteredPlans.length === 0) {
-      return <p className="text-center text-muted-foreground">Plan bulunamadı.</p>;
+      return (
+        <p className="text-center text-muted-foreground">Plan bulunamadı.</p>
+      );
     }
 
     return (
@@ -113,7 +122,9 @@ const Membership = () => {
 
                 <Button
                   className={`w-full bg-${color} hover:bg-${color}/90 text-${color}-foreground transition-all duration-300 mt-auto`}
-                  onClick={() => handleWhatsAppRegister(plan.plan_name, gender)}
+                  onClick={() =>
+                    handleWhatsAppRegister(plan.plan_name, gender)
+                  }
                 >
                   <MessageCircle className="mr-2 h-4 w-4" />
                   WhatsApp ile Kayıt Ol
@@ -134,16 +145,17 @@ const Membership = () => {
             Üyelik Paketleri
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Hedeflerinize uygun üyelik paketimizi seçin ve fitness yolculuğunuza bugün başlayın
+            Hedeflerinize uygun üyelik paketimizi seçin ve fitness
+            yolculuğunuza bugün başlayın
           </p>
         </div>
 
-        {/* ✅ Tabs section (improved vertical mobile design) */}
+        {/* ✅ Tabs section (final improved mobile-friendly design) */}
         <Tabs defaultValue="Kadın" className="w-full">
           <TabsList
             className="
               flex flex-col gap-3
-              w-full max-w-5xl mx-auto mb-10
+              w-full max-w-5xl mx-auto mb-6 pb-2 border-b border-border/40
               md:flex-row md:flex-wrap md:justify-center md:gap-4
               bg-transparent
             "
@@ -152,7 +164,7 @@ const Membership = () => {
               value="Kadın"
               className="
                 w-full flex items-center gap-2 justify-center px-4 py-3 rounded-xl font-medium
-                border border-border bg-muted/20 text-foreground
+                border border-border bg-muted/20 text-foreground shadow-sm
                 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground
                 transition-all duration-300 hover:bg-muted/40
               "
@@ -165,7 +177,7 @@ const Membership = () => {
               value="Erkek_Mimarsinan"
               className="
                 w-full flex items-center gap-2 justify-center px-4 py-3 rounded-xl font-medium
-                border border-border bg-muted/20 text-foreground
+                border border-border bg-muted/20 text-foreground shadow-sm
                 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground
                 transition-all duration-300 hover:bg-muted/40
               "
@@ -178,7 +190,7 @@ const Membership = () => {
               value="Erkek_Yenimahalle"
               className="
                 w-full flex items-center gap-2 justify-center px-4 py-3 rounded-xl font-medium
-                border border-border bg-muted/20 text-foreground
+                border border-border bg-muted/20 text-foreground shadow-sm
                 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground
                 transition-all duration-300 hover:bg-muted/40
               "
@@ -188,7 +200,7 @@ const Membership = () => {
             </TabsTrigger>
           </TabsList>
 
-          <div className="mt-10">
+          <div className="mt-12">
             <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
             <TabsContent value="Erkek_Mimarsinan">
               {renderPlanCards("Erkek Mimarsinan")}
