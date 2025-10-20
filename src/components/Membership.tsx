@@ -139,7 +139,7 @@ const Membership = () => {
         </div>
 
         <Tabs defaultValue="Kadın" className="w-full">
-          <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-8 gap-2">
+          <TabsList className="grid md:grid-cols-3 grid-cols-1 sm:flex sm:overflow-x-auto sm:whitespace-nowrap w-full max-w-5xl mx-auto mb-8 gap-2">
             <TabsTrigger value="Kadın" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Kadın Üyelikleri
