@@ -172,7 +172,7 @@ const Trainers = () => {
         </div>
 
         <div className="flex justify-center mb-16">
-          <div className="w-full max-w-[280px] md:max-w-[280px] lg:max-w-[280px]">
+          <div className="w-full max-w-sm">
             {trainers.slice(8, 9).map((trainer, index) => (
               <Card
                 key={index}
