@@ -70,7 +70,7 @@ const Supplements = () => {
     <section id="supplements" className="py-20 px-6 bg-background text-foreground">
       <style>
         {`
-          /* ✅ الأسهم */
+          /* الأسهم */
           .swiper-button-next,
           .swiper-button-prev {
             color: black;
@@ -85,14 +85,10 @@ const Supplements = () => {
             opacity: 1;
             transform: scale(0.8);
           }
-          .swiper-button-next {
-            right: -30px;
-          }
-          .swiper-button-prev {
-            left: -30px;
-          }
+          .swiper-button-next { right: -30px; }
+          .swiper-button-prev { left: -30px; }
 
-          /* ✅ الدوائر */
+          /* Pagination bullets */
           .swiper-pagination {
             position: relative !important;
             margin-top: 20px !important;
@@ -118,7 +114,7 @@ const Supplements = () => {
       </style>
 
       <div className="max-w-7xl mx-auto">
-        {/* ✅ العنوان */}
+        {/* العنوان */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent pb-2">
             Supplementlerimiz
@@ -156,13 +152,14 @@ const Supplements = () => {
               return (
                 <SwiperSlide key={i} className="h-auto">
                   <div
-                    className="group rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 scale-95 hover:scale-100"
+                    className="group rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 scale-95 hover:scale-100 flex flex-col h-full"
                     style={{
                       backgroundColor: bgColor,
                       border: `3px solid ${borderColor}`,
                     }}
                   >
-                    <div className="relative w-full aspect-[4/5] overflow-hidden bg-muted">
+                    {/* الصورة */}
+                    <div className="relative w-full aspect-[4/5] overflow-hidden bg-muted flex-shrink-0">
                       <img
                         src={s.supplement_image || ""}
                         alt={s.supplement_title || `supplement-${i}`}
@@ -170,13 +167,14 @@ const Supplements = () => {
                       />
                     </div>
 
-                    <div className="p-5 text-left bg-background text-foreground">
-                      <h3 className="text-lg font-semibold mb-1">
+                    {/* محتوى النص */}
+                    <div className="p-5 text-left bg-background text-foreground flex flex-col flex-1">
+                      <h3 className="text-lg font-semibold mb-1 line-clamp-2">
                         {s.supplement_title}
                       </h3>
 
                       {s.supplement_desc && (
-                        <p className="text-sm opacity-80 mb-3 line-clamp-2">
+                        <p className="text-sm opacity-80 mb-3 line-clamp-3">
                           {s.supplement_desc}
                         </p>
                       )}
@@ -188,7 +186,7 @@ const Supplements = () => {
                       )}
 
                       <Button
-                        className="w-full font-semibold text-white hover:opacity-90 transition"
+                        className="w-full mt-auto font-semibold text-white hover:opacity-90 transition"
                         style={{ backgroundColor: buttonColor }}
                         onClick={() => handleWhatsApp(s.supplement_title)}
                       >
