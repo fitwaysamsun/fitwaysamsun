@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageCircle, Check, Users, User } from "lucide-react";
+import { MessageCircle, Check, Users, User, Clock } from "lucide-react";
 
 interface Plan {
   gender: string;
@@ -17,7 +17,35 @@ interface Plan {
 const Membership = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [timeLeft, setTimeLeft] = useState<string>("");
 
+  // 🕒 Countdown Timer
+  useEffect(() => {
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 7);
+
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = endDate.getTime() - now;
+
+      if (distance <= 0) {
+        clearInterval(timer);
+        setTimeLeft("الوقت انتهى 🎉");
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      setTimeLeft(`${days} gün ${hours} saat ${minutes} dk ${seconds} sn`);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // 📊 Fetch data from Google Sheet
   useEffect(() => {
     const SHEET_ID = "1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs";
     const GID = "123456789";
@@ -50,22 +78,54 @@ const Membership = () => {
     fetchPlans();
   }, []);
 
+  // 💬 WhatsApp
   const handleWhatsAppRegister = (planName: string, gender: string) => {
     const message = `${gender} ${planName} üyelik paketi hakkında bilgi almak istiyorum.`;
-    window.open(
-      `https://wa.me/905366544655?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
+    window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
   };
 
+  // 💰 Original Prices
+  const originalPrices: Record<string, Record<string, number>> = {
+    "Erkek Mimarsinan": {
+      "Aylık": 2000,
+      "3 Ay": 4500,
+      "6 Ay": 7500,
+      "Yıllık": 13000,
+    },
+    "Erkek Yenimahalle": {
+      "Aylık": 2500,
+      "3 Ay": 5500,
+      "6 Ay": 8500,
+      "Yıllık": 14000,
+    },
+    "Kadın": {
+      "Aylık": 1800,
+      "3 Aylık": 4000,
+      "6 Aylık": 6800,
+      "Yıllık": 11000,
+    },
+  };
+
+  // 🔍 دالة البحث الذكية عن السعر الأصلي الصحيح
+  const findClosestPlanKey = (gender: string, planName: string) => {
+    const clean = planName.replace(/\s+/g, "").toLowerCase();
+    const keys = Object.keys(originalPrices[gender] || {});
+
+    const exact = keys.find((k) => k.replace(/\s+/g, "").toLowerCase() === clean);
+    if (exact) return originalPrices[gender][exact];
+
+    const found = keys.find((k) => clean.includes(k.replace(/\s+/g, "").toLowerCase().charAt(0)));
+    if (found) return originalPrices[gender][found];
+
+    return null;
+  };
+
+  // 🧱 Render Plans
   const renderPlanCards = (gender: string) => {
     const filteredPlans = plans.filter((p) => p.gender === gender);
-    if (loading) {
-      return <p className="text-center text-muted-foreground py-10">Yükleniyor...</p>;
-    }
-    if (filteredPlans.length === 0) {
+    if (loading) return <p className="text-center text-muted-foreground py-10">Yükleniyor...</p>;
+    if (filteredPlans.length === 0)
       return <p className="text-center text-muted-foreground py-10">Plan bulunamadı.</p>;
-    }
 
     return (
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
@@ -74,10 +134,12 @@ const Membership = () => {
           const isPopular = plan.popular.toLowerCase() === "true";
           const color = plan.color || "primary";
 
+          const originalPrice = findClosestPlanKey(gender, plan.plan_name);
+
           return (
             <Card
               key={index}
-              className={`relative bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-lg hover:border-${color}/50 transition-all duration-300 hover:scale-[1.02] flex flex-col`}
+              className="relative bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col"
             >
               {isPopular && (
                 <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
@@ -85,14 +147,15 @@ const Membership = () => {
                 </Badge>
               )}
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className={`text-2xl font-bold text-${color}`}>
-                  {plan.plan_name}
-                </CardTitle>
+                <CardTitle className={`text-2xl font-bold text-${color}`}>{plan.plan_name}</CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
+                  {originalPrice && (
+                    <span className="text-muted-foreground text-lg line-through mr-2">
+                      {originalPrice} TL
+                    </span>
+                  )}
                   {plan.price} TL
-                  <span className="text-sm font-normal text-muted-foreground ml-1">
-                    /dönem
-                  </span>
+                  <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4 flex-grow flex flex-col">
@@ -122,6 +185,14 @@ const Membership = () => {
   return (
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
+        {/* ====== Countdown Timer ====== */}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
+          <Clock className="h-10 w-10 text-primary" />
+          <span className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow-lg text-center">
+            Haftalık İndirim için kalan süre: {timeLeft}
+          </span>
+        </div>
+
         <div className="text-center mb-24 md:mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Üyelik Paketleri
@@ -131,70 +202,47 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* ======== Mobile and Smaller Tablets (Vertical Layout) ======== */}
+        {/* ======== Mobile ======== */}
         <div className="block md:hidden">
           <Tabs defaultValue="Kadın" orientation="vertical" className="w-full flex flex-col items-center">
             <TabsList className="flex flex-col gap-4 w-full max-w-md mb-14">
-              <TabsTrigger
-                value="Kadın"
-                className="w-full px-6 py-4 rounded-xl text-lg font-medium flex items-center justify-center gap-2 bg-muted hover:bg-muted/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition"
-              >
-                <Users className="h-5 w-5" />
-                Kadın Üyelikleri
+              <TabsTrigger value="Kadın" className="w-full px-6 py-4 rounded-xl text-lg font-medium flex items-center justify-center gap-2 bg-muted hover:bg-muted/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition">
+                <Users className="h-5 w-5" /> Kadın Üyelikleri
               </TabsTrigger>
-              <TabsTrigger
-                value="Erkek_Mimarsinan"
-                className="w-full px-6 py-4 rounded-xl text-lg font-medium flex items-center justify-center gap-2 bg-muted hover:bg-muted/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition"
-              >
-                <User className="h-5 w-5" />
-                Erkek Mimarsinan Şubesi Üyelikleri
+              <TabsTrigger value="Erkek_Mimarsinan" className="w-full px-6 py-4 rounded-xl text-lg font-medium flex items-center justify-center gap-2 bg-muted hover:bg-muted/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition">
+                <User className="h-5 w-5" /> Erkek Mimarsinan Şubesi Üyelikleri
               </TabsTrigger>
-              <TabsTrigger
-                value="Erkek_Yenimahalle"
-                className="w-full px-6 py-4 rounded-xl text-lg font-medium flex items-center justify-center gap-2 bg-muted hover:bg-muted/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition"
-              >
-                <User className="h-5 w-5" />
-                Erkek Yenimahalle Şubesi Üyelikleri
+              <TabsTrigger value="Erkek_Yenimahalle" className="w-full px-6 py-4 rounded-xl text-lg font-medium flex items-center justify-center gap-2 bg-muted hover:bg-muted/80 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition">
+                <User className="h-5 w-5" /> Erkek Yenimahalle Şubesi Üyelikleri
               </TabsTrigger>
             </TabsList>
 
             <div className="w-full mt-10">
               <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
-              <TabsContent value="Erkek_Mimarsinan">
-                {renderPlanCards("Erkek Mimarsinan")}
-              </TabsContent>
-              <TabsContent value="Erkek_Yenimahalle">
-                {renderPlanCards("Erkek Yenimahalle")}
-              </TabsContent>
+              <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
+              <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek Yenimahalle")}</TabsContent>
             </div>
           </Tabs>
         </div>
 
-        {/* ======== Desktop and Larger Tablets (Horizontal Layout) ======== */}
+        {/* ======== Desktop ======== */}
         <div className="hidden md:block">
           <Tabs defaultValue="Kadın" className="w-full">
             <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-12 gap-3">
               <TabsTrigger value="Kadın" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Kadın Üyelikleri
+                <Users className="h-4 w-4" /> Kadın Üyelikleri
               </TabsTrigger>
               <TabsTrigger value="Erkek_Mimarsinan" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                Erkek Mimarsinan Şubesi Üyelikleri
+                <User className="h-4 w-4" /> Erkek Mimarsinan Şubesi Üyelikleri
               </TabsTrigger>
               <TabsTrigger value="Erkek_Yenimahalle" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                Erkek Yenimahalle Şubesi Üyelikleri
+                <User className="h-4 w-4" /> Erkek Yenimahalle Şubesi Üyelikleri
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
-            <TabsContent value="Erkek_Mimarsinan">
-              {renderPlanCards("Erkek Mimarsinan")}
-            </TabsContent>
-            <TabsContent value="Erkek_Yenimahalle">
-              {renderPlanCards("Erkek Yenimahalle")}
-            </TabsContent>
+            <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
+            <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek Yenimahalle")}</TabsContent>
           </Tabs>
         </div>
 
@@ -207,8 +255,7 @@ const Membership = () => {
             className="border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-xl px-6 py-3"
             onClick={() => window.open("https://wa.me/905366544655", "_blank")}
           >
-            <MessageCircle className="mr-2 h-4 w-4" />
-            WhatsApp ile İletişime Geç
+            <MessageCircle className="mr-2 h-4 w-4" /> WhatsApp ile İletişime Geç
           </Button>
         </div>
       </div>
