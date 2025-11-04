@@ -88,14 +88,14 @@ const Membership = () => {
   const originalPrices: Record<string, Record<string, number>> = {
     "Erkek Mimarsinan": {
       "Aylık": 2000,
-      "3 Ay": 4500,
-      "6 Ay": 7500,
+      "3 Aylık": 4500,
+      "6 Aylık": 7500,
       "Yıllık": 13000,
     },
     "Erkek Yenimahalle": {
       "Aylık": 2500,
-      "3 Ay": 5500,
-      "6 Ay": 8500,
+      "3 Aylık": 5500,
+      "6 Aylık": 8500,
       "Yıllık": 14000,
     },
     "Kadın": {
