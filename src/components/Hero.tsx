@@ -39,11 +39,8 @@ const Hero = () => {
     fetchHeroImage();
   }, []);
 
-  const handleScrollToMembership = () => {
-    const section = document.getElementById("membership");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-      }
+  const handleWhatsAppContact = () => {
+    window.open("https://wa.me/905366544655", "_blank");
   };
 
   return (
@@ -85,7 +82,7 @@ const Hero = () => {
           <Button
             size="lg"
             className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 text-primary-foreground shadow-fitness hover:shadow-glow-primary transition-all duration-300 transform hover:scale-105"
-            onClick={handleScrollToMembership}
+            onClick={handleWhatsAppContact}
           >
             <Phone className="mr-2 h-5 w-5" />
             Şimdi Üye Ol
