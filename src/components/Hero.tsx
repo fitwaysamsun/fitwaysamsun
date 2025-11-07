@@ -39,8 +39,11 @@ const Hero = () => {
     fetchHeroImage();
   }, []);
 
-  const handleWhatsAppContact = () => {
-    window.open("https://wa.me/905366544655", "_blank");
+  const handleScrollToMembership = () => {
+    const section = document.getElementById("membership");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+      }
   };
 
   return (
