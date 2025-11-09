@@ -9,7 +9,7 @@ const Hours = () => {
     { day: "Perşembe", hours: "09:00 – 23:00", isOpen: true },
     { day: "Cuma", hours: "09:00 – 23:00", isOpen: true },
     { day: "Cumartesi", hours: "10:00 – 22:00", isOpen: true },
-    { day: "Pazar", hours: "12.00 - 18.00", isOpen: true }
+    { day: "Pazar", hours: "12:00 – 18:00", isOpen: true }
   ];
 
   const getCurrentDay = () => {
@@ -17,21 +17,25 @@ const Hours = () => {
     return days[new Date().getDay()];
   };
 
+  const parseTime = (timeStr) => {
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
   const isCurrentlyOpen = () => {
     const now = new Date();
     const currentDay = getCurrentDay();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-    const currentTime = currentHour * 60 + currentMinute;
+    const currentTime = now.getHours() * 60 + now.getMinutes();
 
     const todaySchedule = schedule.find(day => day.day === currentDay);
     if (!todaySchedule?.isOpen) return false;
 
-    if (currentDay === "Cumartesi") {
-      return currentTime >= (9 * 60) && currentTime < (21 * 60);
-    } else {
-      return currentTime >= (7 * 60) && currentTime < (23 * 60);
-    }
+    // Extract start and end time
+    const [startStr, endStr] = todaySchedule.hours.replace("–", "-").split("-").map(s => s.trim());
+    const startTime = parseTime(startStr);
+    const endTime = parseTime(endStr);
+
+    return currentTime >= startTime && currentTime < endTime;
   };
 
   return (
