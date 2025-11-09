@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -67,17 +67,6 @@ const Navigation = () => {
             ))}
           </div>
 
-          {/* Desktop CTA */}
-          <div className="hidden lg:block">
-            <Button 
-              className="bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => scrollToSection("#contact")} // تم التعديل هنا
-            >
-              <Phone className="mr-2 h-4 w-4" />
-              İletişim
-            </Button>
-          </div>
-
           {/* Mobile Menu Button */}
           <button
             className="lg:hidden p-2 text-foreground hover:text-primary transition-colors duration-200"
@@ -103,14 +92,6 @@ const Navigation = () => {
                 {item.label}
               </button>
             ))}
-            
-            <Button 
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mt-4"
-              onClick={() => scrollToSection("#contact")} // تم التعديل هنا
-            >
-              <Phone className="mr-2 h-4 w-4" />
-              İletişim
-            </Button>
           </div>
         </div>
       </div>
