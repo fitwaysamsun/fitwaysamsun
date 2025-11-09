@@ -19,7 +19,7 @@ const Membership = () => {
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState<string>("");
 
-  // 🕒 Countdown Timer (موحد لكل الأجهزة)
+  // 🕒 Countdown Timer
   useEffect(() => {
     const START_DATE = new Date("2025-11-04T00:00:00Z");
 
@@ -95,24 +95,9 @@ const Membership = () => {
 
   // 💰 Original Prices
   const originalPrices: Record<string, Record<string, number>> = {
-    "Erkek Mimarsinan": {
-      "Aylık": 2000,
-      "3 Aylık": 4500,
-      "6 Aylık": 7500,
-      "Yıllık": 13000,
-    },
-    "Erkek Yenimahalle": {
-      "Aylık": 2500,
-      "3 Aylık": 5500,
-      "6 Aylık": 8500,
-      "Yıllık": 14000,
-    },
-    "Kadın": {
-      "Aylık": 1800,
-      "3 Aylık": 4000,
-      "6 Aylık": 6800,
-      "Yıllık": 11000,
-    },
+    "Erkek Mimarsinan": { "Aylık": 2000, "3 Aylık": 4500, "6 Aylık": 7500, "Yıllık": 13000 },
+    "Erkek Yenimahalle": { "Aylık": 2500, "3 Aylık": 5500, "6 Aylık": 8500, "Yıllık": 14000 },
+    "Kadın": { "Aylık": 1800, "3 Aylık": 4000, "6 Aylık": 6800, "Yıllık": 11000 },
   };
 
   const findClosestPlanKey = (gender: string, planName: string) => {
@@ -136,10 +121,12 @@ const Membership = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
+
           // ✅ اعتبر خطة "6 Aylık" مميزة تلقائياً
           const isPopular =
             plan.popular.toLowerCase() === "true" ||
-            plan.plan_name.trim() === "6 Aylık";
+            plan.plan_name.replace(/\s+/g, "").toLowerCase() === "6aylık";
+
           const color = plan.color || "primary";
           const originalPrice = findClosestPlanKey(gender, plan.plan_name);
 
@@ -147,7 +134,9 @@ const Membership = () => {
             <Card
               key={index}
               className={`relative bg-card/50 backdrop-blur-sm border ${
-                isPopular ? "border-primary shadow-lg scale-[1.03]" : "border-border/50 shadow-sm"
+                isPopular
+                  ? "border-primary shadow-lg scale-[1.03]"
+                  : "border-border/50 shadow-sm"
               } hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col`}
             >
               {isPopular && (
