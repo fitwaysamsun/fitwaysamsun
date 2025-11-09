@@ -139,7 +139,7 @@ const Membership = () => {
           // ✅ اعتبر خطة "6 Aylık" مميزة تلقائياً
           const isPopular =
             plan.popular.toLowerCase() === "true" ||
-            plan.plan_name.toLowerCase().includes("6 aylık");
+            plan.plan_name.trim() === "6 Aylık";
           const color = plan.color || "primary";
           const originalPrice = findClosestPlanKey(gender, plan.plan_name);
 
