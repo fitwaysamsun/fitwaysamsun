@@ -125,7 +125,9 @@ const Membership = () => {
           return (
             <Card
               key={index}
-              className={`relative border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col`}
+              className={`relative shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col ${
+                isPopular ? "border-4 border-primary" : "border border-border/50"
+              }`}
               style={{ backgroundColor: "var(--background)" }} // إعادة خلفية الكروت للون الموقع الأصلي
             >
               {isPopular && (
