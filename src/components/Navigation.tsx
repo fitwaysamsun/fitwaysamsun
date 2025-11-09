@@ -36,10 +36,6 @@ const Navigation = () => {
     setIsMobileMenuOpen(false);
   };
 
-  const handleWhatsApp = () => {
-    window.open("https://wa.me/905366544655", "_blank");
-  };
-
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
@@ -75,7 +71,7 @@ const Navigation = () => {
           <div className="hidden lg:block">
             <Button 
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={handleWhatsApp}
+              onClick={() => scrollToSection("#contact")} // تم التعديل هنا
             >
               <Phone className="mr-2 h-4 w-4" />
               İletişim
@@ -110,10 +106,10 @@ const Navigation = () => {
             
             <Button 
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground mt-4"
-              onClick={handleWhatsApp}
+              onClick={() => scrollToSection("#contact")} // تم التعديل هنا
             >
               <Phone className="mr-2 h-4 w-4" />
-              WhatsApp ile İletişim
+              İletişim
             </Button>
           </div>
         </div>
