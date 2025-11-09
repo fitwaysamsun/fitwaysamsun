@@ -24,7 +24,7 @@ const Hero = () => {
           return headers.reduce((obj, header, i) => {
             obj[header.trim()] = values[i]?.trim();
             return obj;
-          }, {});
+          }, {} as Record<string, string>);
         });
 
         // جلب الصورة من أول صف
@@ -39,8 +39,12 @@ const Hero = () => {
     fetchHeroImage();
   }, []);
 
-  const handleWhatsAppContact = () => {
-    window.open("https://wa.me/905366544655", "_blank");
+  // 🔽 التمرير إلى قسم العضويات
+  const handleScrollToMembership = () => {
+    const section = document.getElementById("membership");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -82,7 +86,7 @@ const Hero = () => {
           <Button
             size="lg"
             className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 text-primary-foreground shadow-fitness hover:shadow-glow-primary transition-all duration-300 transform hover:scale-105"
-            onClick={handleWhatsAppContact}
+            onClick={handleScrollToMembership} // ✅ التمرير بدلاً من فتح WhatsApp مباشرة
           >
             <Phone className="mr-2 h-5 w-5" />
             Şimdi Üye Ol
