@@ -115,13 +115,12 @@ const Membership = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
-        
           const isPopular = plan.plan_name.trim() === "6 Aylık";
 
           // 🌈 تحديد ألوان الأزرار حسب نوع الخطة
-          let buttonColor = "primary"; // اللون الافتراضي
+          let buttonColor = "#10b981"; // اللون الأخضر الافتراضي
           if (plan.plan_name.includes("3") || plan.plan_name.includes("Yıllık")) {
-            buttonColor = "secondary";
+            buttonColor = "#00bfff"; // اللون الأزرق المطلوب
           }
 
           const originalPrice = findOriginalPrice(gender, plan.plan_name);
@@ -139,9 +138,7 @@ const Membership = () => {
                 </Badge>
               )}
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className={`text-2xl font-bold text-${buttonColor}`}>
-                  {plan.plan_name}
-                </CardTitle>
+                <CardTitle className="text-2xl font-bold text-foreground">{plan.plan_name}</CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
                   {originalPrice && (
                     <span className="text-muted-foreground text-lg line-through mr-2">
@@ -162,7 +159,8 @@ const Membership = () => {
                   ))}
                 </ul>
                 <Button
-                  className={`w-full bg-${buttonColor} hover:bg-${buttonColor}/90 text-${buttonColor}-foreground transition-all duration-300 mt-auto`}
+                  className="w-full mt-auto text-white font-semibold"
+                  style={{ backgroundColor: buttonColor }}
                   onClick={() => handleWhatsAppRegister(plan.plan_name, gender)}
                 >
                   <MessageCircle className="mr-2 h-4 w-4" />
