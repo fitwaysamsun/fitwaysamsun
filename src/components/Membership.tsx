@@ -115,9 +115,8 @@ const Membership = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
-
-          // ✅ اعتبر خطة "6 Aylık" مميزة تلقائياً
-          const isPopular = plan.popular.toLowerCase() === "true" || plan.plan_name.trim() === "6 Aylık";
+        
+          const isPopular = plan.plan_name.trim() === "6 Aylık";
 
           // 🌈 تحديد ألوان الأزرار حسب نوع الخطة
           let buttonColor = "primary"; // اللون الافتراضي
