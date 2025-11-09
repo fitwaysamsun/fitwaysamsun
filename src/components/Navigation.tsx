@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
 const Navigation = () => {
@@ -43,7 +42,7 @@ const Navigation = () => {
         : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-center h-16 lg:h-20 space-x-12">
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <img 
@@ -82,12 +81,12 @@ const Navigation = () => {
             ? 'max-h-96 opacity-100 pb-6' 
             : 'max-h-0 opacity-0'
         }`}>
-          <div className="space-y-4 pt-4 border-t border-border/50">
+          <div className="space-y-4 pt-4 border-t border-border/50 flex flex-col items-center">
             {navItems.map((item) => (
               <button
                 key={item.href}
                 onClick={() => scrollToSection(item.href)}
-                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-200 font-medium py-2"
+                className="block text-center text-foreground hover:text-primary transition-colors duration-200 font-medium py-2"
               >
                 {item.label}
               </button>
