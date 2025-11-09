@@ -93,7 +93,7 @@ const Membership = () => {
     window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
   };
 
-  // Original Prices
+  // 💰 Original Prices
   const originalPrices: Record<string, Record<string, number>> = {
     "Erkek Mimarsinan": { "Aylık": 2000, "3 Aylık": 4500, "6 Aylık": 7500, "Yıllık": 13000 },
     "Erkek Yenimahalle": { "Aylık": 2500, "3 Aylık": 5500, "6 Aylık": 8500, "Yıllık": 14000 },
@@ -115,45 +115,44 @@ const Membership = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
-          const isEven = index % 2 === 0;
+          const isPopular = plan.plan_name.trim() === "6 Aylık";
 
-          const bgColor = isEven ? "#007bff" : "#ff7f2a";
-          const buttonColor = isEven ? "#ff7f2a" : "#00bfff";
-          const borderColor = isEven ? "#ff7f2a" : "#007bff";
+          // 🌈 ألوان الأزرار
+          let buttonColor = index % 2 === 0 ? "#ff7f2a" : "#00bfff"; 
 
           const originalPrice = findOriginalPrice(gender, plan.plan_name);
 
           return (
             <Card
               key={index}
-              className="relative rounded-2xl overflow-hidden shadow-md flex flex-col transition-all duration-300 hover:shadow-xl hover:scale-105"
-              style={{ border: `3px solid ${borderColor}`, backgroundColor: bgColor }}
+              className={`relative border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col`}
+              style={{ backgroundColor: "var(--background)" }} // إعادة خلفية الكروت للون الموقع الأصلي
             >
-              {plan.plan_name.trim() === "6 Aylık" && (
+              {isPopular && (
                 <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
                   En Çok Tercih Edilen
                 </Badge>
               )}
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className="text-2xl font-bold text-white">
+                <CardTitle className={`text-2xl font-bold`} style={{ color: buttonColor }}>
                   {plan.plan_name}
                 </CardTitle>
-                <div className="text-3xl font-extrabold text-white mt-2">
+                <div className="text-3xl font-extrabold text-foreground mt-2">
                   {originalPrice && (
-                    <span className="text-white/70 text-lg line-through mr-2">
+                    <span className="text-muted-foreground text-lg line-through mr-2">
                       {originalPrice} TL
                     </span>
                   )}
                   {plan.price} TL
-                  <span className="text-sm font-normal text-white/80 ml-1">/dönem</span>
+                  <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4 flex-grow flex flex-col">
                 <ul className="space-y-3 flex-grow">
                   {featureList.map((feature, i) => (
-                    <li key={i} className="flex items-center text-sm text-white">
-                      <Check className="h-4 w-4 text-white mr-2 flex-shrink-0" />
-                      <span>{feature}</span>
+                    <li key={i} className="flex items-center text-sm">
+                      <Check className="h-4 w-4 text-primary mr-2 flex-shrink-0" />
+                      <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -174,9 +173,9 @@ const Membership = () => {
   };
 
   return (
-    <section id="membership" className="py-20 px-6 bg-background text-foreground">
+    <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        {/* Countdown Timer */}
+        {/* ====== Countdown Timer ====== */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
           <Clock className="h-10 w-10 text-primary" />
           <span className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow-lg text-center">
@@ -193,7 +192,7 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* Mobile */}
+        {/* ======== Mobile ======== */}
         <div className="block md:hidden">
           <Tabs defaultValue="Kadın" orientation="vertical" className="w-full flex flex-col items-center">
             <TabsList className="flex flex-col gap-4 w-full max-w-md mb-14">
@@ -216,7 +215,7 @@ const Membership = () => {
           </Tabs>
         </div>
 
-        {/* Desktop */}
+        {/* ======== Desktop ======== */}
         <div className="hidden md:block">
           <Tabs defaultValue="Kadın" className="w-full">
             <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-12 gap-3">
