@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageCircle, Check, Users, User, Clock } from "lucide-react";
 
@@ -10,7 +9,6 @@ interface Plan {
   plan_name: string;
   price: string;
   features: string;
-  popular: string;
 }
 
 const Membership = () => {
@@ -104,23 +102,19 @@ const Membership = () => {
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
 
-          const isPopular = plan.plan_name.trim() === "6 Aylık"; // Badge فقط على 6 أشهر
-
-          // 🌈 ألوان الأزرار مثل السبليمنت
+          const isSixMonths = plan.plan_name.trim() === "6 Aylık"; // خط حول 6 أشهر
           const isEven = index % 2 === 0;
           const buttonColor = isEven ? "#ff7f2a" : "#00bfff";
 
           return (
-            <Card
+            <div
               key={index}
-              className={`relative border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col`}
-              style={{ backgroundColor: "var(--background)" }} // الخلفية القديمة للموقع
+              className={`relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] flex flex-col`}
+              style={{
+                backgroundColor: "var(--background)",
+                border: isSixMonths ? "3px solid #ff7f2a" : "1px solid #e2e2e2",
+              }}
             >
-              {isPopular && (
-                <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
-                  En Çok Tercih Edilen
-                </Badge>
-              )}
               <CardHeader className="text-center pb-4 pt-6">
                 <CardTitle className="text-2xl font-bold text-foreground">
                   {plan.plan_name}
@@ -148,7 +142,7 @@ const Membership = () => {
                   WhatsApp ile Kayıt Ol
                 </Button>
               </CardContent>
-            </Card>
+            </div>
           );
         })}
       </div>
@@ -158,7 +152,7 @@ const Membership = () => {
   return (
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        {/* ====== Countdown Timer ====== */}
+        {/* Countdown Timer */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
           <Clock className="h-10 w-10 text-primary" />
           <span className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow-lg text-center">
@@ -175,7 +169,7 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* ======== Mobile ======== */}
+        {/* Mobile Tabs */}
         <div className="block md:hidden">
           <Tabs defaultValue="Kadın" orientation="vertical" className="w-full flex flex-col items-center">
             <TabsList className="flex flex-col gap-4 w-full max-w-md mb-14">
@@ -198,7 +192,7 @@ const Membership = () => {
           </Tabs>
         </div>
 
-        {/* ======== Desktop ======== */}
+        {/* Desktop Tabs */}
         <div className="hidden md:block">
           <Tabs defaultValue="Kadın" className="w-full">
             <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-12 gap-3">
