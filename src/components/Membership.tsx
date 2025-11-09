@@ -28,8 +28,7 @@ const Membership = () => {
       const diff = now.getTime() - START_DATE.getTime();
       const weekMs = 7 * 24 * 60 * 60 * 1000;
       const weeksPassed = Math.floor(diff / weekMs);
-      const nextEnd = new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
-      return nextEnd;
+      return new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
     };
 
     let endDate = getCurrentCycleEnd();
@@ -75,14 +74,7 @@ const Membership = () => {
           });
           return obj;
         });
-
-        // تصفية فقط خطط 6 Aylık
-        const filtered = rows.filter(
-          (r: any) =>
-            r.plan_name &&
-            r.plan_name.replace(/\s+/g, "").toLowerCase() === "6aylık"
-        );
-
+        const filtered = rows.filter((r: any) => r.plan_name && r.plan_name.trim() !== "");
         setPlans(filtered);
       } catch (err) {
         console.error("Membership data fetch error:", err);
@@ -113,18 +105,23 @@ const Membership = () => {
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
           const color = plan.color || "primary";
+          const isSixMonths = plan.plan_name.replace(/\s+/g, "").toLowerCase() === "6aylık";
 
           return (
             <Card
               key={index}
-              className="relative bg-card/50 backdrop-blur-sm border border-primary shadow-lg flex flex-col hover:scale-[1.02] transition-all duration-300"
+              className={`relative bg-card/50 backdrop-blur-sm border shadow-lg flex flex-col hover:scale-[1.02] transition-all duration-300 ${
+                isSixMonths ? "border-primary" : "border-muted"
+              }`}
             >
-              <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
-                En Çok Tercih Edilen
-              </Badge>
+              {isSixMonths && (
+                <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
+                  En Çok Tercih Edilen
+                </Badge>
+              )}
 
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className={`text-2xl font-bold text-${color}`}>
+                <CardTitle className={`text-2xl font-bold ${isSixMonths ? "text-primary" : "text-foreground"}`}>
                   {plan.plan_name}
                 </CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
@@ -143,7 +140,9 @@ const Membership = () => {
                   ))}
                 </ul>
                 <Button
-                  className={`w-full bg-${color} hover:bg-${color}/90 text-${color}-foreground transition-all duration-300 mt-auto`}
+                  className={`w-full ${
+                    isSixMonths ? "bg-primary hover:bg-primary/90 text-primary-foreground" : "bg-muted hover:bg-muted/90 text-foreground"
+                  } transition-all duration-300 mt-auto`}
                   onClick={() => handleWhatsAppRegister(plan.plan_name, gender)}
                 >
                   <MessageCircle className="mr-2 h-4 w-4" />
@@ -160,7 +159,7 @@ const Membership = () => {
   return (
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        {/* Countdown Timer */}
+        {/* ====== Countdown Timer ====== */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
           <Clock className="h-10 w-10 text-primary" />
           <span className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow-lg text-center">
@@ -177,7 +176,7 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* Mobile Tabs */}
+        {/* ======== Mobile ======== */}
         <div className="block md:hidden">
           <Tabs defaultValue="Kadın" orientation="vertical" className="w-full flex flex-col items-center">
             <TabsList className="flex flex-col gap-4 w-full max-w-md mb-14">
@@ -195,12 +194,12 @@ const Membership = () => {
             <div className="w-full mt-10">
               <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
               <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
-              <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek_Yenimahalle")}</TabsContent>
+              <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek Yenimahalle")}</TabsContent>
             </div>
           </Tabs>
         </div>
 
-        {/* Desktop Tabs */}
+        {/* ======== Desktop ======== */}
         <div className="hidden md:block">
           <Tabs defaultValue="Kadın" className="w-full">
             <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-12 gap-3">
@@ -217,7 +216,7 @@ const Membership = () => {
 
             <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
             <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
-            <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek_Yenimahalle")}</TabsContent>
+            <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek Yenimahalle")}</TabsContent>
           </Tabs>
         </div>
 
