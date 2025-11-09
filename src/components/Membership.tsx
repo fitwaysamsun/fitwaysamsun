@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageCircle, Check, Users, User, Clock } from "lucide-react";
 
@@ -8,7 +9,9 @@ interface Plan {
   gender: string;
   plan_name: string;
   price: string;
+  color?: string;
   features: string;
+  popular: string;
 }
 
 const Membership = () => {
@@ -90,6 +93,17 @@ const Membership = () => {
     window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
   };
 
+  // 💰 Original Prices
+  const originalPrices: Record<string, Record<string, number>> = {
+    "Erkek Mimarsinan": { "Aylık": 2000, "3 Aylık": 4500, "6 Aylık": 7500, "Yıllık": 13000 },
+    "Erkek Yenimahalle": { "Aylık": 2500, "3 Aylık": 5500, "6 Aylık": 8500, "Yıllık": 14000 },
+    "Kadın": { "Aylık": 1800, "3 Aylık": 4000, "6 Aylık": 6800, "Yıllık": 11000 },
+  };
+
+  const findOriginalPrice = (gender: string, planName: string) => {
+    return originalPrices[gender]?.[planName] || null;
+  };
+
   // 🧱 Render Plans
   const renderPlanCards = (gender: string) => {
     const filteredPlans = plans.filter((p) => p.gender === gender);
@@ -101,25 +115,34 @@ const Membership = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
+          const isPopular = plan.plan_name.trim() === "6 Aylık";
 
-          const isSixMonths = plan.plan_name.trim() === "6 Aylık"; // خط حول 6 أشهر
-          const isEven = index % 2 === 0;
-          const buttonColor = isEven ? "#ff7f2a" : "#00bfff";
+          // 🌈 ألوان الأزرار
+          let buttonColor = index % 2 === 0 ? "#ff7f2a" : "#00bfff"; 
+
+          const originalPrice = findOriginalPrice(gender, plan.plan_name);
 
           return (
-            <div
+            <Card
               key={index}
-              className={`relative rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] flex flex-col`}
-              style={{
-                backgroundColor: "var(--background)",
-                border: isSixMonths ? "3px solid #ff7f2a" : "1px solid #e2e2e2",
-              }}
+              className={`relative border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col`}
+              style={{ backgroundColor: "var(--background)" }} // إعادة خلفية الكروت للون الموقع الأصلي
             >
+              {isPopular && (
+                <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
+                  En Çok Tercih Edilen
+                </Badge>
+              )}
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className="text-2xl font-bold text-foreground">
+                <CardTitle className={`text-2xl font-bold`} style={{ color: buttonColor }}>
                   {plan.plan_name}
                 </CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
+                  {originalPrice && (
+                    <span className="text-muted-foreground text-lg line-through mr-2">
+                      {originalPrice} TL
+                    </span>
+                  )}
                   {plan.price} TL
                   <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
                 </div>
@@ -134,7 +157,7 @@ const Membership = () => {
                   ))}
                 </ul>
                 <Button
-                  className="w-full text-white transition-all duration-300 mt-auto"
+                  className="w-full mt-auto font-semibold text-white hover:opacity-90 transition"
                   style={{ backgroundColor: buttonColor }}
                   onClick={() => handleWhatsAppRegister(plan.plan_name, gender)}
                 >
@@ -142,7 +165,7 @@ const Membership = () => {
                   WhatsApp ile Kayıt Ol
                 </Button>
               </CardContent>
-            </div>
+            </Card>
           );
         })}
       </div>
@@ -152,7 +175,7 @@ const Membership = () => {
   return (
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        {/* Countdown Timer */}
+        {/* ====== Countdown Timer ====== */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
           <Clock className="h-10 w-10 text-primary" />
           <span className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow-lg text-center">
@@ -169,7 +192,7 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* Mobile Tabs */}
+        {/* ======== Mobile ======== */}
         <div className="block md:hidden">
           <Tabs defaultValue="Kadın" orientation="vertical" className="w-full flex flex-col items-center">
             <TabsList className="flex flex-col gap-4 w-full max-w-md mb-14">
@@ -192,7 +215,7 @@ const Membership = () => {
           </Tabs>
         </div>
 
-        {/* Desktop Tabs */}
+        {/* ======== Desktop ======== */}
         <div className="hidden md:block">
           <Tabs defaultValue="Kadın" className="w-full">
             <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-12 gap-3">
