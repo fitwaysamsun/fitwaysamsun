@@ -19,36 +19,29 @@ const Membership = () => {
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState<string>("");
 
-  // 🕒 Countdown Timer (محسّن)
+  // 🕒 Countdown Timer (موحد لكل الأجهزة)
   useEffect(() => {
-    const savedEndDate = localStorage.getItem("membershipCountdownEndDate");
-    let endDate: Date;
+    // 📅 تاريخ بداية الحملة الثابتة (يمكنك تغييره)
+    const START_DATE = new Date("2025-11-04T00:00:00Z"); // ثابت عالميًا بتوقيت UTC
 
-    if (savedEndDate) {
-      endDate = new Date(savedEndDate);
+    const getCurrentCycleEnd = () => {
+      const now = new Date();
+      const diff = now.getTime() - START_DATE.getTime();
+      const weekMs = 7 * 24 * 60 * 60 * 1000; // أسبوع
+      const weeksPassed = Math.floor(diff / weekMs);
+      const nextEnd = new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
+      return nextEnd;
+    };
 
-      // إذا انتهى الوقت، نعيد ضبطه لـ 7 أيام جديدة
-      if (new Date().getTime() > endDate.getTime()) {
-        endDate = new Date();
-        endDate.setDate(endDate.getDate() + 7);
-        localStorage.setItem("membershipCountdownEndDate", endDate.toISOString());
-      }
-    } else {
-      // أول مرة يزور المستخدم
-      endDate = new Date();
-      endDate.setDate(endDate.getDate() + 7);
-      localStorage.setItem("membershipCountdownEndDate", endDate.toISOString());
-    }
+    let endDate = getCurrentCycleEnd();
 
     const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = endDate.getTime() - now;
+      const now = new Date();
+      const distance = endDate.getTime() - now.getTime();
 
       if (distance <= 0) {
-        // عند الانتهاء، نبدأ دورة جديدة
-        endDate = new Date();
-        endDate.setDate(endDate.getDate() + 7);
-        localStorage.setItem("membershipCountdownEndDate", endDate.toISOString());
+        // انتهى الأسبوع → ابدأ من جديد
+        endDate = getCurrentCycleEnd();
         return;
       }
 
