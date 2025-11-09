@@ -75,7 +75,14 @@ const Membership = () => {
           });
           return obj;
         });
-        const filtered = rows.filter((r: any) => r.plan_name && r.plan_name.trim() !== "");
+
+        // تصفية فقط خطط 6 Aylık
+        const filtered = rows.filter(
+          (r: any) =>
+            r.plan_name &&
+            r.plan_name.replace(/\s+/g, "").toLowerCase() === "6aylık"
+        );
+
         setPlans(filtered);
       } catch (err) {
         console.error("Membership data fetch error:", err);
@@ -93,26 +100,10 @@ const Membership = () => {
     window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
   };
 
-  // 💰 Original Prices
-  const originalPrices: Record<string, Record<string, number>> = {
-    "Erkek Mimarsinan": { "Aylık": 2000, "3 Aylık": 4500, "6 Aylık": 7500, "Yıllık": 13000 },
-    "Erkek Yenimahalle": { "Aylık": 2500, "3 Aylık": 5500, "6 Aylık": 8500, "Yıllık": 14000 },
-    "Kadın": { "Aylık": 1800, "3 Aylık": 4000, "6 Aylık": 6800, "Yıllık": 11000 },
-  };
-
-  const findClosestPlanKey = (gender: string, planName: string) => {
-    const clean = planName.replace(/\s+/g, "").toLowerCase();
-    const keys = Object.keys(originalPrices[gender] || {});
-    const exact = keys.find((k) => k.replace(/\s+/g, "").toLowerCase() === clean);
-    if (exact) return originalPrices[gender][exact];
-    const found = keys.find((k) => clean.includes(k.replace(/\s+/g, "").toLowerCase().charAt(0)));
-    if (found) return originalPrices[gender][found];
-    return null;
-  };
-
   // 🧱 Render Plans
   const renderPlanCards = (gender: string) => {
     const filteredPlans = plans.filter((p) => p.gender === gender);
+
     if (loading) return <p className="text-center text-muted-foreground py-10">Yükleniyor...</p>;
     if (filteredPlans.length === 0)
       return <p className="text-center text-muted-foreground py-10">Plan bulunamadı.</p>;
@@ -121,43 +112,27 @@ const Membership = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
-
-          // ✅ اعتبر خطة "6 Aylık" مميزة تلقائياً
-          const isPopular =
-            plan.popular.toLowerCase() === "true" ||
-            plan.plan_name.replace(/\s+/g, "").toLowerCase() === "6aylık";
-
           const color = plan.color || "primary";
-          const originalPrice = findClosestPlanKey(gender, plan.plan_name);
 
           return (
             <Card
               key={index}
-              className={`relative bg-card/50 backdrop-blur-sm border ${
-                isPopular
-                  ? "border-primary shadow-lg scale-[1.03]"
-                  : "border-border/50 shadow-sm"
-              } hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col`}
+              className="relative bg-card/50 backdrop-blur-sm border border-primary shadow-lg flex flex-col hover:scale-[1.02] transition-all duration-300"
             >
-              {isPopular && (
-                <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
-                  En Çok Tercih Edilen
-                </Badge>
-              )}
+              <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
+                En Çok Tercih Edilen
+              </Badge>
+
               <CardHeader className="text-center pb-4 pt-6">
                 <CardTitle className={`text-2xl font-bold text-${color}`}>
                   {plan.plan_name}
                 </CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
-                  {originalPrice && (
-                    <span className="text-muted-foreground text-lg line-through mr-2">
-                      {originalPrice} TL
-                    </span>
-                  )}
                   {plan.price} TL
                   <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
                 </div>
               </CardHeader>
+
               <CardContent className="space-y-4 flex-grow flex flex-col">
                 <ul className="space-y-3 flex-grow">
                   {featureList.map((feature, i) => (
@@ -185,7 +160,7 @@ const Membership = () => {
   return (
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        {/* ====== Countdown Timer ====== */}
+        {/* Countdown Timer */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
           <Clock className="h-10 w-10 text-primary" />
           <span className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow-lg text-center">
@@ -202,7 +177,7 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* ======== Mobile ======== */}
+        {/* Mobile Tabs */}
         <div className="block md:hidden">
           <Tabs defaultValue="Kadın" orientation="vertical" className="w-full flex flex-col items-center">
             <TabsList className="flex flex-col gap-4 w-full max-w-md mb-14">
@@ -220,12 +195,12 @@ const Membership = () => {
             <div className="w-full mt-10">
               <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
               <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
-              <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek Yenimahalle")}</TabsContent>
+              <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek_Yenimahalle")}</TabsContent>
             </div>
           </Tabs>
         </div>
 
-        {/* ======== Desktop ======== */}
+        {/* Desktop Tabs */}
         <div className="hidden md:block">
           <Tabs defaultValue="Kadın" className="w-full">
             <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-12 gap-3">
@@ -242,7 +217,7 @@ const Membership = () => {
 
             <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
             <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
-            <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek Yenimahalle")}</TabsContent>
+            <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek_Yenimahalle")}</TabsContent>
           </Tabs>
         </div>
 
