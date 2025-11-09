@@ -21,13 +21,12 @@ const Membership = () => {
 
   // 🕒 Countdown Timer (موحد لكل الأجهزة)
   useEffect(() => {
-    // 📅 تاريخ بداية الحملة الثابتة (يمكنك تغييره)
-    const START_DATE = new Date("2025-11-04T00:00:00Z"); // ثابت عالميًا بتوقيت UTC
+    const START_DATE = new Date("2025-11-04T00:00:00Z");
 
     const getCurrentCycleEnd = () => {
       const now = new Date();
       const diff = now.getTime() - START_DATE.getTime();
-      const weekMs = 7 * 24 * 60 * 60 * 1000; // أسبوع
+      const weekMs = 7 * 24 * 60 * 60 * 1000;
       const weeksPassed = Math.floor(diff / weekMs);
       const nextEnd = new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
       return nextEnd;
@@ -40,7 +39,6 @@ const Membership = () => {
       const distance = endDate.getTime() - now.getTime();
 
       if (distance <= 0) {
-        // انتهى الأسبوع → ابدأ من جديد
         endDate = getCurrentCycleEnd();
         return;
       }
@@ -117,17 +115,13 @@ const Membership = () => {
     },
   };
 
-  // 🔍 البحث عن السعر الأصلي الصحيح
   const findClosestPlanKey = (gender: string, planName: string) => {
     const clean = planName.replace(/\s+/g, "").toLowerCase();
     const keys = Object.keys(originalPrices[gender] || {});
-
     const exact = keys.find((k) => k.replace(/\s+/g, "").toLowerCase() === clean);
     if (exact) return originalPrices[gender][exact];
-
     const found = keys.find((k) => clean.includes(k.replace(/\s+/g, "").toLowerCase().charAt(0)));
     if (found) return originalPrices[gender][found];
-
     return null;
   };
 
@@ -142,23 +136,29 @@ const Membership = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
-          const isPopular = plan.popular.toLowerCase() === "true";
+          // ✅ اعتبر خطة "6 Aylık" مميزة تلقائياً
+          const isPopular =
+            plan.popular.toLowerCase() === "true" ||
+            plan.plan_name.toLowerCase().includes("6 aylık");
           const color = plan.color || "primary";
-
           const originalPrice = findClosestPlanKey(gender, plan.plan_name);
 
           return (
             <Card
               key={index}
-              className="relative bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col"
+              className={`relative bg-card/50 backdrop-blur-sm border ${
+                isPopular ? "border-primary shadow-lg scale-[1.03]" : "border-border/50 shadow-sm"
+              } hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col`}
             >
               {isPopular && (
                 <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
-                  En Popüler
+                  En Çok Tercih Edilen
                 </Badge>
               )}
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className={`text-2xl font-bold text-${color}`}>{plan.plan_name}</CardTitle>
+                <CardTitle className={`text-2xl font-bold text-${color}`}>
+                  {plan.plan_name}
+                </CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
                   {originalPrice && (
                     <span className="text-muted-foreground text-lg line-through mr-2">
