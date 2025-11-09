@@ -19,18 +19,36 @@ const Membership = () => {
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState<string>("");
 
-  // 🕒 Countdown Timer
+  // 🕒 Countdown Timer (محسّن)
   useEffect(() => {
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + 7);
+    const savedEndDate = localStorage.getItem("membershipCountdownEndDate");
+    let endDate: Date;
+
+    if (savedEndDate) {
+      endDate = new Date(savedEndDate);
+
+      // إذا انتهى الوقت، نعيد ضبطه لـ 7 أيام جديدة
+      if (new Date().getTime() > endDate.getTime()) {
+        endDate = new Date();
+        endDate.setDate(endDate.getDate() + 7);
+        localStorage.setItem("membershipCountdownEndDate", endDate.toISOString());
+      }
+    } else {
+      // أول مرة يزور المستخدم
+      endDate = new Date();
+      endDate.setDate(endDate.getDate() + 7);
+      localStorage.setItem("membershipCountdownEndDate", endDate.toISOString());
+    }
 
     const timer = setInterval(() => {
       const now = new Date().getTime();
       const distance = endDate.getTime() - now;
 
       if (distance <= 0) {
-        clearInterval(timer);
-        setTimeLeft("الوقت انتهى 🎉");
+        // عند الانتهاء، نبدأ دورة جديدة
+        endDate = new Date();
+        endDate.setDate(endDate.getDate() + 7);
+        localStorage.setItem("membershipCountdownEndDate", endDate.toISOString());
         return;
       }
 
@@ -106,7 +124,7 @@ const Membership = () => {
     },
   };
 
-  // 🔍 دالة البحث الذكية عن السعر الأصلي الصحيح
+  // 🔍 البحث عن السعر الأصلي الصحيح
   const findClosestPlanKey = (gender: string, planName: string) => {
     const clean = planName.replace(/\s+/g, "").toLowerCase();
     const keys = Object.keys(originalPrices[gender] || {});
