@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Phone } from "lucide-react";
+import { ArrowRight, UserPlus } from "lucide-react"; // تغيير الأيقونة هنا
 
 const Hero = () => {
-  const [heroImage, setHeroImage] = useState("/Images/Hero.png"); // صورة افتراضية
+  const [heroImage, setHeroImage] = useState("/Images/Hero.png");
 
-  // 🔗 رابط Google Sheets المباشر بصيغة CSV
   const SHEET_CSV_URL =
     "https://docs.google.com/spreadsheets/d/1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs/export?format=csv";
 
@@ -15,7 +14,6 @@ const Hero = () => {
         const res = await fetch(SHEET_CSV_URL);
         const csvText = await res.text();
 
-        // تحويل CSV إلى JSON بسيط
         const [headerLine, ...rows] = csvText.trim().split("\n");
         const headers = headerLine.split(",");
 
@@ -27,7 +25,6 @@ const Hero = () => {
           }, {} as Record<string, string>);
         });
 
-        // جلب الصورة من أول صف
         if (data && data[0]?.hero_image) {
           setHeroImage(data[0].hero_image);
         }
@@ -39,7 +36,6 @@ const Hero = () => {
     fetchHeroImage();
   }, []);
 
-  // 🔽 التمرير إلى قسم العضويات
   const handleScrollToMembership = () => {
     const section = document.getElementById("membership");
     if (section) {
@@ -49,7 +45,6 @@ const Hero = () => {
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* الخلفية */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-500"
         style={{
@@ -58,7 +53,6 @@ const Hero = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/90" />
 
-      {/* المحتوى */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
         <div className="mb-8 flex justify-center">
           <img
@@ -86,9 +80,9 @@ const Hero = () => {
           <Button
             size="lg"
             className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 text-primary-foreground shadow-fitness hover:shadow-glow-primary transition-all duration-300 transform hover:scale-105"
-            onClick={handleScrollToMembership} // ✅ التمرير بدلاً من فتح WhatsApp مباشرة
+            onClick={handleScrollToMembership}
           >
-            <Phone className="mr-2 h-5 w-5" />
+            <UserPlus className="mr-2 h-5 w-5" /> {/* استخدام الأيقونة الجديدة هنا */}
             Şimdi Üye Ol
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
