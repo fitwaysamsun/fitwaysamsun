@@ -9,7 +9,7 @@ interface Plan {
   gender: string;
   plan_name: string;
   price: string;
-  color: string;
+  color?: string;
   features: string;
   popular: string;
 }
@@ -28,7 +28,8 @@ const Membership = () => {
       const diff = now.getTime() - START_DATE.getTime();
       const weekMs = 7 * 24 * 60 * 60 * 1000;
       const weeksPassed = Math.floor(diff / weekMs);
-      return new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
+      const nextEnd = new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
+      return nextEnd;
     };
 
     let endDate = getCurrentCycleEnd();
@@ -92,10 +93,20 @@ const Membership = () => {
     window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
   };
 
+  // 💰 Original Prices
+  const originalPrices: Record<string, Record<string, number>> = {
+    "Erkek Mimarsinan": { "Aylık": 2000, "3 Aylık": 4500, "6 Aylık": 7500, "Yıllık": 13000 },
+    "Erkek Yenimahalle": { "Aylık": 2500, "3 Aylık": 5500, "6 Aylık": 8500, "Yıllık": 14000 },
+    "Kadın": { "Aylık": 1800, "3 Aylık": 4000, "6 Aylık": 6800, "Yıllık": 11000 },
+  };
+
+  const findOriginalPrice = (gender: string, planName: string) => {
+    return originalPrices[gender]?.[planName] || null;
+  };
+
   // 🧱 Render Plans
   const renderPlanCards = (gender: string) => {
     const filteredPlans = plans.filter((p) => p.gender === gender);
-
     if (loading) return <p className="text-center text-muted-foreground py-10">Yükleniyor...</p>;
     if (filteredPlans.length === 0)
       return <p className="text-center text-muted-foreground py-10">Plan bulunamadı.</p>;
@@ -104,32 +115,44 @@ const Membership = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
-          const color = plan.color || "primary";
-          const isSixMonths = plan.plan_name.replace(/\s+/g, "").toLowerCase() === "6aylık";
+
+          // ✅ اعتبر خطة "6 Aylık" مميزة تلقائياً
+          const isPopular = plan.popular.toLowerCase() === "true" || plan.plan_name.trim() === "6 Aylık";
+
+          // 🌈 تحديد ألوان الأزرار حسب نوع الخطة
+          let buttonColor = "primary"; // اللون الافتراضي
+          if (plan.plan_name.includes("3") || plan.plan_name.includes("Yıllık")) {
+            buttonColor = "secondary";
+          }
+
+          const originalPrice = findOriginalPrice(gender, plan.plan_name);
 
           return (
             <Card
               key={index}
-              className={`relative bg-card/50 backdrop-blur-sm border shadow-lg flex flex-col hover:scale-[1.02] transition-all duration-300 ${
-                isSixMonths ? "border-primary" : "border-muted"
-              }`}
+              className={`relative bg-card/50 backdrop-blur-sm border ${
+                isPopular ? "border-primary shadow-lg scale-[1.03]" : "border-border/50 shadow-sm"
+              } hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col`}
             >
-              {isSixMonths && (
+              {isPopular && (
                 <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
                   En Çok Tercih Edilen
                 </Badge>
               )}
-
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className={`text-2xl font-bold ${isSixMonths ? "text-primary" : "text-foreground"}`}>
+                <CardTitle className={`text-2xl font-bold text-${buttonColor}`}>
                   {plan.plan_name}
                 </CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
+                  {originalPrice && (
+                    <span className="text-muted-foreground text-lg line-through mr-2">
+                      {originalPrice} TL
+                    </span>
+                  )}
                   {plan.price} TL
                   <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
                 </div>
               </CardHeader>
-
               <CardContent className="space-y-4 flex-grow flex flex-col">
                 <ul className="space-y-3 flex-grow">
                   {featureList.map((feature, i) => (
@@ -140,9 +163,7 @@ const Membership = () => {
                   ))}
                 </ul>
                 <Button
-                  className={`w-full ${
-                    isSixMonths ? "bg-primary hover:bg-primary/90 text-primary-foreground" : "bg-muted hover:bg-muted/90 text-foreground"
-                  } transition-all duration-300 mt-auto`}
+                  className={`w-full bg-${buttonColor} hover:bg-${buttonColor}/90 text-${buttonColor}-foreground transition-all duration-300 mt-auto`}
                   onClick={() => handleWhatsAppRegister(plan.plan_name, gender)}
                 >
                   <MessageCircle className="mr-2 h-4 w-4" />
