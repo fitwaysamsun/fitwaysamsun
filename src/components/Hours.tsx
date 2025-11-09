@@ -127,9 +127,9 @@ const Hours = () => {
                 </div>
 
                 <div className="bg-muted/30 rounded-lg p-4">
-                  <h4 className="font-semibold text-foreground mb-2">24/7 Kart Erişimi</h4>
+                  <h4 className="font-semibold text-foreground mb-2">Giriş</h4>
                   <p className="text-sm text-muted-foreground">
-                    Premium üyelerimiz için 24 saat kart erişimi mevcuttur.
+                    Çalışma saatleri içinde mobil uygulama üzerinden giriş yapabilirsiniz.
                   </p>
                 </div>
               </div>
