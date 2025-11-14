@@ -3,11 +3,21 @@ import { Instagram, ExternalLink, ChevronLeft, ChevronRight, X } from "lucide-re
 import { useState, useEffect } from "react";
 
 const SHEET_CSV_URL =
-  "https://docs.google.com/spreadsheets/d/1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs/export?format=csv"; // ← ضع هنا رابط Google Sheet بصيغة CSV
+  "https://docs.google.com/spreadsheets/d/1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs/export?format=csv";
 
 const Gallery = () => {
-  const [galleryImages, setGalleryImages] = useState<{ src: string; alt: string }[]>([]);
+  const [yenimahalleImages, setYenimahalleImages] = useState<
+    { src: string; alt: string }[]
+  >([]);
+
+  const [mimarsinanImages, setMimarsinanImages] = useState<
+    { src: string; alt: string }[]
+  >([]);
+
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [selectedSection, setSelectedSection] = useState<"yenimahalle" | "mimarsinan" | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -15,10 +25,10 @@ const Gallery = () => {
         const response = await fetch(SHEET_CSV_URL);
         const text = await response.text();
 
-        // 🧾 نحول CSV إلى صفوف
         const rows = text.split("\n").map((row) => row.split(","));
         const headers = rows[0].map((h) => h.trim());
-        const images = [];
+
+        const allImages: any[] = [];
 
         for (let i = 1; i < rows.length; i++) {
           const row = rows[i];
@@ -30,14 +40,16 @@ const Gallery = () => {
           });
 
           if (imageData.image_url) {
-            images.push({
+            allImages.push({
               src: imageData.image_url,
               alt: imageData.image_alt || "",
             });
           }
         }
 
-        setGalleryImages(images);
+        // هنا التقسيم تلقائياً
+        setYenimahalleImages(allImages.slice(0, 8));
+        setMimarsinanImages(allImages.slice(8, 16));
       } catch (error) {
         console.error("Error fetching gallery data:", error);
       }
@@ -46,10 +58,17 @@ const Gallery = () => {
     fetchImages();
   }, []);
 
+  const activeGallery =
+    selectedSection === "yenimahalle"
+      ? yenimahalleImages
+      : selectedSection === "mimarsinan"
+      ? mimarsinanImages
+      : [];
+
   const handlePrevImage = () => {
     if (selectedImageIndex !== null) {
       setSelectedImageIndex((prev) =>
-        prev === 0 ? galleryImages.length - 1 : prev! - 1
+        prev === 0 ? activeGallery.length - 1 : prev! - 1
       );
     }
   };
@@ -57,71 +76,58 @@ const Gallery = () => {
   const handleNextImage = () => {
     if (selectedImageIndex !== null) {
       setSelectedImageIndex((prev) =>
-        prev === galleryImages.length - 1 ? 0 : prev! + 1
+        prev === activeGallery.length - 1 ? 0 : prev! + 1
       );
     }
-  };
-
-  const handleInstagramClick = () => {
-    window.open("https://instagram.com/fitwayfitnesspilates", "_blank");
   };
 
   return (
     <section id="gallery" className="py-20 px-6 bg-gradient-to-b from-background to-secondary/30">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Galeri
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Modern tesislerimizi ve profesyonel ekipmanlarımızı keşfedin
-          </p>
+        
+        {/* ----- Yenimahalle ----- */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4">Yenimahalle Şubesi</h2>
         </div>
 
-        {/* شبكة الصور */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {galleryImages.map((image, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
+          {yenimahalleImages.map((image, index) => (
             <div
               key={index}
               className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300"
-              onClick={() => setSelectedImageIndex(index)}
+              onClick={() => {
+                setSelectedSection("yenimahalle");
+                setSelectedImageIndex(index);
+              }}
             >
-              <img
-                src={image.src}
-                alt={image.alt}
-                className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-4 left-4 right-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100">
-                <p className="text-white text-sm font-medium">{image.alt}</p>
-              </div>
-              <ExternalLink className="absolute top-4 right-4 h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <img src={image.src} alt={image.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform" />
+              <ExternalLink className="absolute top-4 right-4 h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           ))}
         </div>
 
-        {/* زر الإنستغرام */}
-        <div className="text-center">
-          <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-8 border border-border">
-            <Instagram className="h-12 w-12 text-accent mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-foreground mb-4">
-              Daha Fazlası İçin Instagram'ımızı Takip Edin
-            </h3>
-            <p className="text-muted-foreground mb-6">
-              Günlük antrenman videoları, başarı hikayeleri ve özel etkinliklerimizi kaçırmayın
-            </p>
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={handleInstagramClick}
-            >
-              <Instagram className="mr-2 h-5 w-5" />
-              @fitwayfitnesspilates
-            </Button>
-          </div>
+        {/* ----- Mimarsinan ----- */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold mb-4">Mimarsinan Şubesi</h2>
         </div>
 
-        {/* نافذة الصورة المكبرة */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
+          {mimarsinanImages.map((image, index) => (
+            <div
+              key={index}
+              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300"
+              onClick={() => {
+                setSelectedSection("mimarsinan");
+                setSelectedImageIndex(index);
+              }}
+            >
+              <img src={image.src} alt={image.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform" />
+              <ExternalLink className="absolute top-4 right-4 h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+          ))}
+        </div>
+
+        {/* ----- عرض الصورة ----- */}
         {selectedImageIndex !== null && (
           <div
             className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -129,12 +135,12 @@ const Gallery = () => {
           >
             <div className="relative max-w-4xl max-h-full">
               <img
-                src={galleryImages[selectedImageIndex].src}
-                alt={galleryImages[selectedImageIndex].alt}
+                src={activeGallery[selectedImageIndex].src}
+                alt={activeGallery[selectedImageIndex].alt}
                 className="w-full h-auto rounded-lg shadow-2xl"
               />
               <button
-                className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-full p-2 text-foreground hover:bg-background transition-colors duration-200"
+                className="absolute top-4 right-4 bg-background/80 rounded-full p-2"
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedImageIndex(null);
@@ -143,7 +149,7 @@ const Gallery = () => {
                 <X className="h-6 w-6" />
               </button>
               <button
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm rounded-full p-3 text-foreground hover:bg-background transition-colors duration-200"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-3"
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePrevImage();
@@ -152,7 +158,7 @@ const Gallery = () => {
                 <ChevronLeft className="h-6 w-6" />
               </button>
               <button
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm rounded-full p-3 text-foreground hover:bg-background transition-colors duration-200"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-3"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleNextImage();
@@ -160,8 +166,8 @@ const Gallery = () => {
               >
                 <ChevronRight className="h-6 w-6" />
               </button>
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background/80 backdrop-blur-sm rounded-full px-4 py-2 text-foreground text-sm">
-                {selectedImageIndex + 1} / {galleryImages.length}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background/80 rounded-full px-4 py-2 text-sm">
+                {selectedImageIndex + 1} / {activeGallery.length}
               </div>
             </div>
           </div>
