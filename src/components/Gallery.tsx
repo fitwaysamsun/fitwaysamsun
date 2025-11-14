@@ -47,7 +47,6 @@ const Gallery = () => {
           }
         }
 
-        // هنا التقسيم تلقائياً
         setYenimahalleImages(allImages.slice(0, 8));
         setMimarsinanImages(allImages.slice(8, 16));
       } catch (error) {
@@ -84,10 +83,12 @@ const Gallery = () => {
   return (
     <section id="gallery" className="py-20 px-6 bg-gradient-to-b from-background to-secondary/30">
       <div className="max-w-7xl mx-auto">
-        
-        {/* ----- Yenimahalle ----- */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Yenimahalle Şubesi</h2>
+
+        {/* ----- Yenimahalle Title Styled Like Trainers ----- */}
+        <div className="flex justify-center mb-6">
+          <span className="bg-green-600 text-white px-5 py-2.5 rounded-xl text-lg font-medium">
+            Yenimahalle Şubemiz
+          </span>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
@@ -106,9 +107,11 @@ const Gallery = () => {
           ))}
         </div>
 
-        {/* ----- Mimarsinan ----- */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Mimarsinan Şubesi</h2>
+        {/* ----- Mimarsinan Title Styled Like Trainers ----- */}
+        <div className="flex justify-center mb-6 mt-16">
+          <span className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-lg font-medium">
+            Mimarsinan Şubemiz
+          </span>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
@@ -127,7 +130,7 @@ const Gallery = () => {
           ))}
         </div>
 
-        {/* ----- عرض الصورة ----- */}
+        {/* ----- Image Preview ----- */}
         {selectedImageIndex !== null && (
           <div
             className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4"
