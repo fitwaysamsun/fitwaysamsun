@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Instagram, ExternalLink, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ExternalLink, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const SHEET_CSV_URL =
@@ -15,9 +14,9 @@ const Gallery = () => {
   >([]);
 
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-  const [selectedSection, setSelectedSection] = useState<"yenimahalle" | "mimarsinan" | null>(
-    null
-  );
+  const [selectedSection, setSelectedSection] = useState<
+    "yenimahalle" | "mimarsinan" | null
+  >(null);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -47,13 +46,24 @@ const Gallery = () => {
           }
         }
 
+        // تقسيم الصور
         const first30 = allImages.slice(0, 30);
         const next15 = allImages.slice(30, 45);
 
-        // نعرض كل الصور
-        setYenimahalleImages(first30);
-        setMimarsinanImages(next15);
+        // دمج آخر صورتين داخل نفس الشبكة للقسم الأول
+        const highlightedFirst30 = [
+          ...first30,
+          ...first30.slice(-2), // إضافة آخر صورتين
+        ];
 
+        // دمج آخر 3 صور داخل نفس الشبكة للقسم الثاني
+        const highlightedNext15 = [
+          ...next15,
+          ...next15.slice(-3), // إضافة آخر 3 صور
+        ];
+
+        setYenimahalleImages(highlightedFirst30);
+        setMimarsinanImages(highlightedNext15);
       } catch (error) {
         console.error("Error fetching gallery data:", error);
       }
@@ -96,8 +106,8 @@ const Gallery = () => {
           </span>
         </div>
 
-        {/* كل الصور */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        {/* كل الصور + آخر صورتين */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
           {yenimahalleImages.map((image, index) => (
             <div
               key={index}
@@ -107,29 +117,15 @@ const Gallery = () => {
                 setSelectedImageIndex(index);
               }}
             >
-              <img src={image.src} alt={image.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform" />
+              <img
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-64 object-cover group-hover:scale-110 transition-transform"
+              />
               <ExternalLink className="absolute top-4 right-4 h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           ))}
         </div>
-
-        {/* آخر صورتين في المنتصف */}
-        <div className="flex justify-center gap-6 mb-20">
-          {yenimahalleImages.slice(-2).map((image, index) => (
-            <div
-              key={index}
-              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300 w-64"
-              onClick={() => {
-                setSelectedSection("yenimahalle");
-                setSelectedImageIndex(yenimahalleImages.length - 2 + index);
-              }}
-            >
-              <img src={image.src} alt={image.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform" />
-              <ExternalLink className="absolute top-4 right-4 h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-          ))}
-        </div>
-
 
         {/* ----- Mimarsinan Title ----- */}
         <div className="flex justify-center mb-6 mt-16">
@@ -138,8 +134,8 @@ const Gallery = () => {
           </span>
         </div>
 
-        {/* كل الصور */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        {/* كل الصور + آخر 3 صور */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
           {mimarsinanImages.map((image, index) => (
             <div
               key={index}
@@ -149,24 +145,11 @@ const Gallery = () => {
                 setSelectedImageIndex(index);
               }}
             >
-              <img src={image.src} alt={image.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform" />
-              <ExternalLink className="absolute top-4 right-4 h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-          ))}
-        </div>
-
-        {/* آخر 3 صور في المنتصف */}
-        <div className="flex justify-center gap-6 mb-20">
-          {mimarsinanImages.slice(-3).map((image, index) => (
-            <div
-              key={index}
-              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300 w-64"
-              onClick={() => {
-                setSelectedSection("mimarsinan");
-                setSelectedImageIndex(mimarsinanImages.length - 3 + index);
-              }}
-            >
-              <img src={image.src} alt={image.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform" />
+              <img
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-64 object-cover group-hover:scale-110 transition-transform"
+              />
               <ExternalLink className="absolute top-4 right-4 h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           ))}
@@ -193,6 +176,7 @@ const Gallery = () => {
               >
                 <X className="h-6 w-6" />
               </button>
+
               <button
                 className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-3"
                 onClick={(e) => {
@@ -202,6 +186,7 @@ const Gallery = () => {
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
+
               <button
                 className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-3"
                 onClick={(e) => {
@@ -211,6 +196,7 @@ const Gallery = () => {
               >
                 <ChevronRight className="h-6 w-6" />
               </button>
+
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background/80 rounded-full px-4 py-2 text-sm">
                 {selectedImageIndex + 1} / {activeGallery.length}
               </div>
