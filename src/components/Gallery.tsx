@@ -47,15 +47,12 @@ const Gallery = () => {
           }
         }
 
-        // ----- تعديل التقسيم -----
         const first30 = allImages.slice(0, 30);
         const next15 = allImages.slice(30, 45);
 
-        // آخر صورتين من أول 30 صورة
-        setYenimahalleImages(first30.slice(-2));
-
-        // آخر 3 صور من الـ 15 التالية
-        setMimarsinanImages(next15.slice(-3));
+        // نعرض كل الصور
+        setYenimahalleImages(first30);
+        setMimarsinanImages(next15);
 
       } catch (error) {
         console.error("Error fetching gallery data:", error);
@@ -99,12 +96,12 @@ const Gallery = () => {
           </span>
         </div>
 
-        {/* وضع آخر صورتين في المنتصف */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-center place-items-center gap-4 mb-20">
+        {/* كل الصور */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
           {yenimahalleImages.map((image, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300 w-full max-w-sm"
+              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300"
               onClick={() => {
                 setSelectedSection("yenimahalle");
                 setSelectedImageIndex(index);
@@ -116,6 +113,24 @@ const Gallery = () => {
           ))}
         </div>
 
+        {/* آخر صورتين في المنتصف */}
+        <div className="flex justify-center gap-6 mb-20">
+          {yenimahalleImages.slice(-2).map((image, index) => (
+            <div
+              key={index}
+              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300 w-64"
+              onClick={() => {
+                setSelectedSection("yenimahalle");
+                setSelectedImageIndex(yenimahalleImages.length - 2 + index);
+              }}
+            >
+              <img src={image.src} alt={image.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform" />
+              <ExternalLink className="absolute top-4 right-4 h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+          ))}
+        </div>
+
+
         {/* ----- Mimarsinan Title ----- */}
         <div className="flex justify-center mb-6 mt-16">
           <span className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-lg font-medium">
@@ -123,15 +138,32 @@ const Gallery = () => {
           </span>
         </div>
 
-        {/* وضع آخر 3 صور في المنتصف */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-center place-items-center gap-4 mb-20">
+        {/* كل الصور */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
           {mimarsinanImages.map((image, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300 w-full max-w-sm"
+              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300"
               onClick={() => {
                 setSelectedSection("mimarsinan");
                 setSelectedImageIndex(index);
+              }}
+            >
+              <img src={image.src} alt={image.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform" />
+              <ExternalLink className="absolute top-4 right-4 h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+          ))}
+        </div>
+
+        {/* آخر 3 صور في المنتصف */}
+        <div className="flex justify-center gap-6 mb-20">
+          {mimarsinanImages.slice(-3).map((image, index) => (
+            <div
+              key={index}
+              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300 w-64"
+              onClick={() => {
+                setSelectedSection("mimarsinan");
+                setSelectedImageIndex(mimarsinanImages.length - 3 + index);
               }}
             >
               <img src={image.src} alt={image.alt} className="w-full h-64 object-cover group-hover:scale-110 transition-transform" />
