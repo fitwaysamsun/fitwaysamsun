@@ -47,8 +47,16 @@ const Gallery = () => {
           }
         }
 
-        setYenimahalleImages(allImages.slice(0, 30));
-        setMimarsinanImages(allImages.slice(30));
+        // ----- تعديل التقسيم -----
+        const first30 = allImages.slice(0, 30);
+        const next15 = allImages.slice(30, 45);
+
+        // آخر صورتين من أول 30 صورة
+        setYenimahalleImages(first30.slice(-2));
+
+        // آخر 3 صور من الـ 15 التالية
+        setMimarsinanImages(next15.slice(-3));
+
       } catch (error) {
         console.error("Error fetching gallery data:", error);
       }
@@ -84,18 +92,19 @@ const Gallery = () => {
     <section id="gallery" className="py-20 px-6 bg-gradient-to-b from-background to-secondary/30">
       <div className="max-w-7xl mx-auto">
 
-        {/* ----- Yenimahalle Title Styled Like Trainers ----- */}
+        {/* ----- Yenimahalle Title ----- */}
         <div className="flex justify-center mb-6">
           <span className="bg-green-600 text-white px-5 py-2.5 rounded-xl text-lg font-medium">
             Yenimahalle Şubemiz
           </span>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
+        {/* وضع آخر صورتين في المنتصف */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-center place-items-center gap-4 mb-20">
           {yenimahalleImages.map((image, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300"
+              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300 w-full max-w-sm"
               onClick={() => {
                 setSelectedSection("yenimahalle");
                 setSelectedImageIndex(index);
@@ -107,18 +116,19 @@ const Gallery = () => {
           ))}
         </div>
 
-        {/* ----- Mimarsinan Title Styled Like Trainers ----- */}
+        {/* ----- Mimarsinan Title ----- */}
         <div className="flex justify-center mb-6 mt-16">
           <span className="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-lg font-medium">
             Mimarsinan Şubemiz
           </span>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
+        {/* وضع آخر 3 صور في المنتصف */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-center place-items-center gap-4 mb-20">
           {mimarsinanImages.map((image, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300"
+              className="group relative overflow-hidden rounded-lg cursor-pointer shadow-card hover:shadow-fitness transition-all duration-300 w-full max-w-sm"
               onClick={() => {
                 setSelectedSection("mimarsinan");
                 setSelectedImageIndex(index);
@@ -130,7 +140,7 @@ const Gallery = () => {
           ))}
         </div>
 
-        {/* ----- Image Preview ----- */}
+        {/* ----- Image Preview Modal ----- */}
         {selectedImageIndex !== null && (
           <div
             className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4"
