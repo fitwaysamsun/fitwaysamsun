@@ -140,7 +140,7 @@ const Gallery = () => {
               <img
                 src={activeGallery[selectedImageIndex].src}
                 alt={activeGallery[selectedImageIndex].alt}
-                className="w-full h-auto rounded-lg shadow-2xl"
+                className="max-h-[90vh] w-auto object-contain rounded-lg shadow-2xl mx-auto"
               />
               <button
                 className="absolute top-4 right-4 bg-background/80 rounded-full p-2"
