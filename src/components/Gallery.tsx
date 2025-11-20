@@ -47,8 +47,8 @@ const Gallery = () => {
           }
         }
 
-        setYenimahalleImages(allImages.slice(0, 26));
-        setMimarsinanImages(allImages.slice(26));
+        setYenimahalleImages(allImages.slice(0, 28));
+        setMimarsinanImages(allImages.slice(28));
       } catch (error) {
         console.error("Error fetching gallery data:", error);
       }
