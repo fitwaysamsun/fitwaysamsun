@@ -9,6 +9,7 @@ interface Plan {
   gender: string;
   plan_name: string;
   price: string;
+  old_price?: string; // السعر القديم
   color?: string;
   features: string;
   popular: string;
@@ -116,9 +117,16 @@ const Membership = () => {
               )}
               <CardHeader className="text-center pb-4 pt-6">
                 <CardTitle className="text-2xl font-bold">{plan.plan_name}</CardTitle>
-                <div className="text-3xl font-extrabold text-foreground mt-2">
-                  {plan.price} TL
-                  <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
+                <div className="text-3xl font-extrabold text-foreground mt-2 flex flex-col items-center">
+                  {plan.old_price && plan.old_price.trim() !== "" && (
+                    <span className="text-lg text-muted-foreground line-through mb-1">
+                      {plan.old_price} TL {/* السعر القديم */}
+                    </span>
+                  )}
+                  <span>
+                    {plan.price} TL
+                    <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
+                  </span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4 flex-grow flex flex-col">
@@ -165,7 +173,7 @@ const Membership = () => {
                     </Button>
                   </div>
                 ) : (
-                  <div className="mt-auto w-full">
+                  <div className="w-full mt-4"> {/* رفع الزر قليلاً */}
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
                       style={{
