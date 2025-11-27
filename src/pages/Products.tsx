@@ -56,6 +56,12 @@ const Products = () => {
         { id: "other", title: "Diğer Ürünler", desc: "Diğer tüm ürün çeşitlerimiz.", icon: <LayoutGrid className="w-6 h-6" />, contentTypeId: CONTENT_TYPE_MAP.other }
     ];
 
+    // حفظ موقع التمرير قبل الانتقال للمنتج
+    const goToProduct = (slug: string) => {
+        sessionStorage.setItem("scrollPosition", window.scrollY.toString());
+        navigate(`/product/${slug}`);
+    };
+
     useEffect(() => {
         const fetchSupplements = async () => {
             setLoading(true);
@@ -99,6 +105,20 @@ const Products = () => {
 
         fetchSupplements();
     }, []);
+
+    // إعادة التمرير إلى الموقع السابق بعد انتهاء التحميل بالكامل
+    useEffect(() => {
+        if (!loading) {
+            const scrollPos = sessionStorage.getItem("scrollPosition");
+            if (scrollPos) {
+                // نستخدم setTimeout لضمان انتهاء الرندر النهائي قبل التمرير
+                setTimeout(() => {
+                    window.scrollTo({ top: parseInt(scrollPos), behavior: "auto" });
+                    sessionStorage.removeItem("scrollPosition");
+                }, 50);
+            }
+        }
+    }, [loading]);
 
     const handleWhatsApp = (title?: string) => {
         const message = `Merhaba, ${title ?? "supplement"} hakkında bilgi almak istiyorum.`;
@@ -187,7 +207,7 @@ const Products = () => {
                                                 {products.map((p, i) => {
                                                     const slug = p.title.trim().toLowerCase().replace(/\s+/g, "-");
                                                     return (
-                                                        <div key={i} className="group relative bg-card border border-border/50 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col cursor-pointer" onClick={() => navigate(`/product/${slug}`)}>
+                                                        <div key={i} className="group relative bg-card border border-border/50 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col cursor-pointer" onClick={() => goToProduct(slug)}>
                                                             <div className="absolute top-4 left-4 z-20">
                                                                 <span className="px-3 py-1.5 rounded-full bg-background/90 backdrop-blur-md text-xs font-bold border border-border/50 flex items-center gap-1.5 shadow-sm text-foreground">
                                                                     {category.icon}{category.title}
