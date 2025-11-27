@@ -92,21 +92,22 @@ const Membership = () => {
     if (filteredPlans.length === 0)
       return <p className="text-center text-muted-foreground py-10">Plan bulunamadı.</p>;
 
+    const mimarsinanColor = "#00bfff"; // أزرق
+    const yenimahalleColor = "#ff7f2a"; // برتقالي
+
     return (
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {filteredPlans.map((plan, index) => {
           const featureList = plan.features.split(",").map((f) => f.trim());
           const isPopular = plan.plan_name.trim() === "6 Aylık";
 
-          // 🌈 ألوان ثابتة
-          const mimarsinanColor = "#00bfff"; // أزرق
-          const yenimahalleColor = "#ff7f2a"; // برتقالي
-
           return (
             <Card
               key={index}
-              className={`relative shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col ${isPopular ? "border-4 border-primary" : "border border-border/50"}`}
-              style={{ backgroundColor: "var(--background)" }}
+              className={`relative shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col ${
+                isPopular ? "border-4 border-primary" : "border border-border/50"
+              }`}
+              style={{ backgroundColor: "var(--background)", minHeight: "450px" }} // ارتفاع ثابت للكروت
             >
               {isPopular && (
                 <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
