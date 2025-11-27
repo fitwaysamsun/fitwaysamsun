@@ -14,7 +14,7 @@ const client = contentful.createClient({
 
 // دالة normalize لتطبيع slug
 const normalize = (text: string) =>
-  text.trim().toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '');
+  text?.trim().toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '');
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -25,7 +25,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const entries = await client.getEntries({ limit: 50 }); // مؤقتًا لجلب المنتجات
+        const entries = await client.getEntries({ limit: 50 });
         const foundItem = entries.items.find((item: any) =>
           normalize(item.fields.name) === normalize(slug || "")
         );
@@ -82,7 +82,8 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        <Navigation />
+        <Navigation className="h-10 py-1" /> 
+
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
           <div className="max-w-md">
             <div className="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-destructive/10">
@@ -95,7 +96,7 @@ const ProductDetail = () => {
             <Button
               onClick={() => navigate('/products')}
               size="lg"
-              className="shadow-lg"
+              className="shadow-lg bg-background text-foreground"
             >
               <ArrowLeft className="mr-2 h-5 w-5" />
               Tüm Ürünlere Dön
@@ -109,21 +110,22 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navigation />
+      {/* Nav صغير */}
+      <Navigation className="h-10 py-1" /> 
 
-      {/* Hero Background */}
-      <div className="relative pt-24 pb-12 overflow-hidden">
+      {/* Hero Background مضغوط */}
+      <div className="relative pt-6 pb-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-5 left-5 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-5 right-5 w-72 h-72 bg-accent/10 rounded-full blur-3xl"></div>
       </div>
 
-      <main className="relative -mt-12 pb-20 px-6">
+      <main className="relative pt-8 pb-20 px-6 bg-background">
         <div className="max-w-7xl mx-auto">
           <Button
             onClick={() => navigate('/products')}
             variant="ghost"
-            className="mb-8 hover:bg-accent/50 group"
+            className="mb-6 hover:bg-accent/50 bg-background text-foreground"
           >
             <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
             Tüm Ürünlere Dön
@@ -132,7 +134,7 @@ const ProductDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Image Section */}
             <div className="relative">
-              <div className="sticky top-28">
+              <div className="sticky top-16">
                 <div className="relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition duration-1000 animate-pulse"></div>
                   <div className="relative aspect-square rounded-3xl overflow-hidden bg-card border-2 border-border/50 shadow-2xl">
@@ -148,27 +150,27 @@ const ProductDetail = () => {
             </div>
 
             {/* Details Section */}
-            <div className="flex flex-col space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-pulse leading-relaxed pb-2 break-words">
+            <div className="flex flex-col space-y-6">
+              <div className="space-y-2">
+                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-pulse leading-relaxed break-words">
                   {product.supplement_title}
                 </h1>
                 <div className="flex flex-wrap items-center gap-4">
-                  <span className="text-4xl md:text-5xl font-bold text-primary">
+                  <span className="text-3xl md:text-4xl font-bold text-primary">
                     {product.supplement_price?.toString().replace("TL", "").trim()} TL
                   </span>
-                  <span className="px-4 py-2 rounded-full bg-green-500/10 text-green-500 text-sm font-bold flex items-center gap-2 border border-green-500/20">
+                  <span className="px-3 py-1.5 rounded-full bg-green-500/10 text-green-500 text-sm font-bold flex items-center gap-2 border border-green-500/20">
                     <Check className="w-4 h-4" /> Stokta Var
                   </span>
                 </div>
               </div>
 
-              <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50">
-                <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
+              <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
+                <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
                   <Package className="w-5 h-5 text-primary" />
                   Ürün Açıklaması
                 </h3>
-                <p className="text-muted-foreground leading-relaxed text-lg">
+                <p className="text-muted-foreground leading-relaxed text-base">
                   {product.supplement_desc || "Bu ürün, fitness hedeflerinize ulaşmanız için özel olarak formüle edilmiştir. Yüksek kaliteli içeriği ile performansınızı artırır."}
                 </p>
               </div>
@@ -177,10 +179,10 @@ const ProductDetail = () => {
                 {features.map((feature, idx) => (
                   <div
                     key={idx}
-                    className="group relative overflow-hidden flex items-center gap-4 p-5 rounded-2xl bg-gradient-to-br from-card to-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1"
+                    className="group relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-br from-card to-background border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1"
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="relative p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
+                    <div className="relative p-2 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 group-hover:scale-110">
                       {feature.icon}
                     </div>
                     <div className="relative">
@@ -191,17 +193,17 @@ const ProductDetail = () => {
                 ))}
               </div>
 
-              <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 rounded-2xl p-8 border border-primary/20 space-y-6">
-                <div className="space-y-3">
-                  <h3 className="text-2xl font-bold">WhatsApp ile Sipariş Ver</h3>
-                  <p className="text-muted-foreground">
+              <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 rounded-2xl p-6 border border-primary/20 space-y-4">
+                <div className="space-y-2">
+                  <h3 className="text-xl font-bold">WhatsApp ile Sipariş Ver</h3>
+                  <p className="text-muted-foreground text-sm">
                     WhatsApp üzerinden kolayca sipariş verebilir ve ürün hakkında detaylı bilgi alabilirsiniz.
                   </p>
                 </div>
 
                 <Button
                   size="lg"
-                  className="w-full text-lg px-8 py-7 shadow-2xl shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 hover:scale-105 group bg-green-500 hover:bg-green-600 text-white"
+                  className="w-full text-lg px-6 py-4 shadow-2xl shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 hover:scale-105 group bg-green-500 hover:bg-green-600 text-white"
                   onClick={handleWhatsApp}
                 >
                   <MessageCircle className="mr-3 h-6 w-6 group-hover:rotate-12 transition-transform" />
