@@ -110,7 +110,9 @@ const Membership = () => {
           const featureList = plan.features.split(",").map((f) => f.trim());
           const isPopular = plan.plan_name.trim() === "6 Aylık";
 
-          let buttonColor = index % 2 === 0 ? "#ff7f2a" : "#00bfff";
+          // 🌈 ألوان ثابتة لكل زر داخل البطاقة
+          const firstButtonColor = "#ff7f2a"; // برتقالي
+          const secondButtonColor = "#00bfff"; // أزرق
 
           const originalPrice = findOriginalPrice(gender, plan.plan_name);
 
@@ -126,7 +128,7 @@ const Membership = () => {
                 </Badge>
               )}
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className={`text-2xl font-bold`} style={{ color: buttonColor }}>
+                <CardTitle className="text-2xl font-bold">
                   {plan.plan_name}
                 </CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
@@ -151,10 +153,10 @@ const Membership = () => {
 
                 {gender === "Kadın" ? (
                   <div className="flex flex-col gap-2 mt-auto w-full">
-                    {/* الزر لكل شعبة */}
+                    {/* زر لكل شعبة بألوان مختلفة */}
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: buttonColor }}
+                      style={{ backgroundColor: firstButtonColor }}
                       onClick={() => {
                         const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
                         window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
@@ -165,7 +167,7 @@ const Membership = () => {
                     </Button>
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: buttonColor }}
+                      style={{ backgroundColor: secondButtonColor }}
                       onClick={() => {
                         const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
                         window.open(`https://wa.me/905365123655?text=${encodeURIComponent(message)}`, "_blank");
@@ -184,7 +186,7 @@ const Membership = () => {
                     <div className="absolute inset-0 flex flex-col justify-center">
                       <Button
                         className="w-full font-semibold text-white hover:opacity-90 transition"
-                        style={{ backgroundColor: buttonColor }}
+                        style={{ backgroundColor: firstButtonColor }}
                         onClick={() => {
                           const phoneNumber = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
                           const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
