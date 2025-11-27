@@ -111,8 +111,8 @@ const Membership = () => {
           const isPopular = plan.plan_name.trim() === "6 Aylık";
 
           // 🌈 ألوان ثابتة لكل زر داخل البطاقة
-          const firstButtonColor = "#ff7f2a"; // برتقالي
-          const secondButtonColor = "#00bfff"; // أزرق
+          const mimarsinanColor = "#00bfff"; // أزرق
+          const yenimahalleColor = "#ff7f2a"; // برتقالي
 
           const originalPrice = findOriginalPrice(gender, plan.plan_name);
 
@@ -151,54 +151,34 @@ const Membership = () => {
                   ))}
                 </ul>
 
-                {gender === "Kadın" ? (
-                  <div className="flex flex-col gap-2 mt-auto w-full">
-                    {/* زر لكل شعبة بألوان مختلفة */}
-                    <Button
-                      className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: firstButtonColor }}
-                      onClick={() => {
-                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                        window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
-                      }}
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Kayıt Ol - Mimarsinan
-                    </Button>
-                    <Button
-                      className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: secondButtonColor }}
-                      onClick={() => {
-                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                        window.open(`https://wa.me/905365123655?text=${encodeURIComponent(message)}`, "_blank");
-                      }}
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Kayıt Ol - Yenimahalle
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="relative mt-auto w-full">
-                    <div className="flex flex-col gap-2 invisible pointer-events-none" aria-hidden="true">
-                      <Button tabIndex={-1} className="w-full">Placeholder</Button>
-                      <Button tabIndex={-1} className="w-full">Placeholder</Button>
-                    </div>
-                    <div className="absolute inset-0 flex flex-col justify-center">
-                      <Button
-                        className="w-full font-semibold text-white hover:opacity-90 transition"
-                        style={{ backgroundColor: firstButtonColor }}
-                        onClick={() => {
-                          const phoneNumber = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
-                          const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                          window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
-                        }}
-                      >
-                        <MessageCircle className="mr-2 h-4 w-4" />
-                        WhatsApp ile Kayıt Ol
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                <div className="flex flex-col gap-2 mt-auto w-full">
+                  <Button
+                    className="w-full font-semibold text-white hover:opacity-90 transition"
+                    style={{ backgroundColor: mimarsinanColor }}
+                    onClick={() => {
+                      const phoneNumber = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
+                      const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                      const waNumber = gender === "Kadın" ? "905366544655" : phoneNumber;
+                      window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, "_blank");
+                    }}
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Kayıt Ol - Mimarsinan
+                  </Button>
+                  <Button
+                    className="w-full font-semibold text-white hover:opacity-90 transition"
+                    style={{ backgroundColor: yenimahalleColor }}
+                    onClick={() => {
+                      const phoneNumber = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
+                      const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                      const waNumber = gender === "Kadın" ? "905365123655" : phoneNumber;
+                      window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, "_blank");
+                    }}
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Kayıt Ol - Yenimahalle
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           );
