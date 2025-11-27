@@ -168,7 +168,7 @@ const Membership = () => {
                       }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Mimarsinan
+                      Kayıt Ol - Mimarsinan
                     </Button>
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
@@ -179,7 +179,7 @@ const Membership = () => {
                       }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Yenimahalle
+                      Kayıt Ol - Yenimahalle
                     </Button>
                   </div>
                 ) : (
