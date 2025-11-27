@@ -87,6 +87,12 @@ const Membership = () => {
     fetchPlans();
   }, []);
 
+  // 💬 WhatsApp
+  const handleWhatsAppRegister = (planName: string, gender: string) => {
+    const message = `${gender} ${planName} üyelik paketi hakkında bilgi almak istiyorum.`;
+    window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
   // 💰 Original Prices
   const originalPrices: Record<string, Record<string, number>> = {
     "Erkek Mimarsinan": { "Aylık": 2000, "3 Aylık": 4500, "6 Aylık": 7500, "Yıllık": 13000 },
@@ -111,16 +117,8 @@ const Membership = () => {
           const featureList = plan.features.split(",").map((f) => f.trim());
           const isPopular = plan.plan_name.trim() === "6 Aylık";
 
-          // 🌈 ألوان الأزرار حسب الجنس والفرع
-          let buttonColor = "#00bfff"; // اللون الافتراضي أزرق
-          if (gender === "Kadın") {
-            if (plan.plan_name.includes("Mimarsinan")) buttonColor = "#00bfff"; // Mimarsinan
-            else buttonColor = "#ff7f2a"; // Yenimahalle
-          } else if (gender === "Erkek") {
-            buttonColor = "#00bfff"; // Erkek Mimarsinan
-          } else if (gender === "Erkek Yenimahalle") {
-            buttonColor = "#ff7f2a"; // Erkek Yenimahalle
-          }
+          // 🌈 ألوان الأزرار
+          let buttonColor = index % 2 === 0 ? "#ff7f2a" : "#00bfff";
 
           const originalPrice = findOriginalPrice(gender, plan.plan_name);
 
@@ -129,7 +127,7 @@ const Membership = () => {
               key={index}
               className={`relative shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col ${isPopular ? "border-4 border-primary" : "border border-border/50"
                 }`}
-              style={{ backgroundColor: "var(--background)" }}
+              style={{ backgroundColor: "var(--background)" }} // إعادة خلفية الكروت للون الموقع الأصلي
             >
               {isPopular && (
                 <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
@@ -159,56 +157,61 @@ const Membership = () => {
                     </li>
                   ))}
                 </ul>
-
                 {gender === "Kadın" ? (
                   <div className="flex flex-col gap-2 mt-auto w-full">
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: "#00bfff" }}
+                      style={{ backgroundColor: buttonColor }}
                       onClick={() => {
-                        const message = `Kadın ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
                         window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
                       }}
                     >
-                      <MessageCircle className="mr-2 h-4 w-4" /> Mimarsinan
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Mimarsinan
                     </Button>
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: "#ff7f2a" }}
+                      style={{ backgroundColor: buttonColor }}
                       onClick={() => {
-                        const message = `Kadın ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
                         window.open(`https://wa.me/905365123655?text=${encodeURIComponent(message)}`, "_blank");
                       }}
                     >
-                      <MessageCircle className="mr-2 h-4 w-4" /> Yenimahalle
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Yenimahalle
                     </Button>
                   </div>
                 ) : (
                   <div className="relative mt-auto w-full">
+                    {/* Invisible buttons to force container height to match Kadın cards */}
                     <div className="flex flex-col gap-2 invisible pointer-events-none" aria-hidden="true">
                       <Button tabIndex={-1} className="w-full">Placeholder</Button>
                       <Button tabIndex={-1} className="w-full">Placeholder</Button>
                     </div>
+
+                    {/* Centered visible button */}
                     <div className="absolute inset-0 flex flex-col justify-center">
                       <Button
                         className="w-full font-semibold text-white hover:opacity-90 transition"
-                        style={{ backgroundColor }}
+                        style={{ backgroundColor: buttonColor }}
                         onClick={() => {
-                          const phoneNumber = plan.plan_name.includes("Yenimahalle") ? "905365123655" : "905366544655";
+                          const phoneNumber = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
                           const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
                           window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
                         }}
                       >
-                        <MessageCircle className="mr-2 h-4 w-4" /> WhatsApp ile Kayıt Ol
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        WhatsApp ile Kayıt Ol
                       </Button>
                     </div>
                   </div>
                 )}
               </CardContent>
-            </Card>
+            </Card >
           );
         })}
-      </div>
+      </div >
     );
   };
 
