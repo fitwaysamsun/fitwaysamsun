@@ -9,6 +9,7 @@ interface Plan {
   gender: string;
   plan_name: string;
   price: string;
+  color?: string;
   features: string;
   popular: string;
 }
@@ -97,21 +98,9 @@ const Membership = () => {
           const featureList = plan.features.split(",").map((f) => f.trim());
           const isPopular = plan.plan_name.trim() === "6 Aylık";
 
-          // 🌈 ألوان ثابتة حسب الفرع
+          // 🌈 ألوان ثابتة
           const mimarsinanColor = "#00bfff"; // أزرق
           const yenimahalleColor = "#ff7f2a"; // برتقالي
-
-          const getButtonColor = (branch: string) => {
-            if (branch.includes("Mimarsinan")) return mimarsinanColor;
-            if (branch.includes("Yenimahalle")) return yenimahalleColor;
-            return "#00bfff";
-          };
-
-          const getPhoneNumber = (branch: string) => {
-            if (branch.includes("Mimarsinan")) return "905366544655";
-            if (branch.includes("Yenimahalle")) return "905365123655";
-            return "905366544655";
-          };
 
           return (
             <Card
@@ -125,9 +114,7 @@ const Membership = () => {
                 </Badge>
               )}
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className="text-2xl font-bold">
-                  {plan.plan_name}
-                </CardTitle>
+                <CardTitle className="text-2xl font-bold">{plan.plan_name}</CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
                   {plan.price} TL
                   <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
@@ -148,10 +135,14 @@ const Membership = () => {
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
                       style={{ backgroundColor: mimarsinanColor }}
-                      onClick={() => {
-                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                        window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
-                      }}
+                      onClick={() =>
+                        window.open(
+                          `https://wa.me/905366544655?text=${encodeURIComponent(
+                            `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`
+                          )}`,
+                          "_blank"
+                        )
+                      }
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Mimarsinan
@@ -159,10 +150,14 @@ const Membership = () => {
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
                       style={{ backgroundColor: yenimahalleColor }}
-                      onClick={() => {
-                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                        window.open(`https://wa.me/905365123655?text=${encodeURIComponent(message)}`, "_blank");
-                      }}
+                      onClick={() =>
+                        window.open(
+                          `https://wa.me/905365123655?text=${encodeURIComponent(
+                            `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`
+                          )}`,
+                          "_blank"
+                        )
+                      }
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Yenimahalle
@@ -172,12 +167,20 @@ const Membership = () => {
                   <div className="mt-auto w-full">
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: getButtonColor(plan.gender) }}
-                      onClick={() => {
-                        const phone = getPhoneNumber(plan.gender);
-                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+                      style={{
+                        backgroundColor:
+                          plan.gender.includes("Mimarsinan") ? mimarsinanColor : yenimahalleColor,
                       }}
+                      onClick={() =>
+                        window.open(
+                          `https://wa.me/${
+                            plan.gender.includes("Mimarsinan") ? "905366544655" : "905365123655"
+                          }?text=${encodeURIComponent(
+                            `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`
+                          )}`,
+                          "_blank"
+                        )
+                      }
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       WhatsApp ile Kayıt Ol
