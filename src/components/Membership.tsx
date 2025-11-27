@@ -9,7 +9,6 @@ interface Plan {
   gender: string;
   plan_name: string;
   price: string;
-  old_price?: string; // السعر القديم
   color?: string;
   features: string;
   popular: string;
@@ -29,7 +28,8 @@ const Membership = () => {
       const diff = now.getTime() - START_DATE.getTime();
       const weekMs = 7 * 24 * 60 * 60 * 1000;
       const weeksPassed = Math.floor(diff / weekMs);
-      return new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
+      const nextEnd = new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
+      return nextEnd;
     };
 
     let endDate = getCurrentCycleEnd();
@@ -87,14 +87,23 @@ const Membership = () => {
     fetchPlans();
   }, []);
 
+  // 💰 Original Prices
+  const originalPrices: Record<string, Record<string, number>> = {
+    "Erkek Mimarsinan": { "Aylık": 2000, "3 Aylık": 4500, "6 Aylık": 7500, "Yıllık": 13000 },
+    "Erkek Yenimahalle": { "Aylık": 2500, "3 Aylık": 5500, "6 Aylık": 8500, "Yıllık": 14000 },
+    "Kadın": { "Aylık": 1800, "3 Aylık": 4000, "6 Aylık": 6800, "Yıllık": 11000 },
+  };
+
+  const findOriginalPrice = (gender: string, planName: string) => {
+    return originalPrices[gender]?.[planName] || null;
+  };
+
+  // 🧱 Render Plans
   const renderPlanCards = (gender: string) => {
     const filteredPlans = plans.filter((p) => p.gender === gender);
     if (loading) return <p className="text-center text-muted-foreground py-10">Yükleniyor...</p>;
     if (filteredPlans.length === 0)
       return <p className="text-center text-muted-foreground py-10">Plan bulunamadı.</p>;
-
-    const mimarsinanColor = "#00bfff"; // أزرق
-    const yenimahalleColor = "#ff7f2a"; // برتقالي
 
     return (
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
@@ -102,13 +111,25 @@ const Membership = () => {
           const featureList = plan.features.split(",").map((f) => f.trim());
           const isPopular = plan.plan_name.trim() === "6 Aylık";
 
+          // 🌈 ألوان الأزرار حسب الجنس والفرع
+          let buttonColor = "#00bfff"; // اللون الافتراضي أزرق
+          if (gender === "Kadın") {
+            if (plan.plan_name.includes("Mimarsinan")) buttonColor = "#00bfff"; // Mimarsinan
+            else buttonColor = "#ff7f2a"; // Yenimahalle
+          } else if (gender === "Erkek") {
+            buttonColor = "#00bfff"; // Erkek Mimarsinan
+          } else if (gender === "Erkek Yenimahalle") {
+            buttonColor = "#ff7f2a"; // Erkek Yenimahalle
+          }
+
+          const originalPrice = findOriginalPrice(gender, plan.plan_name);
+
           return (
             <Card
               key={index}
-              className={`relative shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col ${
-                isPopular ? "border-4 border-primary" : "border border-border/50"
-              }`}
-              style={{ backgroundColor: "var(--background)", minHeight: "450px" }} // ارتفاع ثابت للكروت
+              className={`relative shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col ${isPopular ? "border-4 border-primary" : "border border-border/50"
+                }`}
+              style={{ backgroundColor: "var(--background)" }}
             >
               {isPopular && (
                 <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
@@ -116,17 +137,17 @@ const Membership = () => {
                 </Badge>
               )}
               <CardHeader className="text-center pb-4 pt-6">
-                <CardTitle className="text-2xl font-bold">{plan.plan_name}</CardTitle>
-                <div className="text-3xl font-extrabold text-foreground mt-2 flex flex-col items-center">
-                  {plan.old_price && plan.old_price.trim() !== "" && (
-                    <span className="text-lg text-muted-foreground line-through mb-1">
-                      {plan.old_price} TL {/* السعر القديم */}
+                <CardTitle className={`text-2xl font-bold`} style={{ color: buttonColor }}>
+                  {plan.plan_name}
+                </CardTitle>
+                <div className="text-3xl font-extrabold text-foreground mt-2">
+                  {originalPrice && (
+                    <span className="text-muted-foreground text-lg line-through mr-2">
+                      {originalPrice} TL
                     </span>
                   )}
-                  <span>
-                    {plan.price} TL
-                    <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
-                  </span>
+                  {plan.price} TL
+                  <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4 flex-grow flex flex-col">
@@ -143,57 +164,44 @@ const Membership = () => {
                   <div className="flex flex-col gap-2 mt-auto w-full">
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: mimarsinanColor }}
-                      onClick={() =>
-                        window.open(
-                          `https://wa.me/905366544655?text=${encodeURIComponent(
-                            `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`
-                          )}`,
-                          "_blank"
-                        )
-                      }
+                      style={{ backgroundColor: "#00bfff" }}
+                      onClick={() => {
+                        const message = `Kadın ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                        window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
+                      }}
                     >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Mimarsinan
+                      <MessageCircle className="mr-2 h-4 w-4" /> Mimarsinan
                     </Button>
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: yenimahalleColor }}
-                      onClick={() =>
-                        window.open(
-                          `https://wa.me/905365123655?text=${encodeURIComponent(
-                            `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`
-                          )}`,
-                          "_blank"
-                        )
-                      }
+                      style={{ backgroundColor: "#ff7f2a" }}
+                      onClick={() => {
+                        const message = `Kadın ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                        window.open(`https://wa.me/905365123655?text=${encodeURIComponent(message)}`, "_blank");
+                      }}
                     >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Yenimahalle
+                      <MessageCircle className="mr-2 h-4 w-4" /> Yenimahalle
                     </Button>
                   </div>
                 ) : (
-                  <div className="w-full mt-4"> {/* رفع الزر قليلاً */}
-                    <Button
-                      className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{
-                        backgroundColor:
-                          plan.gender.includes("Mimarsinan") ? mimarsinanColor : yenimahalleColor,
-                      }}
-                      onClick={() =>
-                        window.open(
-                          `https://wa.me/${
-                            plan.gender.includes("Mimarsinan") ? "905366544655" : "905365123655"
-                          }?text=${encodeURIComponent(
-                            `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`
-                          )}`,
-                          "_blank"
-                        )
-                      }
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      WhatsApp ile Kayıt Ol
-                    </Button>
+                  <div className="relative mt-auto w-full">
+                    <div className="flex flex-col gap-2 invisible pointer-events-none" aria-hidden="true">
+                      <Button tabIndex={-1} className="w-full">Placeholder</Button>
+                      <Button tabIndex={-1} className="w-full">Placeholder</Button>
+                    </div>
+                    <div className="absolute inset-0 flex flex-col justify-center">
+                      <Button
+                        className="w-full font-semibold text-white hover:opacity-90 transition"
+                        style={{ backgroundColor }}
+                        onClick={() => {
+                          const phoneNumber = plan.plan_name.includes("Yenimahalle") ? "905365123655" : "905366544655";
+                          const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                          window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
+                        }}
+                      >
+                        <MessageCircle className="mr-2 h-4 w-4" /> WhatsApp ile Kayıt Ol
+                      </Button>
+                    </div>
                   </div>
                 )}
               </CardContent>
@@ -207,6 +215,7 @@ const Membership = () => {
   return (
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
+        {/* ====== Countdown Timer ====== */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
           <Clock className="h-10 w-10 text-primary" />
           <span className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow-lg text-center">
@@ -223,7 +232,7 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* Mobile */}
+        {/* ======== Mobile ======== */}
         <div className="block md:hidden">
           <Tabs defaultValue="Kadın" orientation="vertical" className="w-full flex flex-col items-center">
             <TabsList className="flex flex-col gap-4 w-full max-w-md mb-14">
@@ -237,6 +246,7 @@ const Membership = () => {
                 <User className="h-5 w-5" /> Erkek Yenimahalle Şubesi Üyelikleri
               </TabsTrigger>
             </TabsList>
+
             <div className="w-full mt-10">
               <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
               <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
@@ -245,7 +255,7 @@ const Membership = () => {
           </Tabs>
         </div>
 
-        {/* Desktop */}
+        {/* ======== Desktop ======== */}
         <div className="hidden md:block">
           <Tabs defaultValue="Kadın" className="w-full">
             <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-12 gap-3">
@@ -264,6 +274,19 @@ const Membership = () => {
             <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
             <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek Yenimahalle")}</TabsContent>
           </Tabs>
+        </div>
+
+        <div className="text-center mt-24">
+          <p className="text-muted-foreground mb-5 text-base">
+            Daha fazla bilgi almak veya özel paket teklifleri için bize ulaşın
+          </p>
+          <Button
+            variant="outline"
+            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-xl px-6 py-3"
+            onClick={() => window.open("https://wa.me/905366544655", "_blank")}
+          >
+            <MessageCircle className="mr-2 h-4 w-4" /> WhatsApp ile İletişime Geç
+          </Button>
         </div>
       </div>
     </section>
