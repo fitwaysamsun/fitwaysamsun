@@ -161,7 +161,7 @@ const Membership = () => {
                   <div className="flex flex-col gap-2 mt-auto w-full">
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: buttonColor }}
+                      style={{ backgroundColor: "#00bfff" }}
                       onClick={() => {
                         const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
                         window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
@@ -172,7 +172,7 @@ const Membership = () => {
                     </Button>
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
-                      style={{ backgroundColor: buttonColor }}
+                      style={{ backgroundColor: "#ff7f2a" }}
                       onClick={() => {
                         const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
                         window.open(`https://wa.me/905365123655?text=${encodeURIComponent(message)}`, "_blank");
