@@ -28,8 +28,7 @@ const Membership = () => {
       const diff = now.getTime() - START_DATE.getTime();
       const weekMs = 7 * 24 * 60 * 60 * 1000;
       const weeksPassed = Math.floor(diff / weekMs);
-      const nextEnd = new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
-      return nextEnd;
+      return new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
     };
 
     let endDate = getCurrentCycleEnd();
@@ -87,12 +86,6 @@ const Membership = () => {
     fetchPlans();
   }, []);
 
-  // 💬 WhatsApp
-  const handleWhatsAppRegister = (planName: string, gender: string) => {
-    const message = `${gender} ${planName} üyelik paketi hakkında bilgi almak istiyorum.`;
-    window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
-  };
-
   // 💰 Original Prices
   const originalPrices: Record<string, Record<string, number>> = {
     "Erkek Mimarsinan": { "Aylık": 2000, "3 Aylık": 4500, "6 Aylık": 7500, "Yıllık": 13000 },
@@ -117,7 +110,6 @@ const Membership = () => {
           const featureList = plan.features.split(",").map((f) => f.trim());
           const isPopular = plan.plan_name.trim() === "6 Aylık";
 
-          // 🌈 ألوان الأزرار
           let buttonColor = index % 2 === 0 ? "#ff7f2a" : "#00bfff";
 
           const originalPrice = findOriginalPrice(gender, plan.plan_name);
@@ -125,9 +117,8 @@ const Membership = () => {
           return (
             <Card
               key={index}
-              className={`relative shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col ${isPopular ? "border-4 border-primary" : "border border-border/50"
-                }`}
-              style={{ backgroundColor: "var(--background)" }} // إعادة خلفية الكروت للون الموقع الأصلي
+              className={`relative shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] flex flex-col ${isPopular ? "border-4 border-primary" : "border border-border/50"}`}
+              style={{ backgroundColor: "var(--background)" }}
             >
               {isPopular && (
                 <Badge className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground shadow-md">
@@ -157,8 +148,10 @@ const Membership = () => {
                     </li>
                   ))}
                 </ul>
+
                 {gender === "Kadın" ? (
                   <div className="flex flex-col gap-2 mt-auto w-full">
+                    {/* الزر لكل شعبة */}
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
                       style={{ backgroundColor: buttonColor }}
@@ -168,7 +161,7 @@ const Membership = () => {
                       }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Mimarsinan
+                      Kayıt Ol - Mimarsinan
                     </Button>
                     <Button
                       className="w-full font-semibold text-white hover:opacity-90 transition"
@@ -179,18 +172,15 @@ const Membership = () => {
                       }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Yenimahalle
+                      Kayıt Ol - Yenimahalle
                     </Button>
                   </div>
                 ) : (
                   <div className="relative mt-auto w-full">
-                    {/* Invisible buttons to force container height to match Kadın cards */}
                     <div className="flex flex-col gap-2 invisible pointer-events-none" aria-hidden="true">
                       <Button tabIndex={-1} className="w-full">Placeholder</Button>
                       <Button tabIndex={-1} className="w-full">Placeholder</Button>
                     </div>
-
-                    {/* Centered visible button */}
                     <div className="absolute inset-0 flex flex-col justify-center">
                       <Button
                         className="w-full font-semibold text-white hover:opacity-90 transition"
@@ -208,17 +198,16 @@ const Membership = () => {
                   </div>
                 )}
               </CardContent>
-            </Card >
+            </Card>
           );
         })}
-      </div >
+      </div>
     );
   };
 
   return (
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        {/* ====== Countdown Timer ====== */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
           <Clock className="h-10 w-10 text-primary" />
           <span className="text-3xl md:text-4xl font-extrabold text-primary drop-shadow-lg text-center">
@@ -249,7 +238,6 @@ const Membership = () => {
                 <User className="h-5 w-5" /> Erkek Yenimahalle Şubesi Üyelikleri
               </TabsTrigger>
             </TabsList>
-
             <div className="w-full mt-10">
               <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
               <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
