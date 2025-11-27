@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageCircle, Check, ShieldCheck, Heart, Star, TrendingUp, Package } from "lucide-react";
+// تم استيراد جميع الأيقونات المطلوبة
+import { ArrowLeft, MessageCircle, Check, ShieldCheck, Heart, Star, TrendingUp, Package, CreditCard } from "lucide-react";
 import * as contentful from "contentful";
 
 // إعداد Contentful
@@ -15,21 +16,36 @@ const client = contentful.createClient({
     accessToken: CONTENTFUL_ACCESS_TOKEN,
 });
 
-// دالة normalize لتطبيع slug
+// دالة normalize لتطبيع slug (ضرورية للمقارنة)
 const normalize = (text: string) =>
-  text?.trim().toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '');
+    text?.trim().toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, '');
 
 const ProductDetail = () => {
     const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
-    const [product, setProduct] = useState<any>(null);
+    
+    // تعريف حالة المنتج لاستقبال سعريّن
+    const [product, setProduct] = useState<{
+        supplement_title: string;
+        supplement_price_cash: number | null; // السعر النقدي (Field ID: price)
+        supplement_price_card: number | null; // سعر الكرت (Field ID: priceCard)
+        supplement_desc: string;
+        supplement_image: string;
+    } | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchProduct = async () => {
+            setLoading(true); // تأكيد بدء التحميل
+
             try {
+                // جلب المنتجات
                 const entries = await client.getEntries({ limit: 50 });
+                
+                // البحث عن المنتج المطابق للـ slug باستخدام دالة normalize
                 const foundItem = entries.items.find((item: any) =>
+                    // يجب أن تكون دالة normalize معرفة داخل الكول باك
+                    // أو في النطاق الخارجي (وهي كذلك هنا) ليتم استخدامها
                     normalize(item.fields.name) === normalize(slug || "")
                 );
 
@@ -40,7 +56,10 @@ const ProductDetail = () => {
 
                     setProduct({
                         supplement_title: foundItem.fields.name,
-                        supplement_price: foundItem.fields.price || null,
+                        // استخدام 'price' للحقل النقدي
+                        supplement_price_cash: foundItem.fields.price || null,
+                        // استخدام 'priceCard' لحقل البطاقة
+                        supplement_price_card: foundItem.fields.priceCard || null,
                         supplement_desc: foundItem.fields.description || "",
                         supplement_image: imageUrl
                     });
@@ -57,7 +76,12 @@ const ProductDetail = () => {
 
     const handleWhatsApp = () => {
         if (!product) return;
-        const msg = `Merhaba, ${product.supplement_title} ürünü hakkında bilgi almak istiyorum.`;
+        
+        // تحديث رسالة الواتساب لتشمل السعريّن
+        const msg = `Merhaba, ${product.supplement_title} ürünü hakkında bilgi almak istiyorum.
+Nakit Fiyatı: ${product.supplement_price_cash?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL
+Kartla Ödeme Fiyatı: ${product.supplement_price_card?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL`;
+        
         window.open(`https://wa.me/905366544655?text=${encodeURIComponent(msg)}`, "_blank");
     };
 
@@ -104,15 +128,18 @@ const ProductDetail = () => {
         );
     }
 
+    // دالة مساعدة لتنسيق العملة باللغة التركية
+    const formatPrice = (price: number | null) => 
+        price !== null ? `${price.toLocaleString('tr-TR')} TL` : 'Fiyat Yok';
+
     return (
         <div className="min-h-screen bg-background text-foreground">
-            {/* Navigation مثبتة مع padding أعلى لتجنب التداخل */}
             <Navigation />
             <main className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
                 <Button
                     onClick={() => navigate('/products')}
                     variant="ghost"
-                    className="mb-6 hover:bg-accent/50 bg-background text-foreground"
+                    className="mb-6 hover:bg-accent/50 bg-background text-foreground group"
                 >
                     <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                     Tüm Ürünlere Dön
@@ -143,13 +170,38 @@ const ProductDetail = () => {
                         </h1>
 
                         <div className="flex flex-wrap items-center gap-4">
-                            <span className="text-3xl md:text-4xl font-bold text-primary">
-                                {product.supplement_price?.toString().replace("TL", "").trim()} TL
-                            </span>
                             <span className="px-3 py-1.5 rounded-full bg-green-500/10 text-green-500 text-sm font-bold flex items-center gap-2 border border-green-500/20">
                                 <Check className="w-4 h-4" /> Stokta Var
                             </span>
                         </div>
+                        
+                        {/* عرض السعرين الجديدين */}
+                        <div className="flex flex-col gap-4 p-5 bg-card/70 rounded-2xl border border-border/50 shadow-inner">
+                            <h3 className="text-xl font-bold text-primary">Fiyat Seçenekleri</h3>
+                            
+                            {/* Nakit Fiyatı */}
+                            <div className="flex items-center justify-between p-3 rounded-xl border border-dashed border-green-500/30 bg-green-500/5">
+                                <span className="text-lg font-semibold text-foreground flex items-center gap-2">
+                                    <Check className="w-5 h-5 text-green-500" />
+                                    Nakit Ödeme
+                                </span>
+                                <span className="text-3xl font-bold text-green-500">
+                                    {formatPrice(product.supplement_price_cash)}
+                                </span>
+                            </div>
+
+                            {/* Kart Fiyatı */}
+                            <div className="flex items-center justify-between p-3 rounded-xl border border-dashed border-primary/30 bg-primary/5">
+                                <span className="text-lg font-semibold text-foreground flex items-center gap-2">
+                                    <CreditCard className="w-5 h-5 text-primary" />
+                                    Kartla Ödeme
+                                </span>
+                                <span className="text-2xl font-bold text-primary">
+                                    {formatPrice(product.supplement_price_card)}
+                                </span>
+                            </div>
+                        </div>
+                        {/* ------------------------------------ */}
 
                         <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
                             <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
