@@ -9,7 +9,6 @@ interface Plan {
   gender: string;
   plan_name: string;
   price: string;
-  color?: string;
   features: string;
   popular: string;
 }
@@ -86,18 +85,6 @@ const Membership = () => {
     fetchPlans();
   }, []);
 
-  // 💰 Original Prices
-  const originalPrices: Record<string, Record<string, number>> = {
-    "Erkek Mimarsinan": { "Aylık": 2000, "3 Aylık": 4500, "6 Aylık": 7500, "Yıllık": 13000 },
-    "Erkek Yenimahalle": { "Aylık": 2500, "3 Aylık": 5500, "6 Aylık": 8500, "Yıllık": 14000 },
-    "Kadın": { "Aylık": 1800, "3 Aylık": 4000, "6 Aylık": 6800, "Yıllık": 11000 },
-  };
-
-  const findOriginalPrice = (gender: string, planName: string) => {
-    return originalPrices[gender]?.[planName] || null;
-  };
-
-  // 🧱 Render Plans
   const renderPlanCards = (gender: string) => {
     const filteredPlans = plans.filter((p) => p.gender === gender);
     if (loading) return <p className="text-center text-muted-foreground py-10">Yükleniyor...</p>;
@@ -110,11 +97,21 @@ const Membership = () => {
           const featureList = plan.features.split(",").map((f) => f.trim());
           const isPopular = plan.plan_name.trim() === "6 Aylık";
 
-          // 🌈 ألوان ثابتة لكل زر داخل البطاقة
+          // 🌈 ألوان ثابتة حسب الفرع
           const mimarsinanColor = "#00bfff"; // أزرق
           const yenimahalleColor = "#ff7f2a"; // برتقالي
 
-          const originalPrice = findOriginalPrice(gender, plan.plan_name);
+          const getButtonColor = (branch: string) => {
+            if (branch.includes("Mimarsinan")) return mimarsinanColor;
+            if (branch.includes("Yenimahalle")) return yenimahalleColor;
+            return "#00bfff";
+          };
+
+          const getPhoneNumber = (branch: string) => {
+            if (branch.includes("Mimarsinan")) return "905366544655";
+            if (branch.includes("Yenimahalle")) return "905365123655";
+            return "905366544655";
+          };
 
           return (
             <Card
@@ -132,11 +129,6 @@ const Membership = () => {
                   {plan.plan_name}
                 </CardTitle>
                 <div className="text-3xl font-extrabold text-foreground mt-2">
-                  {originalPrice && (
-                    <span className="text-muted-foreground text-lg line-through mr-2">
-                      {originalPrice} TL
-                    </span>
-                  )}
                   {plan.price} TL
                   <span className="text-sm font-normal text-muted-foreground ml-1">/dönem</span>
                 </div>
@@ -151,34 +143,47 @@ const Membership = () => {
                   ))}
                 </ul>
 
-                <div className="flex flex-col gap-2 mt-auto w-full">
-                  <Button
-                    className="w-full font-semibold text-white hover:opacity-90 transition"
-                    style={{ backgroundColor: mimarsinanColor }}
-                    onClick={() => {
-                      const phoneNumber = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
-                      const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                      const waNumber = gender === "Kadın" ? "905366544655" : phoneNumber;
-                      window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, "_blank");
-                    }}
-                  >
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Kayıt Ol - Mimarsinan
-                  </Button>
-                  <Button
-                    className="w-full font-semibold text-white hover:opacity-90 transition"
-                    style={{ backgroundColor: yenimahalleColor }}
-                    onClick={() => {
-                      const phoneNumber = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
-                      const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                      const waNumber = gender === "Kadın" ? "905365123655" : phoneNumber;
-                      window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, "_blank");
-                    }}
-                  >
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Kayıt Ol - Yenimahalle
-                  </Button>
-                </div>
+                {gender === "Kadın" ? (
+                  <div className="flex flex-col gap-2 mt-auto w-full">
+                    <Button
+                      className="w-full font-semibold text-white hover:opacity-90 transition"
+                      style={{ backgroundColor: mimarsinanColor }}
+                      onClick={() => {
+                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                        window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
+                      }}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Mimarsinan
+                    </Button>
+                    <Button
+                      className="w-full font-semibold text-white hover:opacity-90 transition"
+                      style={{ backgroundColor: yenimahalleColor }}
+                      onClick={() => {
+                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                        window.open(`https://wa.me/905365123655?text=${encodeURIComponent(message)}`, "_blank");
+                      }}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Yenimahalle
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="mt-auto w-full">
+                    <Button
+                      className="w-full font-semibold text-white hover:opacity-90 transition"
+                      style={{ backgroundColor: getButtonColor(plan.gender) }}
+                      onClick={() => {
+                        const phone = getPhoneNumber(plan.gender);
+                        const message = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+                      }}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      WhatsApp ile Kayıt Ol
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           );
@@ -206,7 +211,7 @@ const Membership = () => {
           </p>
         </div>
 
-        {/* ======== Mobile ======== */}
+        {/* Mobile */}
         <div className="block md:hidden">
           <Tabs defaultValue="Kadın" orientation="vertical" className="w-full flex flex-col items-center">
             <TabsList className="flex flex-col gap-4 w-full max-w-md mb-14">
@@ -228,7 +233,7 @@ const Membership = () => {
           </Tabs>
         </div>
 
-        {/* ======== Desktop ======== */}
+        {/* Desktop */}
         <div className="hidden md:block">
           <Tabs defaultValue="Kadın" className="w-full">
             <TabsList className="grid w-full max-w-5xl mx-auto grid-cols-3 mb-12 gap-3">
@@ -247,19 +252,6 @@ const Membership = () => {
             <TabsContent value="Erkek_Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
             <TabsContent value="Erkek_Yenimahalle">{renderPlanCards("Erkek Yenimahalle")}</TabsContent>
           </Tabs>
-        </div>
-
-        <div className="text-center mt-24">
-          <p className="text-muted-foreground mb-5 text-base">
-            Daha fazla bilgi almak veya özel paket teklifleri için bize ulaşın
-          </p>
-          <Button
-            variant="outline"
-            className="border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-xl px-6 py-3"
-            onClick={() => window.open("https://wa.me/905366544655", "_blank")}
-          >
-            <MessageCircle className="mr-2 h-4 w-4" /> WhatsApp ile İletişime Geç
-          </Button>
         </div>
       </div>
     </section>
