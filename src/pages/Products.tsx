@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Dumbbell, Zap, Heart, Activity, ArrowRight, Package, LayoutGrid } from "lucide-react";
+import { Dumbbell, Zap, Heart, Activity, ArrowRight, Package, LayoutGrid, Flame } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import * as contentful from "contentful";
@@ -21,6 +21,7 @@ const CONTENT_TYPE_MAP = {
     protein: "proteinTozlar",
     creatine: "kreatinler",
     vitamins: "vitaminlerMineraller",
+    performance: "gucVePerformans",
     equipment: "sporEkipmanlar",
     other: "digerUrunler",
 };
@@ -28,6 +29,8 @@ const CONTENT_TYPE_MAP = {
 interface ContentfulProduct {
     title: string;
     price: number | null;
+    priceCash?: number | null;
+    priceCard?: number | null;
     description: string;
     image: string;
     categoryTitle: string;
@@ -52,6 +55,7 @@ const Products = () => {
         { id: "protein", title: "Protein Tozları", desc: "Kas gelişimi için en iyi protein tozları.", icon: <Dumbbell className="w-6 h-6" />, contentTypeId: CONTENT_TYPE_MAP.protein },
         { id: "creatine", title: "Kreatinler", desc: "Güç ve performans artışı için kreatin seçenekleri.", icon: <Zap className="w-6 h-6" />, contentTypeId: CONTENT_TYPE_MAP.creatine },
         { id: "vitamins", title: "Vitaminler & Mineraller", desc: "Sağlığınızı destekleyen vitamin ve mineraller.", icon: <Heart className="w-6 h-6" />, contentTypeId: CONTENT_TYPE_MAP.vitamins },
+        { id: "performance", title: "Güç & Performans", desc: "Antrenman performansınızı artıracak ürünler.", icon: <Flame className="w-6 h-6" />, contentTypeId: CONTENT_TYPE_MAP.performance },
         { id: "equipment", title: "Spor Ekipmanları", desc: "Antrenmanlarınız için gerekli ekipmanlar.", icon: <Activity className="w-6 h-6" />, contentTypeId: CONTENT_TYPE_MAP.equipment },
         { id: "other", title: "Diğer Ürünler", desc: "Diğer tüm ürün çeşitlerimiz.", icon: <LayoutGrid className="w-6 h-6" />, contentTypeId: CONTENT_TYPE_MAP.other }
     ];
@@ -76,11 +80,15 @@ const Products = () => {
                         const entryTitle = entry.fields.name || "Ürün Adı Yok";
                         const entryDescription = entry.fields.description || "";
                         const entryPrice = entry.fields.price ? Number(entry.fields.price) : null;
+                        const entryPriceCash = entry.fields.priceCash ? Number(entry.fields.priceCash) : null;
+                        const entryPriceCard = entry.fields.priceCard ? Number(entry.fields.priceCard) : null;
                         const photoAsset = entry.fields.photos?.[0] || null;
                         const imageUrl = photoAsset?.fields?.file ? `https:${photoAsset.fields.file.url}` : "";
                         return {
                             title: entryTitle,
                             price: entryPrice,
+                            priceCash: entryPriceCash,
+                            priceCard: entryPriceCard,
                             description: entryDescription,
                             image: imageUrl,
                             categoryTitle: category.title,
@@ -167,7 +175,7 @@ const Products = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-20">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-20">
                         {categories.slice(1).map(cat => (
                             <div key={cat.id} onClick={() => scrollToCategory(cat.id)} className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-card to-background border border-border/50 p-6 cursor-pointer transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 hover:border-primary/50">
                                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -219,7 +227,16 @@ const Products = () => {
                                                             <div className="p-5 flex flex-col flex-1 relative">
                                                                 <h3 className="font-bold text-base mb-4 pb-2 leading-relaxed group-hover:text-primary transition-colors break-words min-h-[3rem]">{p.title}</h3>
                                                                 <div className="mt-auto flex items-center justify-between pt-6 border-t border-border/50">
-                                                                    <span className="text-xl font-bold text-primary">{p.price !== null ? `${p.price} TL` : 'Fiyat Sorunuz'}</span>
+                                                                    <div className="flex flex-col">
+                                                                        {(p.priceCash !== null || p.price !== null || p.priceCard !== null) ? (
+                                                                            <div className="flex flex-col gap-1">
+                                                                                {(p.priceCash ?? p.price) !== null && <span className="text-lg font-bold text-primary">Nakit Ödeme: {p.priceCash ?? p.price} TL</span>}
+                                                                                {p.priceCard !== null && <span className="text-sm font-medium text-muted-foreground">Kredi Kartı: {p.priceCard} TL</span>}
+                                                                            </div>
+                                                                        ) : (
+                                                                            <span className="text-xl font-bold text-primary">Fiyat Sorunuz</span>
+                                                                        )}
+                                                                    </div>
                                                                     <Button size="icon" className="rounded-full w-10 h-10 bg-primary text-primary-foreground hover:bg-primary/90">
                                                                         <ArrowRight className="w-5 h-5" />
                                                                     </Button>
