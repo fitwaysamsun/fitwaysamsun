@@ -31,13 +31,13 @@ const Navigation = () => {
   const handleNavigation = (href: string) => {
     setIsMobileMenuOpen(false);
 
+    if (href === location.pathname) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (href === '/') {
-      // Navigate to home page and scroll to top
-      if (location.pathname === '/') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        navigate('/');
-      }
+      navigate('/');
     } else if (href.startsWith('/#')) {
       const hash = href.substring(2); // Remove /# to get just the section name
       navigate('/', { state: { scrollTo: hash } });
@@ -70,8 +70,8 @@ const Navigation = () => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-        ? "bg-background shadow-lg border-b border-border"
-        : "bg-background shadow-lg border-b border-border lg:bg-transparent lg:border-transparent lg:shadow-none"
+      ? "bg-background shadow-lg border-b border-border"
+      : "bg-background shadow-lg border-b border-border lg:bg-transparent lg:border-transparent lg:shadow-none"
       }`}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-16 lg:h-20">
