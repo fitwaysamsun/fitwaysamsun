@@ -6,12 +6,13 @@ const Footer = () => {
   const location = useLocation();
 
   const handleNavigation = (href: string) => {
+    if (href === location.pathname) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (href === '/') {
-      if (location.pathname === '/') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        navigate('/');
-      }
+      navigate('/');
     } else if (href.startsWith('/#')) {
       const hash = href.substring(2);
       navigate('/', { state: { scrollTo: hash } });
