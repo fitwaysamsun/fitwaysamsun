@@ -23,7 +23,7 @@ const normalize = (text: string) =>
 const ProductDetail = () => {
     const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
-    
+
     // تعريف حالة المنتج لاستقبال سعريّن
     const [product, setProduct] = useState<{
         supplement_title: string;
@@ -41,7 +41,7 @@ const ProductDetail = () => {
             try {
                 // جلب المنتجات
                 const entries = await client.getEntries({ limit: 50 });
-                
+
                 // البحث عن المنتج المطابق للـ slug باستخدام دالة normalize
                 const foundItem = entries.items.find((item: any) =>
                     // يجب أن تكون دالة normalize معرفة داخل الكول باك
@@ -54,12 +54,23 @@ const ProductDetail = () => {
                         ? `https:${foundItem.fields.photos[0].fields.file.url}`
                         : "";
 
+                    const getField = (fields: any, keys: string[]) => {
+                        for (const key of keys) {
+                            if (fields[key] !== undefined) return Number(fields[key]);
+                        }
+                        return null;
+                    };
+
+                    const entryPrice = getField(foundItem.fields, ['price', 'fiyat']);
+                    const entryPriceCash = getField(foundItem.fields, ['priceCash', 'pricecash', 'PriceCash', 'nakit', 'cash']);
+                    const entryPriceCard = getField(foundItem.fields, ['priceCard', 'pricecard', 'PriceCard', 'kart', 'card']);
+
                     setProduct({
                         supplement_title: foundItem.fields.name,
-                        // استخدام 'price' للحقل النقدي
-                        supplement_price_cash: foundItem.fields.price || null,
-                        // استخدام 'priceCard' لحقل البطاقة
-                        supplement_price_card: foundItem.fields.priceCard || null,
+                        // If priceCash is found, use it. If not, fallback to 'price'
+                        supplement_price_cash: entryPriceCash ?? entryPrice,
+                        // If priceCard is found, use it.
+                        supplement_price_card: entryPriceCard,
                         supplement_desc: foundItem.fields.description || "",
                         supplement_image: imageUrl
                     });
@@ -76,12 +87,12 @@ const ProductDetail = () => {
 
     const handleWhatsApp = () => {
         if (!product) return;
-        
+
         // تحديث رسالة الواتساب لتشمل السعريّن
         const msg = `Merhaba, ${product.supplement_title} ürünü hakkında bilgi almak istiyorum.
 Nakit Fiyatı: ${product.supplement_price_cash?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL
 Kartla Ödeme Fiyatı: ${product.supplement_price_card?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL`;
-        
+
         window.open(`https://wa.me/905366544655?text=${encodeURIComponent(msg)}`, "_blank");
     };
 
@@ -129,7 +140,7 @@ Kartla Ödeme Fiyatı: ${product.supplement_price_card?.toLocaleString('tr-TR') 
     }
 
     // دالة مساعدة لتنسيق العملة باللغة التركية
-    const formatPrice = (price: number | null) => 
+    const formatPrice = (price: number | null) =>
         price !== null ? `${price.toLocaleString('tr-TR')} TL` : 'Fiyat Yok';
 
     return (
@@ -165,7 +176,7 @@ Kartla Ödeme Fiyatı: ${product.supplement_price_card?.toLocaleString('tr-TR') 
 
                     {/* Details Section */}
                     <div className="flex flex-col space-y-6">
-                        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-pulse leading-relaxed break-words">
+                        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-pulse leading-relaxed break-words pb-2">
                             {product.supplement_title}
                         </h1>
 
@@ -174,11 +185,11 @@ Kartla Ödeme Fiyatı: ${product.supplement_price_card?.toLocaleString('tr-TR') 
                                 <Check className="w-4 h-4" /> Stokta Var
                             </span>
                         </div>
-                        
+
                         {/* عرض السعرين الجديدين */}
                         <div className="flex flex-col gap-4 p-5 bg-card/70 rounded-2xl border border-border/50 shadow-inner">
                             <h3 className="text-xl font-bold text-primary">Fiyat Seçenekleri</h3>
-                            
+
                             {/* Nakit Fiyatı */}
                             <div className="flex items-center justify-between p-3 rounded-xl border border-dashed border-green-500/30 bg-green-500/5">
                                 <span className="text-lg font-semibold text-foreground flex items-center gap-2">
