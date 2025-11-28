@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Dumbbell, Zap, Heart, Activity, Package, Flame } from "lucide-react";
+import { ArrowRight, Dumbbell, Zap, Heart, Activity, Package, Flame, LayoutGrid } from "lucide-react";
 import * as contentful from "contentful";
 
 const CONTENTFUL_SPACE_ID = "p5kasvv6kj11";
@@ -13,7 +13,8 @@ const CONTENT_TYPE_MAP = {
   creatine: "kreatinler",
   vitamins: "vitaminlerMineraller",
   performance: "gucVePerformans",
-  equipment: "sporEkipmanlar"
+  equipment: "sporEkipmanlar",
+  other: "digerUrunler"
 } as const;
 
 interface ContentfulProduct {
@@ -48,7 +49,8 @@ const Supplements = () => {
     { id: "creatine", title: "Kreatinler", icon: <Zap className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.creatine },
     { id: "vitamins", title: "Vitaminler & Mineraller", icon: <Heart className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.vitamins },
     { id: "performance", title: "Güç & Performans", icon: <Flame className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.performance },
-    { id: "equipment", title: "Spor Ekipmanları", icon: <Activity className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.equipment }
+    { id: "equipment", title: "Spor Ekipmanları", icon: <Activity className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.equipment },
+    { id: "other", title: "Diğer Ürünler", icon: <LayoutGrid className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.other }
   ];
 
   useEffect(() => {
@@ -136,7 +138,7 @@ const Supplements = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {featuredProducts.map(({ category, product }, i) => {
               if (!product) {
                 return null;
@@ -148,7 +150,7 @@ const Supplements = () => {
               return (
                 <div
                   key={`${category.id}-${i}`}
-                  className="group relative bg-card border border-border/50 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col cursor-pointer"
+                  className="group relative bg-card border border-border/50 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col cursor-pointer w-full md:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]"
                   onClick={() => navigate(`/product/${slug}`)}
                 >
                   {/* Category Badge */}
