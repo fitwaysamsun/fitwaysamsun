@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, UserPlus } from "lucide-react"; // تغيير الأيقونة هنا
 
 const Hero = () => {
-  const [heroImage, setHeroImage] = useState("/Images/Hero.png");
+  const [heroImages, setHeroImages] = useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const SHEET_CSV_URL =
     "https://docs.google.com/spreadsheets/d/1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs/export?format=csv";
 
   useEffect(() => {
-    const fetchHeroImage = async () => {
+    const fetchHeroImages = async () => {
       try {
         const res = await fetch(SHEET_CSV_URL);
         const csvText = await res.text();
@@ -25,16 +26,31 @@ const Hero = () => {
           }, {} as Record<string, string>);
         });
 
-        if (data && data[0]?.hero_image) {
-          setHeroImage(data[0].hero_image);
+        const images: string[] = [];
+        if (data[0]?.hero_image) images.push(data[0].hero_image);
+        // Assuming the second image is in the second row under the same column 'hero_image'
+        if (data[1]?.hero_image) images.push(data[1].hero_image);
+
+        if (images.length > 0) {
+          setHeroImages(images);
         }
       } catch (error) {
-        console.error("Error fetching hero image from Google Sheets:", error);
+        console.error("Error fetching hero images from Google Sheets:", error);
       }
     };
 
-    fetchHeroImage();
+    fetchHeroImages();
   }, []);
+
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4500); // Switch every 4.5 seconds
+
+    return () => clearInterval(interval);
+  }, [heroImages]);
 
   const handleScrollToMembership = () => {
     const section = document.getElementById("membership");
@@ -45,12 +61,16 @@ const Hero = () => {
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-500"
-        style={{
-          backgroundImage: `url('${heroImage}')`,
-        }}
-      />
+      {heroImages.map((img, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ease-in-out ${index === currentImageIndex ? "opacity-100" : "opacity-0"
+            }`}
+          style={{
+            backgroundImage: `url('${img}')`,
+          }}
+        />
+      ))}
       <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/90" />
 
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
