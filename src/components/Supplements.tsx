@@ -1,22 +1,26 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Dumbbell, Zap, Heart, Activity } from "lucide-react";
+import { ArrowRight, Dumbbell, Zap, Heart, Activity, Package, Flame } from "lucide-react";
 import * as contentful from "contentful";
 
 const CONTENTFUL_SPACE_ID = "p5kasvv6kj11";
 const CONTENTFUL_ACCESS_TOKEN = "KSrKb2kKdkgzTYeBgbh6kIe3yvLctdTM51QjpLPisqM";
 
 const CONTENT_TYPE_MAP = {
+  packages: "avantajlPaketler",
   protein: "proteinTozlar",
   creatine: "kreatinler",
   vitamins: "vitaminlerMineraller",
+  performance: "gucVePerformans",
   equipment: "sporEkipmanlar"
 } as const;
 
 interface ContentfulProduct {
   title: string;
   price: number | null;
+  priceCash?: number | null;
+  priceCard?: number | null;
   description: string;
   image: string;
 }
@@ -39,9 +43,11 @@ const Supplements = () => {
   const [loading, setLoading] = useState(true);
 
   const categories: Category[] = [
+    { id: "packages", title: "Avantajlı Paketler", icon: <Package className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.packages },
     { id: "protein", title: "Protein Tozları", icon: <Dumbbell className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.protein },
     { id: "creatine", title: "Kreatinler", icon: <Zap className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.creatine },
     { id: "vitamins", title: "Vitaminler & Mineraller", icon: <Heart className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.vitamins },
+    { id: "performance", title: "Güç & Performans", icon: <Flame className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.performance },
     { id: "equipment", title: "Spor Ekipmanları", icon: <Activity className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.equipment }
   ];
 
@@ -63,12 +69,22 @@ const Supplements = () => {
 
             const entryTitle = entry.fields.name || "Ürün Adı Yok";
             const entryDescription = entry.fields.description || "";
-            const entryPrice = entry.fields.price ? Number(entry.fields.price) : null;
+
+            const getField = (fields: any, keys: string[]) => {
+              for (const key of keys) {
+                if (fields[key] !== undefined) return Number(fields[key]);
+              }
+              return null;
+            };
+
+            const entryPrice = getField(entry.fields, ['price', 'fiyat']);
+            const entryPriceCash = getField(entry.fields, ['priceCash', 'pricecash', 'PriceCash', 'nakit', 'cash']);
+            const entryPriceCard = getField(entry.fields, ['priceCard', 'pricecard', 'PriceCard', 'kart', 'card']);
 
             const photoAsset = entry.fields.photos && entry.fields.photos.length > 0
               ? entry.fields.photos[0]
               : null;
-            
+
             const imageUrl = photoAsset && photoAsset.fields.file
               ? `https:${photoAsset.fields.file.url}`
               : "";
@@ -76,6 +92,8 @@ const Supplements = () => {
             const product: ContentfulProduct = {
               title: entryTitle,
               price: entryPrice,
+              priceCash: entryPriceCash,
+              priceCard: entryPriceCard,
               description: entryDescription,
               image: imageUrl
             };
@@ -118,13 +136,13 @@ const Supplements = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredProducts.map(({ category, product }, i) => {
               if (!product) {
                 return null;
               }
 
-              const displayTitle = `${category.title.split(" ")[0]} - ${product.title}`;
+              const displayTitle = product.title;
               const slug = product.title.trim().toLowerCase().replace(/\s+/g, "-");
 
               return (
@@ -155,9 +173,16 @@ const Supplements = () => {
                     </h3>
 
                     <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/50">
-                      <span className="text-xl font-bold text-primary">
-                        {product.price !== null ? `${product.price} TL` : "Fiyat Sorunuz"}
-                      </span>
+                      <div className="flex flex-col">
+                        {(product.priceCash !== null || product.price !== null || product.priceCard !== null) ? (
+                          <div className="flex flex-col gap-0.5">
+                            {(product.priceCash ?? product.price) !== null && <span className="text-lg font-bold text-primary">Nakit Ödeme: {product.priceCash ?? product.price} TL</span>}
+                            {product.priceCard !== null && <span className="text-xs font-medium text-muted-foreground">Kredi Kartı: {product.priceCard} TL</span>}
+                          </div>
+                        ) : (
+                          <span className="text-xl font-bold text-primary">Fiyat Sorunuz</span>
+                        )}
+                      </div>
                       <Button
                         size="icon"
                         className="rounded-full w-10 h-10 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
