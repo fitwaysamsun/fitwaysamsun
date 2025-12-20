@@ -101,7 +101,7 @@ const About = () => {
               <img
                 src={aboutImage2}
                 alt="Weight Training Area"
-                className="w-[120%] max-w-none h-auto rounded-xl shadow-card hover:scale-105 transition-all duration-300"
+                className="w-[110%] max-w-none h-auto rounded-xl shadow-card hover:scale-105 transition-all duration-300 mt-10"
               />
             </div>
           </div>
