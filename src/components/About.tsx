@@ -94,14 +94,14 @@ const About = () => {
               <img
                 src={aboutImage1}
                 alt="Modern Cardio Equipment"
-                className="w-full h-auto rounded-xl shadow-card hover:scale-105 transition-all duration-300"
+                className="w-[120%] max-w-none h-auto rounded-xl shadow-card hover:scale-105 transition-all duration-300"
               />
             </div>
             <div className="space-y-4 mt-8">
               <img
                 src={aboutImage2}
                 alt="Weight Training Area"
-                className="w-full h-auto rounded-xl shadow-card hover:scale-105 transition-all duration-300"
+                className="w-[120%] max-w-none h-auto rounded-xl shadow-card hover:scale-105 transition-all duration-300"
               />
             </div>
           </div>
