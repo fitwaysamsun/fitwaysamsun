@@ -9,37 +9,31 @@ interface Plan {
   gender: string;
   plan_name: string;
   price: string;
-  color?: string;
   features: string;
-  popular: string;
 }
 
 const Membership = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
-  const [timeLeft, setTimeLeft] = useState<string>("");
+  const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
     const START_DATE = new Date("2025-11-04T00:00:00Z");
-    const getCurrentCycleEnd = () => {
+    const getNext = () => {
       const now = new Date();
-      const diff = now.getTime() - START_DATE.getTime();
-      const weekMs = 7 * 24 * 60 * 60 * 1000;
-      const weeksPassed = Math.floor(diff / weekMs);
-      return new Date(START_DATE.getTime() + (weeksPassed + 1) * weekMs);
+      const weeks = Math.floor((now.getTime() - START_DATE.getTime()) / (7 * 86400000));
+      return new Date(START_DATE.getTime() + (weeks + 1) * 7 * 86400000);
     };
 
-    let endDate = getCurrentCycleEnd();
+    let end = getNext();
     const timer = setInterval(() => {
-      const now = new Date();
-      const distance = endDate.getTime() - now.getTime();
-      if (distance <= 0) endDate = getCurrentCycleEnd();
+      const diff = end.getTime() - Date.now();
+      if (diff <= 0) end = getNext();
 
-      const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((distance % (1000 * 60)) / 1000);
-
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
       setTimeLeft(`${d} gün ${h} saat ${m} dk ${s} sn`);
     }, 1000);
 
@@ -47,60 +41,72 @@ const Membership = () => {
   }, []);
 
   useEffect(() => {
-    const SHEET_ID = "1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs";
-    const GID = "123456789";
-    const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+    const URL =
+      "https://docs.google.com/spreadsheets/d/1CqoozoZNdem8XmeIytSQbu3coFeJtQXhcEXKj2tjHcs/gviz/tq?tqx=out:json&gid=123456789";
 
-    fetch(GVIZ_URL)
+    fetch(URL)
       .then((r) => r.text())
-      .then((text) => {
-        const json = JSON.parse(text.replace(/^[^\(]*\(\s*/, "").replace(/\);\s*$/, ""));
-        const cols = json.table.cols.map((c: any) => c.label || "");
-        const rows = json.table.rows.map((r: any) => {
-          const obj: any = {};
-          r.c.forEach((cell: any, i: number) => (obj[cols[i]] = cell?.v ? String(cell.v) : ""));
-          return obj;
+      .then((t) => {
+        const j = JSON.parse(t.replace(/^[^\(]*\(\s*/, "").replace(/\);\s*$/, ""));
+        const cols = j.table.cols.map((c: any) => c.label || "");
+        const rows = j.table.rows.map((r: any) => {
+          const o: any = {};
+          r.c.forEach((c: any, i: number) => (o[cols[i]] = c?.v ? String(c.v) : ""));
+          return o;
         });
         setPlans(rows.filter((r: any) => r.plan_name));
         setLoading(false);
       });
   }, []);
 
-  const renderPlanCards = (gender: string) => {
-    const filtered = plans.filter((p) => p.gender === gender);
+  const render = (gender: string) => {
+    const list = plans.filter((p) => p.gender === gender);
     if (loading) return <p className="text-center py-10">Yükleniyor...</p>;
-    if (!filtered.length) return <p className="text-center py-10">Plan bulunamadı.</p>;
+    if (!list.length) return <p className="text-center py-10">Plan bulunamadı.</p>;
 
     return (
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
-        {filtered.map((plan, i) => {
-          const featureList = plan.features.split(",").map((f) => f.trim());
-          const isPopular = plan.plan_name === "6 Aylık";
-          const buttonColor = i % 2 === 0 ? "#ff7f2a" : "#00bfff";
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {list.map((plan, i) => {
+          const feats = plan.features.split(",").map((f) => f.trim());
+          const popular = plan.plan_name === "6 Aylık";
+          const color = i % 2 === 0 ? "#ff7f2a" : "#00bfff";
 
           return (
-            <Card key={i} className={`relative ${isPopular ? "border-4 border-primary" : ""}`}>
-              {isPopular && (
+            <Card key={i} className={`relative ${popular ? "border-4 border-primary" : ""}`}>
+              {popular && (
                 <Badge className="absolute -top-4 left-1/2 -translate-x-1/2">
                   En Çok Tercih Edilen
                 </Badge>
               )}
               <CardHeader className="text-center">
-                <CardTitle style={{ color: buttonColor }}>{plan.plan_name}</CardTitle>
+                <CardTitle style={{ color }}>{plan.plan_name}</CardTitle>
                 <div className="text-3xl font-extrabold mt-2">
                   {plan.price} TL
                   <span className="text-sm ml-1 text-muted-foreground">/dönem</span>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex flex-col gap-4">
                 <ul className="space-y-3">
-                  {featureList.map((f, x) => (
+                  {feats.map((f, x) => (
                     <li key={x} className="flex items-center text-sm">
                       <Check className="h-4 w-4 mr-2 text-primary" />
                       {f}
                     </li>
                   ))}
                 </ul>
+
+                <Button
+                  className="w-full text-white font-semibold mt-auto"
+                  style={{ backgroundColor: color }}
+                  onClick={() => {
+                    const phone = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
+                    const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+                  }}
+                >
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  WhatsApp ile Kayıt Ol
+                </Button>
               </CardContent>
             </Card>
           );
@@ -110,22 +116,23 @@ const Membership = () => {
   };
 
   return (
-    <section id="membership" className="py-20 px-6">
+    <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10 text-3xl font-bold text-primary">
-          Haftalık İndirim için kalan süre: {timeLeft}
+
+        <div className="flex justify-center items-center gap-3 mb-10 text-primary text-3xl font-bold">
+          <Clock /> Haftalık İndirim için kalan süre: {timeLeft}
         </div>
 
         <Tabs defaultValue="Kadın">
           <TabsList className="grid grid-cols-3 mb-12">
-            <TabsTrigger value="Kadın">Kadın</TabsTrigger>
-            <TabsTrigger value="Erkek Mimarsinan">Erkek Mimarsinan</TabsTrigger>
-            <TabsTrigger value="Erkek Yenimahalle">Erkek Yenimahalle</TabsTrigger>
+            <TabsTrigger value="Kadın"><Users className="mr-2 h-4 w-4" />Kadın</TabsTrigger>
+            <TabsTrigger value="Erkek Mimarsinan"><User className="mr-2 h-4 w-4" />Mimarsinan</TabsTrigger>
+            <TabsTrigger value="Erkek Yenimahalle"><User className="mr-2 h-4 w-4" />Yenimahalle</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="Kadın">{renderPlanCards("Kadın")}</TabsContent>
-          <TabsContent value="Erkek Mimarsinan">{renderPlanCards("Erkek Mimarsinan")}</TabsContent>
-          <TabsContent value="Erkek Yenimahalle">{renderPlanCards("Erkek Yenimahalle")}</TabsContent>
+          <TabsContent value="Kadın">{render("Kadın")}</TabsContent>
+          <TabsContent value="Erkek Mimarsinan">{render("Erkek Mimarsinan")}</TabsContent>
+          <TabsContent value="Erkek Yenimahalle">{render("Erkek Yenimahalle")}</TabsContent>
         </Tabs>
       </div>
     </section>
