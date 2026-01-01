@@ -3,13 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageCircle, Check, Users, User, Clock } from "lucide-react";
+import { MessageCircle, Users, User, Clock } from "lucide-react";
 
 interface Plan {
   gender: string;
   plan_name: string;
   price: string;
-  features: string;
 }
 
 const Membership = () => {
@@ -67,40 +66,38 @@ const Membership = () => {
     return (
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {list.map((plan, i) => {
-          const feats = plan.features.split(",").map((f) => f.trim());
           const popular = plan.plan_name === "6 Aylık";
           const color = i % 2 === 0 ? "#ff7f2a" : "#00bfff";
 
           return (
-            <Card key={i} className={`relative ${popular ? "border-4 border-primary" : ""}`}>
+            <Card
+              key={i}
+              className={`relative rounded-2xl shadow-lg hover:scale-[1.03] transition-all ${
+                popular ? "border-4 border-primary" : "border"
+              }`}
+            >
               {popular && (
                 <Badge className="absolute -top-4 left-1/2 -translate-x-1/2">
                   En Çok Tercih Edilen
                 </Badge>
               )}
-              <CardHeader className="text-center">
-                <CardTitle style={{ color }}>{plan.plan_name}</CardTitle>
-                <div className="text-3xl font-extrabold mt-2">
+
+              <CardHeader className="text-center space-y-3">
+                <CardTitle className="text-2xl font-bold" style={{ color }}>
+                  {plan.plan_name}
+                </CardTitle>
+                <div className="text-4xl font-extrabold">
                   {plan.price} TL
-                  <span className="text-sm ml-1 text-muted-foreground">/dönem</span>
+                  <div className="text-sm font-normal text-muted-foreground">/ dönem</div>
                 </div>
               </CardHeader>
 
-              <CardContent className="flex flex-col gap-4">
-                <ul className="space-y-3">
-                  {feats.map((f, x) => (
-                    <li key={x} className="flex items-center text-sm">
-                      <Check className="h-4 w-4 mr-2 text-primary" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
+              <CardContent className="pt-2">
                 {/* === أزرار الاشتراك === */}
                 {gender === "Kadın" ? (
-                  <div className="flex flex-col gap-2 mt-auto">
+                  <div className="flex flex-col gap-3">
                     <Button
-                      className="w-full text-white font-semibold"
+                      className="w-full text-white font-semibold py-6 rounded-xl"
                       style={{ backgroundColor: "#00bfff" }}
                       onClick={() => {
                         const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
@@ -108,11 +105,11 @@ const Membership = () => {
                       }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Kayıt Ol - Mimarsinan
+                      Mimarsinan Şubesi
                     </Button>
 
                     <Button
-                      className="w-full text-white font-semibold"
+                      className="w-full text-white font-semibold py-6 rounded-xl"
                       style={{ backgroundColor: "#ff7f2a" }}
                       onClick={() => {
                         const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
@@ -120,12 +117,12 @@ const Membership = () => {
                       }}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
-                      Kayıt Ol - Yenimahalle
+                      Yenimahalle Şubesi
                     </Button>
                   </div>
                 ) : (
                   <Button
-                    className="w-full text-white font-semibold mt-auto"
+                    className="w-full text-white font-semibold py-6 rounded-xl"
                     style={{ backgroundColor: color }}
                     onClick={() => {
                       const phone = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
@@ -146,14 +143,14 @@ const Membership = () => {
   };
 
   return (
-    <section id="membership" className="py-20 px-6 bg-secondary/20">
+    <section id="membership" className="py-24 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-center items-center gap-3 mb-10 text-primary text-3xl font-bold">
+        <div className="flex justify-center items-center gap-3 mb-14 text-primary text-3xl font-bold">
           <Clock /> Haftalık İndirim için kalan süre: {timeLeft}
         </div>
 
         <Tabs defaultValue="Kadın">
-          <TabsList className="grid grid-cols-3 mb-12">
+          <TabsList className="grid grid-cols-3 mb-14">
             <TabsTrigger value="Kadın"><Users className="mr-2 h-4 w-4" />Kadın</TabsTrigger>
             <TabsTrigger value="Erkek Mimarsinan"><User className="mr-2 h-4 w-4" />Mimarsinan</TabsTrigger>
             <TabsTrigger value="Erkek Yenimahalle"><User className="mr-2 h-4 w-4" />Yenimahalle</TabsTrigger>
