@@ -85,6 +85,7 @@ const Membership = () => {
                   <span className="text-sm ml-1 text-muted-foreground">/dönem</span>
                 </div>
               </CardHeader>
+
               <CardContent className="flex flex-col gap-4">
                 <ul className="space-y-3">
                   {feats.map((f, x) => (
@@ -95,18 +96,47 @@ const Membership = () => {
                   ))}
                 </ul>
 
-                <Button
-                  className="w-full text-white font-semibold mt-auto"
-                  style={{ backgroundColor: color }}
-                  onClick={() => {
-                    const phone = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
-                    const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
-                  }}
-                >
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  WhatsApp ile Kayıt Ol
-                </Button>
+                {/* === أزرار الاشتراك === */}
+                {gender === "Kadın" ? (
+                  <div className="flex flex-col gap-2 mt-auto">
+                    <Button
+                      className="w-full text-white font-semibold"
+                      style={{ backgroundColor: "#00bfff" }}
+                      onClick={() => {
+                        const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                        window.open(`https://wa.me/905366544655?text=${encodeURIComponent(msg)}`, "_blank");
+                      }}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Kayıt Ol - Mimarsinan
+                    </Button>
+
+                    <Button
+                      className="w-full text-white font-semibold"
+                      style={{ backgroundColor: "#ff7f2a" }}
+                      onClick={() => {
+                        const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                        window.open(`https://wa.me/905365123655?text=${encodeURIComponent(msg)}`, "_blank");
+                      }}
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Kayıt Ol - Yenimahalle
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    className="w-full text-white font-semibold mt-auto"
+                    style={{ backgroundColor: color }}
+                    onClick={() => {
+                      const phone = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
+                      const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
+                      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+                    }}
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    WhatsApp ile Kayıt Ol
+                  </Button>
+                )}
               </CardContent>
             </Card>
           );
@@ -118,7 +148,6 @@ const Membership = () => {
   return (
     <section id="membership" className="py-20 px-6 bg-secondary/20">
       <div className="max-w-7xl mx-auto">
-
         <div className="flex justify-center items-center gap-3 mb-10 text-primary text-3xl font-bold">
           <Clock /> Haftalık İndirim için kalan süre: {timeLeft}
         </div>
