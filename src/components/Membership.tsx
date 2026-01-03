@@ -107,18 +107,6 @@ const Membership = () => {
 
   return (
     <section id="membership" className="py-24 px-6 bg-secondary/20">
-      <style>{`
-        .tab-glow {
-          border: 2px solid #00bfff !important;
-          box-shadow: 0 0 12px rgba(0,191,255,0.7);
-          animation: tabPulse 1.5s infinite alternate;
-        }
-        @keyframes tabPulse {
-          from { box-shadow: 0 0 10px rgba(0,191,255,0.6); }
-          to { box-shadow: 0 0 25px rgba(0,191,255,1); }
-        }
-      `}</style>
-
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-center items-center gap-3 mb-14 text-primary text-3xl font-bold">
           <Clock /> Haftalık İndirim için kalan süre: {timeLeft}
@@ -126,9 +114,17 @@ const Membership = () => {
 
         <Tabs defaultValue="Erkek Mimarsinan">
           <TabsList className="grid grid-cols-3 mb-14 gap-4">
-            <TabsTrigger className="tab-glow" value="Erkek Mimarsinan">♂ Mimarsinan</TabsTrigger>
-            <TabsTrigger className="tab-glow" value="Erkek Yenimahalle">♂ Yenimahalle</TabsTrigger>
-            <TabsTrigger className="tab-glow" value="Kadın">♀ Kadın</TabsTrigger>
+            <TabsTrigger value="Erkek Mimarsinan" className="border-2 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.8)] animate-pulse hover:shadow-[0_0_30px_rgba(56,189,248,1)] transition-all">
+              ♂ Mimarsinan
+            </TabsTrigger>
+
+            <TabsTrigger value="Erkek Yenimahalle" className="border-2 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.8)] animate-pulse hover:shadow-[0_0_30px_rgba(56,189,248,1)] transition-all">
+              ♂ Yenimahalle
+            </TabsTrigger>
+
+            <TabsTrigger value="Kadın" className="border-2 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.8)] animate-pulse hover:shadow-[0_0_30px_rgba(56,189,248,1)] transition-all">
+              ♀ Kadın
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="Erkek Mimarsinan">{render("Erkek Mimarsinan")}</TabsContent>
