@@ -106,7 +106,7 @@ const Membership = () => {
   };
 
   return (
-    <section id="membership" className="py-24 px-6 bg-secondary/20">
+    <section id="membership" className="py-24 px-6 bg-secondary/20 relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-center items-center gap-3 mb-14 text-primary text-3xl font-bold">
           <Clock /> Haftalık İndirim için kalan süre: {timeLeft}
@@ -114,17 +114,9 @@ const Membership = () => {
 
         <Tabs defaultValue="Erkek Mimarsinan">
           <TabsList className="grid grid-cols-3 mb-14 gap-4">
-            <TabsTrigger value="Erkek Mimarsinan" className="border-2 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.8)] animate-pulse hover:shadow-[0_0_30px_rgba(56,189,248,1)] transition-all">
-              ♂ Mimarsinan
-            </TabsTrigger>
-
-            <TabsTrigger value="Erkek Yenimahalle" className="border-2 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.8)] animate-pulse hover:shadow-[0_0_30px_rgba(56,189,248,1)] transition-all">
-              ♂ Yenimahalle
-            </TabsTrigger>
-
-            <TabsTrigger value="Kadın" className="border-2 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.8)] animate-pulse hover:shadow-[0_0_30px_rgba(56,189,248,1)] transition-all">
-              ♀ Kadın
-            </TabsTrigger>
+            <TabsTrigger value="Erkek Mimarsinan" className="border-2 border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.8)] animate-pulse transition-all">♂ Mimarsinan</TabsTrigger>
+            <TabsTrigger value="Erkek Yenimahalle" className="border-2 border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.8)] animate-pulse transition-all">♂ Yenimahalle</TabsTrigger>
+            <TabsTrigger value="Kadın" className="border-2 border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.8)] animate-pulse transition-all">♀ Kadın</TabsTrigger>
           </TabsList>
 
           <TabsContent value="Erkek Mimarsinan">{render("Erkek Mimarsinan")}</TabsContent>
