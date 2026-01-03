@@ -70,68 +70,33 @@ const Membership = () => {
           const color = i % 2 === 0 ? "#ff7f2a" : "#00bfff";
 
           return (
-            <Card
-              key={i}
-              className={`relative rounded-2xl shadow-lg hover:scale-[1.03] transition-all ${
-                popular ? "border-4 border-primary" : "border"
-              }`}
-            >
+            <Card key={i} className={`rounded-2xl shadow-lg hover:scale-[1.03] transition-all ${popular ? "border-4 border-primary" : "border"}`}>
               {popular && (
-                <Badge className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  En Çok Tercih Edilen
-                </Badge>
+                <Badge className="absolute -top-4 left-1/2 -translate-x-1/2">En Çok Tercih Edilen</Badge>
               )}
 
               <CardHeader className="text-center space-y-3">
-                <CardTitle className="text-2xl font-bold" style={{ color }}>
-                  {plan.plan_name}
-                </CardTitle>
-                <div className="text-4xl font-extrabold">
-                  {plan.price} TL
-                  <div className="text-sm font-normal text-muted-foreground">/ dönem</div>
-                </div>
+                <CardTitle className="text-2xl font-bold" style={{ color }}>{plan.plan_name}</CardTitle>
+                <div className="text-4xl font-extrabold">{plan.price} TL<div className="text-sm text-muted-foreground">/ dönem</div></div>
               </CardHeader>
 
-              <CardContent className="pt-2">
-                {/* === أزرار الاشتراك === */}
+              <CardContent>
                 {gender === "Kadın" ? (
                   <div className="flex flex-col gap-3">
-                    <Button
-                      className="w-full text-white font-semibold py-6 rounded-xl"
-                      style={{ backgroundColor: "#00bfff" }}
-                      onClick={() => {
-                        const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                        window.open(`https://wa.me/905366544655?text=${encodeURIComponent(msg)}`, "_blank");
-                      }}
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Mimarsinan Şubesi
+                    <Button className="w-full py-6 text-white rounded-xl" style={{ backgroundColor: "#00bfff" }}
+                      onClick={() => window.open(`https://wa.me/905366544655?text=${encodeURIComponent(`${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`)}`, "_blank")}>
+                      <MessageCircle className="mr-2 h-4 w-4" /> Mimarsinan Şubesi
                     </Button>
 
-                    <Button
-                      className="w-full text-white font-semibold py-6 rounded-xl"
-                      style={{ backgroundColor: "#ff7f2a" }}
-                      onClick={() => {
-                        const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                        window.open(`https://wa.me/905365123655?text=${encodeURIComponent(msg)}`, "_blank");
-                      }}
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Yenimahalle Şubesi
+                    <Button className="w-full py-6 text-white rounded-xl" style={{ backgroundColor: "#ff7f2a" }}
+                      onClick={() => window.open(`https://wa.me/905365123655?text=${encodeURIComponent(`${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`)}`, "_blank")}>
+                      <MessageCircle className="mr-2 h-4 w-4" /> Yenimahalle Şubesi
                     </Button>
                   </div>
                 ) : (
-                  <Button
-                    className="w-full text-white font-semibold py-6 rounded-xl"
-                    style={{ backgroundColor: color }}
-                    onClick={() => {
-                      const phone = gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655";
-                      const msg = `${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`;
-                      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
-                    }}
-                  >
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    WhatsApp ile Kayıt Ol
+                  <Button className="w-full py-6 text-white rounded-xl" style={{ backgroundColor: color }}
+                    onClick={() => window.open(`https://wa.me/${gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655"}?text=${encodeURIComponent(`${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`)}`, "_blank")}>
+                    <MessageCircle className="mr-2 h-4 w-4" /> WhatsApp ile Kayıt Ol
                   </Button>
                 )}
               </CardContent>
@@ -144,21 +109,33 @@ const Membership = () => {
 
   return (
     <section id="membership" className="py-24 px-6 bg-secondary/20">
+      <style>{`
+        .tab-glow {
+          border: 2px solid #00bfff !important;
+          box-shadow: 0 0 12px rgba(0,191,255,0.7);
+          animation: tabPulse 1.5s infinite alternate;
+        }
+        @keyframes tabPulse {
+          from { box-shadow: 0 0 10px rgba(0,191,255,0.6); }
+          to { box-shadow: 0 0 25px rgba(0,191,255,1); }
+        }
+      `}</style>
+
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-center items-center gap-3 mb-14 text-primary text-3xl font-bold">
           <Clock /> Haftalık İndirim için kalan süre: {timeLeft}
         </div>
 
-        <Tabs defaultValue="Kadın">
-          <TabsList className="grid grid-cols-3 mb-14">
-            <TabsTrigger value="Kadın"><Users className="mr-2 h-4 w-4" />Kadın</TabsTrigger>
-            <TabsTrigger value="Erkek Mimarsinan"><User className="mr-2 h-4 w-4" />Mimarsinan</TabsTrigger>
-            <TabsTrigger value="Erkek Yenimahalle"><User className="mr-2 h-4 w-4" />Yenimahalle</TabsTrigger>
+        <Tabs defaultValue="Erkek Mimarsinan">
+          <TabsList className="grid grid-cols-3 mb-14 gap-4">
+            <TabsTrigger className="tab-glow" value="Erkek Mimarsinan"><User className="mr-2 h-4 w-4" /> Mimarsinan</TabsTrigger>
+            <TabsTrigger className="tab-glow" value="Erkek Yenimahalle"><User className="mr-2 h-4 w-4" /> Yenimahalle</TabsTrigger>
+            <TabsTrigger className="tab-glow" value="Kadın"><Users className="mr-2 h-4 w-4" /> Kadın</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="Kadın">{render("Kadın")}</TabsContent>
           <TabsContent value="Erkek Mimarsinan">{render("Erkek Mimarsinan")}</TabsContent>
           <TabsContent value="Erkek Yenimahalle">{render("Erkek Yenimahalle")}</TabsContent>
+          <TabsContent value="Kadın">{render("Kadın")}</TabsContent>
         </Tabs>
       </div>
     </section>
