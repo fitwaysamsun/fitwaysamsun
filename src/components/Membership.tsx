@@ -65,7 +65,6 @@ export default function Membership() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {list.map((plan, i) => {
           const color = i % 2 === 0 ? "#ff7f2a" : "#00bfff";
-
           return (
             <Card key={i} className="rounded-2xl shadow-lg hover:scale-[1.03] transition-all">
               <CardHeader className="text-center">
@@ -76,17 +75,17 @@ export default function Membership() {
               <CardContent>
                 {gender === "Kadın" ? (
                   <div className="flex flex-col gap-3">
-                    <Button className="w-full py-6 text-white rounded-xl bg-sky-500"
+                    <Button className="w-full py-5 text-white rounded-xl bg-sky-500"
                       onClick={() => window.open(`https://wa.me/905366544655?text=${encodeURIComponent(`${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`)}`, "_blank")}>
                       Mimarsinan Şubesi
                     </Button>
-                    <Button className="w-full py-6 text-white rounded-xl bg-orange-500"
+                    <Button className="w-full py-5 text-white rounded-xl bg-orange-500"
                       onClick={() => window.open(`https://wa.me/905365123655?text=${encodeURIComponent(`${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`)}`, "_blank")}>
                       Yenimahalle Şubesi
                     </Button>
                   </div>
                 ) : (
-                  <Button className="w-full py-6 text-white rounded-xl" style={{ backgroundColor: color }}
+                  <Button className="w-full py-5 text-white rounded-xl" style={{ backgroundColor: color }}
                     onClick={() => window.open(`https://wa.me/${gender === "Erkek Yenimahalle" ? "905365123655" : "905366544655"}?text=${encodeURIComponent(`${gender} ${plan.plan_name} üyelik paketi hakkında bilgi almak istiyorum.`)}`, "_blank")}>
                     WhatsApp ile Kayıt Ol
                   </Button>
@@ -100,39 +99,42 @@ export default function Membership() {
   };
 
   return (
-    <section id="membership" className="py-24 px-6 bg-secondary/20">
+    <section id="membership" className="py-20 px-6 bg-secondary/20">
       <style>{`
         .tab-glow {
           border: 2px solid #00bfff !important;
-          box-shadow: 0 0 15px rgba(0,191,255,0.8);
+          box-shadow: 0 0 10px rgba(0,191,255,0.6);
           animation: pulse 1.5s infinite alternate;
         }
         @keyframes pulse {
-          from { box-shadow: 0 0 10px rgba(0,191,255,0.6); }
-          to { box-shadow: 0 0 30px rgba(0,191,255,1); }
+          from { box-shadow: 0 0 6px rgba(0,191,255,0.4); }
+          to { box-shadow: 0 0 14px rgba(0,191,255,0.9); }
         }
       `}</style>
 
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-center items-center gap-3 mb-14 text-primary text-3xl font-bold">
+        <div className="flex justify-center items-center gap-3 mb-12 text-primary text-2xl font-bold">
           <Clock /> Haftalık İndirim için kalan süre: {timeLeft}
         </div>
 
         <Tabs defaultValue="Erkek Mimarsinan">
-          <TabsList className="grid grid-cols-3 gap-4 mb-14 text-lg font-bold">
-            <TabsTrigger className="tab-glow flex flex-col py-4" value="Erkek Mimarsinan">
-              <span className="text-3xl">♂</span>
-              MIMARSINAN
+          <TabsList className="grid grid-cols-3 gap-3 mb-12 text-sm font-semibold">
+            <TabsTrigger className="tab-glow flex flex-col items-center py-3" value="Erkek Mimarsinan">
+              <span className="text-xl leading-none">♂</span>
+              <span>Mimarsinan</span>
+              <span className="text-[11px] text-muted-foreground">Erkek</span>
             </TabsTrigger>
 
-            <TabsTrigger className="tab-glow flex flex-col py-4" value="Erkek Yenimahalle">
-              <span className="text-3xl">♂</span>
-              YENİMAHALLE
+            <TabsTrigger className="tab-glow flex flex-col items-center py-3" value="Erkek Yenimahalle">
+              <span className="text-xl leading-none">♂</span>
+              <span>Yenimahalle</span>
+              <span className="text-[11px] text-muted-foreground">Erkek</span>
             </TabsTrigger>
 
-            <TabsTrigger className="tab-glow flex flex-col py-4" value="Kadın">
-              <span className="text-3xl">♀</span>
-              KADIN
+            <TabsTrigger className="tab-glow flex flex-col items-center py-3" value="Kadın">
+              <span className="text-xl leading-none">♀</span>
+              <span>Kadın</span>
+              <span className="text-[11px] text-muted-foreground">Kadın</span>
             </TabsTrigger>
           </TabsList>
 
