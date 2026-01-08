@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Dumbbell, Zap, Heart, Activity, Package, Flame, LayoutGrid } from "lucide-react";
+import { ArrowRight, Dumbbell, Zap, Heart, Activity, Package, Flame, LayoutGrid, MessageCircle } from "lucide-react";
 import * as contentful from "contentful";
 
 const CONTENTFUL_SPACE_ID = "p5kasvv6kj11";
@@ -52,6 +52,13 @@ const Supplements = () => {
     { id: "equipment", title: "Spor Ekipmanları", icon: <Activity className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.equipment },
     { id: "other", title: "Diğer Ürünler", icon: <LayoutGrid className="w-4 h-4" />, contentTypeId: CONTENT_TYPE_MAP.other }
   ];
+
+  const handleWhatsApp = (product: ContentfulProduct) => {
+    const msg = `Merhaba, ${product.title} ürünü hakkında bilgi almak istiyorum.
+Nakit Fiyatı: ${(product.priceCash ?? product.price)?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL
+Kartla Ödeme Fiyatı: ${product.priceCard?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL`;
+    window.open(`https://wa.me/905398937955?text=${encodeURIComponent(msg)}`, "_blank");
+  };
 
   useEffect(() => {
     const fetchSupplements = async () => {
@@ -170,27 +177,47 @@ const Supplements = () => {
                   </div>
 
                   <div className="p-5 flex flex-col flex-1 relative">
-                    <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                    <h3 className="font-bold text-lg mb-4 line-clamp-2 group-hover:text-primary transition-colors h-14">
                       {displayTitle}
                     </h3>
 
-                    <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/50">
-                      <div className="flex flex-col">
+                    <div className="mt-auto pt-4 border-t border-border/50">
+                      <div className="flex flex-col mb-4">
                         {(product.priceCash !== null || product.price !== null || product.priceCard !== null) ? (
                           <div className="flex flex-col gap-0.5">
-                            {(product.priceCash ?? product.price) !== null && <span className="text-lg font-bold text-primary">Nakit Ödeme: {product.priceCash ?? product.price} TL</span>}
-                            {product.priceCard !== null && <span className="text-xs font-medium text-muted-foreground">Kredi Kartı: {product.priceCard} TL</span>}
+                            {(product.priceCash ?? product.price) !== null && <span className="text-lg font-bold text-primary">Nakit: {product.priceCash ?? product.price} TL</span>}
+                            {product.priceCard !== null && <span className="text-xs font-medium text-muted-foreground">Kart: {product.priceCard} TL</span>}
                           </div>
                         ) : (
-                          <span className="text-xl font-bold text-primary">Fiyat Sorunuz</span>
+                          <span className="text-lg font-bold text-primary">Fiyat Sorunuz</span>
                         )}
                       </div>
-                      <Button
-                        size="icon"
-                        className="rounded-full w-10 h-10 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
-                      >
-                        <ArrowRight className="w-5 h-5" />
-                      </Button>
+
+                      <div className="flex flex-col gap-2">
+                        <Button
+                          size="sm"
+                          className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-green-500/10 transition-all duration-300 hover:scale-[1.02] py-5"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleWhatsApp(product);
+                          }}
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          <span className="font-bold">WhatsApp Sipariş</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full rounded-xl border-primary/20 hover:bg-primary/5 hover:text-primary group/btn transition-colors py-5"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/product/${slug}`);
+                          }}
+                        >
+                          <span>Detayları Gör</span>
+                          <ArrowRight className="w-4 h-4 ml-1 group-hover/btn:translate-x-1 transition-transform" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
