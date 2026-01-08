@@ -70,8 +70,8 @@ const Membership = () => {
           const color = i % 2 === 0 ? "#ff7f2a" : "#00bfff";
 
           return (
-            <Card key={i} className={`rounded-2xl shadow-lg hover:scale-[1.03] transition-all ${popular ? "border-4 border-primary" : "border"}`}>
-              {popular && <Badge className="absolute -top-4 left-1/2 -translate-x-1/2">En Çok Tercih Edilen</Badge>}
+            <Card key={i} className={`relative rounded-2xl shadow-lg hover:scale-[1.03] transition-all ${popular ? "border-4 border-primary" : "border"}`}>
+              {popular && <Badge className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap z-10">En Çok Tercih Edilen</Badge>}
 
               <CardHeader className="text-center space-y-3">
                 <CardTitle className="text-2xl font-bold" style={{ color }}>{plan.plan_name}</CardTitle>
