@@ -93,7 +93,7 @@ const ProductDetail = () => {
 Nakit Fiyatı: ${product.supplement_price_cash?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL
 Kartla Ödeme Fiyatı: ${product.supplement_price_card?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL`;
 
-        window.open(`https://wa.me/905366544655?text=${encodeURIComponent(msg)}`, "_blank");
+        window.open(`https://wa.me/905398937955?text=${encodeURIComponent(msg)}`, "_blank");
     };
 
     const features = [
