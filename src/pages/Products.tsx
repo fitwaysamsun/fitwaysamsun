@@ -130,7 +130,7 @@ const Products = () => {
 
     const handleWhatsApp = (title?: string) => {
         const message = `Merhaba, ${title ?? "supplement"} hakkında bilgi almak istiyorum.`;
-        window.open(`https://wa.me/905366544655?text=${encodeURIComponent(message)}`, "_blank");
+        window.open(`https://wa.me/905398937955?text=${encodeURIComponent(message)}`, "_blank");
     };
 
     const scrollToCategory = (id: string) => {
