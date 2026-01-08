@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Dumbbell, Zap, Heart, Activity, ArrowRight, Package, LayoutGrid, Flame } from "lucide-react";
+import { Dumbbell, Zap, Heart, Activity, ArrowRight, Package, LayoutGrid, Flame, MessageCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import * as contentful from "contentful";
@@ -128,9 +128,11 @@ const Products = () => {
         }
     }, [loading]);
 
-    const handleWhatsApp = (title?: string) => {
-        const message = `Merhaba, ${title ?? "supplement"} hakkında bilgi almak istiyorum.`;
-        window.open(`https://wa.me/905398937955?text=${encodeURIComponent(message)}`, "_blank");
+    const handleWhatsApp = (product: ContentfulProduct) => {
+        const msg = `Merhaba, ${product.title} ürünü hakkında bilgi almak istiyorum.
+Nakit Fiyatı: ${(product.priceCash ?? product.price)?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL
+Kartla Ödeme Fiyatı: ${product.priceCard?.toLocaleString('tr-TR') || 'Belirtilmemiş'} TL`;
+        window.open(`https://wa.me/905398937955?text=${encodeURIComponent(msg)}`, "_blank");
     };
 
     const scrollToCategory = (id: string) => {
@@ -226,20 +228,42 @@ const Products = () => {
                                                             </div>
                                                             <div className="p-5 flex flex-col flex-1 relative">
                                                                 <h3 className="font-bold text-base mb-4 pb-2 leading-relaxed group-hover:text-primary transition-colors break-words min-h-[3rem]">{p.title}</h3>
-                                                                <div className="mt-auto flex items-center justify-between pt-6 border-t border-border/50">
-                                                                    <div className="flex flex-col">
+                                                                <div className="mt-auto pt-4 border-t border-border/50">
+                                                                    <div className="flex flex-col mb-4">
                                                                         {(p.priceCash !== null || p.price !== null || p.priceCard !== null) ? (
                                                                             <div className="flex flex-col gap-1">
-                                                                                {(p.priceCash ?? p.price) !== null && <span className="text-lg font-bold text-primary">Nakit Ödeme: {p.priceCash ?? p.price} TL</span>}
-                                                                                {p.priceCard !== null && <span className="text-sm font-medium text-muted-foreground">Kredi Kartı: {p.priceCard} TL</span>}
+                                                                                {(p.priceCash ?? p.price) !== null && <span className="text-lg font-bold text-primary">Nakit: {p.priceCash ?? p.price} TL</span>}
+                                                                                {p.priceCard !== null && <span className="text-sm font-medium text-muted-foreground">Kart: {p.priceCard} TL</span>}
                                                                             </div>
                                                                         ) : (
-                                                                            <span className="text-xl font-bold text-primary">Fiyat Sorunuz</span>
+                                                                            <span className="text-lg font-bold text-primary">Fiyat Sorunuz</span>
                                                                         )}
                                                                     </div>
-                                                                    <Button size="icon" className="rounded-full w-10 h-10 bg-primary text-primary-foreground hover:bg-primary/90">
-                                                                        <ArrowRight className="w-5 h-5" />
-                                                                    </Button>
+                                                                    <div className="flex flex-col gap-2">
+                                                                        <Button
+                                                                            size="sm"
+                                                                            className="w-full bg-green-500 hover:bg-green-600 text-white rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-green-500/10 transition-all duration-300 hover:scale-[1.02] py-5"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                handleWhatsApp(p);
+                                                                            }}
+                                                                        >
+                                                                            <MessageCircle className="w-4 h-4" />
+                                                                            <span className="font-bold">WhatsApp Sipariş</span>
+                                                                        </Button>
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            size="sm"
+                                                                            className="w-full rounded-xl border-primary/20 hover:bg-primary/5 hover:text-primary group/btn transition-colors py-5"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                goToProduct(slug);
+                                                                            }}
+                                                                        >
+                                                                            <span>Detayları Gör</span>
+                                                                            <ArrowRight className="w-4 h-4 ml-1 group-hover/btn:translate-x-1 transition-transform" />
+                                                                        </Button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
