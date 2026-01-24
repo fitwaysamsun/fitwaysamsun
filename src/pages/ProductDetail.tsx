@@ -39,8 +39,8 @@ const ProductDetail = () => {
             setLoading(true); // تأكيد بدء التحميل
 
             try {
-                // جلب المنتجات
-                const entries = await client.getEntries({ limit: 50 });
+                // جلب المنتجات (حد مرتفع لضمان جلب كل المنتجات القديمة والجديدة)
+                const entries = await client.getEntries({ limit: 1000 });
 
                 // البحث عن المنتج المطابق للـ slug باستخدام دالة normalize
                 const foundItem = entries.items.find((item: any) =>
