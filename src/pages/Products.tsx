@@ -73,7 +73,7 @@ const Products = () => {
                 const promises = categories.map(async (category) => {
                     const response = await client.getEntries({
                         content_type: category.contentTypeId,
-                        limit: 20,
+                        limit: 100, // حد مرتفع لضمان جلب كل المنتجات القديمة والجديدة
                     });
 
                     const products: ContentfulProduct[] = response.items.map((entry: any) => {
